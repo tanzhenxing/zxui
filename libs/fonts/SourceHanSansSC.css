@@ -1,0 +1,39 @@
+/* #ifdef H5 */
+
+/* 加载字体 */
+@font-face {
+	font-family: 'SourceHanSansSC-bold';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/SourceHanSansSC/Bold.woff2') format('woff2')
+}
+
+@font-face {
+	font-family: 'SourceHanSansSC-light';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/SourceHanSansSC/Light.woff2') format('woff2')
+}
+
+@font-face {
+	font-family: 'SourceHanSansSC-medium';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/SourceHanSansSC/Medium.woff2') format('woff2')
+}
+
+@font-face {
+	font-family: 'SourceHanSansSC-regular';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/SourceHanSansSC/Regular.woff2') format('woff2')
+}
+
+@font-face {
+	font-style: normal;
+	font-family: 'SourceHanSansSC-thin';
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/SourceHanSansSC/ExtraLight.woff2') format('woff2');
+}
+
+/* #endif */

@@ -1,0 +1,15 @@
+/.idea
+/.vscode
+/.hbuilderx
+/.vite
+/.git
+/node_modules
+/pages
+/uni_modules
+app.vue
+index.html
+main.js
+manifest.json
+pages.json
+uni.scss
+index.scss

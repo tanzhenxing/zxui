@@ -1,0 +1,40 @@
+/* 规划 H5 端字体 */
+/* #ifdef H5 */
+
+/* 加载字体 */
+@font-face {
+	font-family: 'PingFangSC-bold';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/PingFangSC/Bold.woff2') format('woff2')
+}
+
+@font-face {
+	font-family: 'PingFangSC-light';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/PingFangSC/Light.woff2') format('woff2')
+}
+
+@font-face {
+	font-family: 'PingFangSC-medium';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/PingFangSC/Medium.woff2') format('woff2')
+}
+
+@font-face {
+	font-family: 'PingFangSC-regular';
+	font-style: normal;
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/PingFangSC/Regular.woff2') format('woff2')
+}
+
+@font-face {
+	font-style: normal;
+	font-family: 'PingFangSC-thin';
+	font-weight: normal;
+	src: url('https://files.wufu-app.com/fonts/PingFangSC/Thin.woff2') format('woff2');
+}
+
+/* #endif */

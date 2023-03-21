@@ -1,0 +1,123 @@
+/* #ifndef APP-NVUE */
+page {
+	background-color: #F8F8F8;
+	font-size: 32rpx;
+	font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+}
+
+.tui-page__hd {
+	width: 100%;
+	padding: 40px;
+	box-sizing: border-box;
+}
+
+.tui-page__bd {
+	padding-bottom: 40px;
+}
+
+
+.tui-page__title {
+	text-align: left;
+	font-size: 20px;
+	font-weight: 400;
+}
+
+.tui-page__desc {
+	margin-top: 5px;
+	color: #888888;
+	text-align: left;
+	font-size: 14px;
+}
+
+.tui-page__spacing {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.tui-section__title {
+	font-size: 28rpx;
+	color: #999999;
+	margin-bottom: 10rpx;
+	padding: 30rpx 5px 20rpx;
+}
+
+::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important;
+	color: transparent !important;
+	display: none;
+}
+
+button::after {
+	border: none;
+}
+
+.container {
+	display: flex;
+	box-sizing: border-box;
+	flex-direction: column;
+}
+
+.tui-phcolor {
+	color: #ccc;
+	font-size: 32rpx;
+	overflow: visible;
+}
+
+.tui-opcity {
+	opacity: 0.5;
+}
+
+.tui-hover {
+	background-color: #f7f7f9 !important;
+}
+
+.tui-ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.tui-list-item {
+	position: relative;
+}
+
+.tui-list-item::after {
+	content: '';
+	position: absolute;
+	border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+	-webkit-transform: scaleY(0.5);
+	transform: scaleY(0.5);
+	bottom: 0;
+	right: 0;
+	left: 30rpx;
+}
+
+.tui-last::after {
+	border-bottom: 0 !important;
+}
+
+.tui-btn__opentype {
+	background: transparent !important;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
+	border: 0;
+	z-index: 1;
+}
+
+.tui-btn__opentype::after {
+	border: 0;
+}
+
+.tui-title--text {
+	width: 100%;
+	font-size: 28rpx;
+	color: #888;
+	padding: 30rpx;
+	box-sizing: border-box;
+}
+
+/* #endif */

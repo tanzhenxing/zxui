@@ -1,0 +1,79 @@
+// 文字颜色
+$zx-main-color: #303133;
+$zx-content-color: #606266;
+$zx-tips-color: #909193;
+$zx-light-color: #c0c4cc;
+$zx-disabled-color: #c8c9cc;
+
+// 背景色
+$zx-bg-color: #f3f4f6;
+
+// 常规色
+$zx-black: #000000;
+$zx-white: #ffffff;
+$zx-transparent: rgba($color: #000000, $alpha: 0);
+
+// 边框颜色
+$zx-border-color: #dadbde;
+$zx-border-1: #f0f0f0;
+$zx-border-2: #ededed;
+$zx-border-3: #dcdcdc;
+$zx-border-4: #b9b9b9;
+
+// 阴影
+$zx-shadow-sm:0 0 10rpx rgba($color: #d8d8d8, $alpha: 0.5);
+$zx-shadow-base:0 2rpx 16rpx 2rpx rgba($color: #a5a5a5, $alpha: 0.2);
+$zx-shadow-lg:0px 2rpx 20rpx 4rpx rgba($color: #a5a4a4, $alpha: 0.5);
+
+// 主题色
+
+$zx-primary: #3c9cff;
+$zx-primary-dark: #398ade;
+$zx-primary-disabled: #9acafc;
+$zx-primary-light: #ecf5ff;
+
+$zx-warning: #f9ae3d;
+$zx-warning-dark: #f1a532;
+$zx-warning-disabled: #f9d39b;
+$zx-warning-light: #fdf6ec;
+
+$zx-success: #5ac725;
+$zx-success-dark: #53c21d;
+$zx-success-disabled: #a9e08f;
+$zx-success-light: #f5fff0;
+
+$zx-error: #f56c6c;
+$zx-error-dark: #e45656;
+$zx-error-disabled: #f7b2b2;
+$zx-error-light: #fef0f0;
+
+$zx-info: #909399;
+$zx-info-dark: #767a82;
+$zx-info-disabled: #c4c6c9;
+$zx-info-light: #f4f4f5;
+
+// 蒙版
+$zx-mask: rgba($color: #000000, $alpha: 0.4);
+
+/* 水平间距 */
+$zx-spacing-sm: 16rpx;
+$zx-spacing-base: 30rpx;
+$zx-spacing-lg: 60rpx;
+
+
+.zx-border {
+	border: 1px $zx-border-1 solid;
+}
+
+.zx-shadow-sm {
+	box-shadow: $zx-shadow-sm;
+}
+.zx-shadow-base {
+	box-shadow: $zx-shadow-base;
+}
+.zx-shadow-lg {
+	box-shadow: $zx-shadow-lg;
+}
+.zx-mask {
+	background-color:$zx-mask;
+}
