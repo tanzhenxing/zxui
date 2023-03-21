@@ -3,3 +3,7 @@
 #### 实现开发一套代码，可以发布到14个平台，iOS、Android、H5、微信小程序等各种小程序。
 #### [https://zxui.org/](https://zxui.org/)
 
+## 安装
+npm install @tanzhenxing/zxui
+
+
