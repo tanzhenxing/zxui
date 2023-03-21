@@ -1,12 +1,11 @@
 <template>
-	<view class="gui-turntable" :animation="animationData">
-		<view class="gui-turntable-item"
-			v-for="(item, index) in rewardNames" :key="index"
-			:style="{transform: 'rotate(' + (inital - averageRotate * index) + 'deg)'}">
-			<view class="gui-turntable-inner"
-				:style="{transform: 'translateX(-300rpx) rotate(' + averageRotate + 'deg)',background: rewardBGColors[index]}">
-				<text class="gui-turntable-text"
-					:style="{transform: 'translateY(120rpx) translateX(' + textTrX + ') rotate(' + textRotate + ')',fontSize: fontSize,color: rewardColors[index]}">
+	<view class="zx-turntable" :animation="animationData">
+		<view class="zx-turntable-item" v-for="(item, index) in rewardNames" :key="index" :style="{ transform: 'rotate(' + (inital - averageRotate * index) + 'deg)' }">
+			<view class="zx-turntable-inner" :style="{ transform: 'translateX(-300rpx) rotate(' + averageRotate + 'deg)', background: rewardBGColors[index] }">
+				<text
+					class="zx-turntable-text"
+					:style="{ transform: 'translateY(120rpx) translateX(' + textTrX + ') rotate(' + textRotate + ')', fontSize: fontSize, color: rewardColors[index] }"
+				>
 					{{ item }}
 				</text>
 			</view>
@@ -135,13 +134,13 @@ export default {
 };
 </script>
 <style scoped>
-.gui-turntable {
+.zx-turntable {
 	position: relative;
 	transform-origin: center;
 	width: 600rpx;
 	height: 600rpx;
 }
-.gui-turntable-item {
+.zx-turntable-item {
 	position: absolute;
 	left: 50%;
 	width: 300rpx;
@@ -151,7 +150,7 @@ export default {
 	transform-origin: left center;
 }
 
-.gui-turntable-inner {
+.zx-turntable-inner {
 	text-align: center;
 	width: 300rpx;
 	height: 600rpx;
@@ -159,7 +158,7 @@ export default {
 	border-radius: 300rpx 0 0 300rpx;
 }
 
-.gui-turntable-text {
+.zx-turntable-text {
 	display: block;
 	transform-origin: center;
 }
