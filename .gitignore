@@ -6,6 +6,7 @@
 /node_modules
 /pages
 /uni_modules
+/static
 app.vue
 index.html
 main.js
