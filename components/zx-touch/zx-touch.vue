@@ -1,7 +1,10 @@
 <template>
-	<view @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend"><slot></slot></view>
+	<view @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend">
+		<slot></slot>
+	</view>
 </template>
 <script>
+import 'default-passive-events';
 export default {
 	name: 'zx-touch',
 	props: {
