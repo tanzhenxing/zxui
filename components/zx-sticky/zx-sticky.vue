@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import props from './props.js';
 /**
  * sticky 吸顶
  * @description 该组件与CSS中position: sticky属性实现的效果一致，当组件达到预设的到顶部距离时， 就会固定在指定位置，组件位置大于预设的顶部距离时，会重新按照正常的布局排列。
@@ -23,12 +22,55 @@ import props from './props.js';
  */
 export default {
 	name: 'zx-sticky',
-	mixins: [uni.$u.mpMixin, uni.$u.mixin, props],
+	props: {
+	    // 吸顶容器到顶部某个距离的时候，进行吸顶，在H5平台，NavigationBar为44px
+	    offsetTop: {
+	        type: [String, Number],
+	        default: '0rpx'
+	    },
+	    // 自定义导航栏的高度
+	    customNavHeight: {
+	        type: [String, Number],
+	        // #ifdef H5
+	        // H5端的导航栏属于“自定义”导航栏的范畴，因为它是非原生的，与普通元素一致
+	        default: 44,
+	        // #endif
+	        // #ifndef H5
+	        default: '0rpx'
+	        // #endif
+	    },
+	    // 是否开启吸顶功能
+	    disabled: {
+	        type: Boolean,
+	        default: false
+	    },
+	    // 吸顶区域的背景颜色
+	    bgColor: {
+	        type: String,
+	        default: '#ffffff'
+	    },
+	    // z-index值
+	    zIndex: {
+	        type: [String, Number],
+	        default: '999'
+	    },
+	    // 列表中的索引值
+	    index: {
+	        type: [String, Number],
+	        default: ''
+	    },
+		customStyle: {
+			type: Object,
+			default: ()=>{
+				return {};
+			}
+		}
+	},
 	data() {
 		return {
 			cssSticky: false, // 是否使用css的sticky实现
 			stickyTop: 0, // 吸顶的top值，因为可能受自定义导航栏影响，最终的吸顶值非offsetTop值
-			elId: uni.$u.guid(),
+			elId: 'zx-'+Date.now(),
 			left: 0, // js模式时，吸顶的内容因为处于postition: fixed模式，为了和原来保持一致的样式，需要记录并重新设置它的left，height，width属性
 			width: 'auto',
 			height: 'auto',
@@ -42,7 +84,7 @@ export default {
 				if (this.cssSticky) {
 					style.position = 'sticky';
 					style.zIndex = this.uZindex;
-					style.top = uni.$u.addUnit(this.stickyTop);
+					style.top = this.stickyTop;
 				} else {
 					style.height = this.fixed ? this.height + 'px' : 'auto';
 				}
@@ -56,7 +98,7 @@ export default {
 				// #endif
 			}
 			style.backgroundColor = this.bgColor;
-			return uni.$u.deepMerge(uni.$u.addStyle(this.customStyle), style);
+			return style;
 		},
 		// 吸顶内容的样式
 		stickyContent() {
@@ -126,7 +168,7 @@ export default {
 			observer && observer.disconnect();
 		},
 		getStickyTop() {
-			this.stickyTop = uni.$u.getPx(this.offsetTop) + uni.$u.getPx(this.customNavHeight);
+			this.stickyTop = this.offsetTop + this.customNavHeight;
 		},
 		async checkSupportCssSticky() {
 			// #ifdef H5
@@ -137,19 +179,20 @@ export default {
 			// #endif
 
 			// 如果安卓版本高于8.0，依然认为是支持css sticky的(因为安卓7在某些机型，可能不支持sticky)
-			if (uni.$u.os() === 'android' && Number(uni.$u.sys().system) > 8) {
+			/* if (uni.$u.os() === 'android' && Number(uni.$u.sys().system) > 8) {
 				this.cssSticky = true;
-			}
-
+			} */
+			this.cssSticky = true;
+			
 			// APP-Vue和微信平台，通过computedStyle判断是否支持css sticky
 			// #ifdef APP-VUE || MP-WEIXIN
 			this.cssSticky = await this.checkComputedStyle();
 			// #endif
 
 			// ios上，从ios6开始，都是支持css sticky的
-			if (uni.$u.os() === 'ios') {
+			/* if (uni.$u.os() === 'ios') {
 				this.cssSticky = true;
-			}
+			} */
 
 			// nvue，是支持css sticky的
 			// #ifdef APP-NVUE

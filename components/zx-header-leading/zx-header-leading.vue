@@ -1,48 +1,70 @@
 <template>
-	<view 
-	class="gui-header-leader gui-flex gui-row gui-nowrap gui-align-items-center">
-		<view 
-		v-if="home" 
-		:style="{
-			opacity : show ? 1 : 0
-		}" 
-		class="gui-header-leader-btns" 
-		hover-class="gui-tap">
-			<text 
-			:class="homeButtonClass" 
-			class="gui-header-leader-btns gui-block gui-icons" 
-			@tap="goHome">&#xe655;</text>
+	<view>
+		<view class="header">
+			<view v-if="home" :style="{opacity: show ? 1 : 0}" style="width: 70rpx;">
+				<zx-icon name="home" :size="size" :color="color" :bold="true" @tap="goHome"></zx-icon>
+			</view>
+			<view v-if="back" :style="{opacity: show ? 1 : 0}" style="width: 70rpx;">
+				<zx-icon name="arrow-left" :size="size" :color="color" :bold="true" @tap="goBack"></zx-icon>
+			</view>
+			<view style="flex: 1;" @tap.stop.prevnet="gotoTop">
+				<zx-text :text="title" :align="titleAlign" :color="titleColor" :size="titleSize" lines="1"></zx-text>
+			</view>
+			<view>
+				<slot name="right"></slot>
+			</view>
 		</view>
-		<view 
-		v-if="back" 
-		class="gui-header-leader-btns" 
-		:style="{
-			opacity : show ? 1 : 0
-		}" 
-		hover-class="gui-tap">
-			<text 
-			style="font-size:44rpx;"
-			:class="backButtonClass" 
-			class="gui-header-leader-btns gui-block gui-icons" 
-			@tap="goBack">&#xe600;</text>
-		</view>
+		<zx-line v-if="isLine"></zx-line>
 	</view>
 </template>
 <script>
-export default{
-	name  : "zx-header-leading",
-	props : {
-		back        : {type:Boolean, default:true},
-		home        : {type:Boolean, default:true},
-		backButtonClass : {type:Array, default:function(){return ['gui-primary-text'];}},
-		homeButtonClass : {type:Array, default:function(){return ['gui-primary-text'];}}
+export default {
+	name: 'zx-header-leading',
+	props: {
+		back: {
+			type: Boolean, 
+			default: true 
+		},
+		home: {
+			type: Boolean, 
+			default: true
+		},
+		color: {
+			type: String,
+			default: '#333333'
+		},
+		size: {
+			type: String,
+			default: '45rpx'
+		},
+		isLine: {
+			type: Boolean,
+			default: true
+		},
+		title: {
+			type: String,
+			default: ''
+		},
+		titleAlign: {
+			type: String,
+			default: 'center'
+		},
+		titleColor: {
+			type: String,
+			default: '#333333'
+		},
+		titleSize: {
+			type: String,
+			default: '32rpx'
+		}
 	},
 	data() {
 		return {
-			show  : true
-		}
+			show: true,
+			headerTapNumber: 0
+		};
 	},
-	mounted:function(){
+	mounted: function() {
 		// #ifdef MP-ALIPAY
 		this.show = false;
 		// #endif
@@ -53,19 +75,34 @@ export default{
 		this.show = false;
 		// #endif
 	},
-	methods:{
-		goBack : function () {
-			uni.navigateBack({delta:1}); 
+	methods: {
+		goBack: function() {
+			uni.navigateBack({ delta: 1 });
 			this.$emit('goBack');
 		},
-		goHome : function () {
+		goHome: function() {
 			this.$emit('goHome');
-		}
+		},
+		gotoTop: function() {
+			this.headerTapNumber++;
+			if (this.headerTapNumber >= 2) {
+				this.headerTapNumber = 0;
+				uni.pageScrollTo({
+					scrollTop:0,
+					duration:300
+				})
+			} else {
+				setTimeout(() => {
+					this.headerTapNumber = 0;
+				}, 1000);
+			}
+		},
 	},
-	emits : ['goBack', 'goHome']
-}
+	emits: ['goBack', 'goHome']
+};
 </script>
 <style scoped>
-.gui-header-leader{height:55rpx; border-radius:55rpx; font-weight:bold; margin-left:20rpx; overflow:hidden;}
-.gui-header-leader-btns{width:50rpx; line-height:50rpx; font-size:40rpx; margin:0rpx; overflow:hidden;}
+.header {
+	display: flex;flex-direction: row;padding: 20rpx;
+}
 </style>

@@ -157,7 +157,6 @@ export default {
 			const style = {
 				textDecoration: this.decoration,
 				fontWeight: this.bold ? 'bold' : 'normal',
-				fontFamily: this.getFontFamily,
 				wordWrap: this.wordWrap,
 				fontSize: this.size,
 				color: color,
@@ -165,6 +164,9 @@ export default {
 				lineHeight: this.lineHeight,
 				textAlign: 'justify'
 			};
+			if(this.fontFamily!==''){
+				style.fontFamily = this.fontFamily + ', -apple-system, Arial, Helvetica'+', sans-serif'
+			}
 			return style;
 		},
 		getText() {
@@ -201,13 +203,6 @@ export default {
 				}[this.type];
 			}
 			return color;
-		},
-		getFontFamily(){
-			if(this.fontFamily===''){
-				return '-apple-system,Arial, Helvetica, sans-serif';
-			} else {
-				return '-apple-system,Arial, Helvetica, '+this.fontFamily+', sans-serif';
-			}
 		}
 	},
 	methods: {

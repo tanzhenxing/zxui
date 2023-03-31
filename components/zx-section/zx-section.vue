@@ -11,7 +11,7 @@
 			<view class="zx-section-header__slot-right">
 				<slot name="right">
 					<view style="display: flex;justify-content: center;align-items: center;" @click="onMoreLink">
-						<zx-text text="more" size="28rpx" color="#909399"></zx-text>
+						<zx-text :text="moreText" size="28rpx" color="#909399"></zx-text>
 						<zx-icon name="arrow-right-double" size="32rpx" style="margin-left: 10rpx;"></zx-icon>
 					</view>
 				</slot>
@@ -81,6 +81,10 @@ export default {
 		moreLink: {
 			type: String,
 			default: ''
+		},
+		moreText: {
+			type: String,
+			default: 'More'
 		}
 	},
 	computed: {
