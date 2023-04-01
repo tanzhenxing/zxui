@@ -153,22 +153,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-$zx-back-top-flex: 1 !default;
-$zx-back-top-height: 100% !default;
-$zx-back-top-background-color: #ececec !default;
-$zx-back-top-tips-font-size: 12px !default;
 .zx-back-top {
-	@include flex;
+	display: flex;
 	flex-direction: column;
 	align-items: center;
-	flex: $zx-back-top-flex;
-	height: $zx-back-top-height;
+	flex: 1;
+	height: 100%;
 	justify-content: center;
-	background-color: $zx-back-top-background-color;
+	background-color: #ececec;
 
 	.tips {
-		font-size: $zx-back-top-tips-font-size;
+		font-size: 26rpx;
 		transform: scale(0.8);
 	}
 	

@@ -1,9 +1,10 @@
 <template>
 	<view class="zx-navbar">
-		<view v-if="fixed && placeholder" class="zx-navbar__placeholder" :style="{height: height + 'px'}"></view>
+		<!-- 固定在顶部时的占位 -->
+		<view v-if="fixed && placeholder" class="zx-navbar__placeholder" :style="{height: barHeight}"></view>
 		<view :class="[fixed && 'zx-navbar--fixed']">
 			<zx-status-bar v-if="safeAreaInsetTop" :bgColor="bgColor"></zx-status-bar>
-			<view class="zx-navbar__content" :class="[border && 'zx-border-bottom']" :style="{height: height,backgroundColor: bgColor}">
+			<view class="zx-navbar__content" :class="[border && 'zx-border-bottom']" :style="{height: barHeight,backgroundColor: bgColor}">
 				<view class="zx-navbar__content__left" hover-class="zx-navbar__content__left--hover" hover-start-time="150" @tap="leftClick">
 					<slot name="left">
 						<zx-icon v-if="leftIcon" :name="leftIcon" :size="leftIconSize" :color="leftIconColor"></zx-icon>
@@ -13,7 +14,7 @@
 				<slot name="center">
 					<text class="zx-line-1 zx-navbar__content__title" :style="[{width: titleWidth},titleStyle]">{{ title }}</text>
 				</slot>
-				<view class="zx-navbar__content__right" v-if="$slots.right || rightIcon || rightText" @tap="rightClick">
+				<view v-if="$slots.right || rightIcon || rightText" class="zx-navbar__content__right" @tap="rightClick">
 					<slot name="right">
 						<zx-icon v-if="rightIcon" :name="rightIcon" size="20"></zx-icon>
 						<text v-if="rightText" class="zx-navbar__content__right__text">{{ rightText }}</text>
@@ -110,13 +111,13 @@ export default {
 		},
 		// 导航栏高度
 		height: {
-			type: [String, Number],
-			default: '44px'
+			type: String,
+			default: '88rpx'
 		},
 		// 左侧返回图标的大小
 		leftIconSize: {
 			type: [String, Number],
-			default: '20px'
+			default: '40rpx'
 		},
 		// 左侧返回图标的颜色
 		leftIconColor: {
@@ -135,7 +136,15 @@ export default {
 		}
 	},
 	data() {
-		return {};
+		return {
+			barHeight: null
+		};
+	},
+	created() {
+		let sys = uni.getSystemInfoSync();
+		this.barHeight = sys.statusBarHeight + uni.upx2px(parseInt(this.height)) + 'px';
+
+		console.log(JSON.stringify(sys),this.barHeight)
 	},
 	methods: {
 		// 点击左侧区域
