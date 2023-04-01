@@ -322,15 +322,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-$zx-popup-flex: 1 !default;
-$zx-popup-content-background-color: #fff !default;
-
 .zx-popup {
-	flex: $zx-popup-flex;
+	flex: 1;
 
 	&__content {
-		background-color: $zx-popup-content-background-color;
+		background-color: #ffffff;
 		position: relative;
 
 		&--round-top {

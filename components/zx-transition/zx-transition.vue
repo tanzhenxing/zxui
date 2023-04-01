@@ -329,8 +329,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 /* #ifndef APP-NVUE */
 // vue版本动画相关的样式抽离在外部文件
 /**
@@ -347,8 +345,6 @@ export default {
  * slide-left：左滑进入
  * slide-right：右滑进入
  */
-
-$zx-zoom-scale: scale(0.95);
 
 .zx-fade-enter-active,
 .zx-fade-leave-active {

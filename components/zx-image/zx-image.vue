@@ -339,8 +339,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	@import '../../theme.scss';
-	@import '../../libs/css/components.scss';
+@import '../../theme.scss';
 
 $zx-image-error-top: 0px !default;
 $zx-image-error-left: 0px !default;
@@ -366,7 +365,8 @@ $zx-image-error-font-size: 46rpx !default;
 		left: $zx-image-error-left;
 		width: $zx-image-error-width;
 		height: $zx-image-error-hight;
-		@include flex;
+		display: flex;
+		flex-direction: row;
 		align-items: center;
 		justify-content: center;
 		background-color: $zx-image-error-background-color;
