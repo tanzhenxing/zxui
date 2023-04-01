@@ -1,6 +1,6 @@
 <template>
 	<view class="zx-popup">
-		<zx-overlay :show="show" @click="overlayClick" v-if="overlay" :duration="overlayDuration" :customStyle="overlayStyle" :opacity="overlayOpacity"></zx-overlay>
+		<zx-overlay v-if="overlay" :show="show" @click="overlayClick" :duration="overlayDuration" :customStyle="overlayStyle" :opacity="overlayOpacity"></zx-overlay>
 		<zx-transition :show="show" :customStyle="transitionStyle" :mode="position" :duration="duration" @afterEnter="afterEnter" @click="clickHandler">
 			<view class="zx-popup__content" :style="[contentStyle]" @tap.stop="noop">
 				<zx-status-bar v-if="safeAreaInsetTop"></zx-status-bar>
@@ -28,7 +28,7 @@
  * @property {Boolean}			overlay				是否显示遮罩 （默认 true ）
  * @property {String}			mode				弹出方向（默认 'bottom' ）
  * @property {String | Number}	duration			动画时长，单位ms （默认 300 ）
- * @property {String | Number}	overlayDuration			遮罩层动画时长，单位ms （默认 350 ）
+ * @property {String | Number}	overlayDuration		遮罩层动画时长，单位ms （默认 350 ）
  * @property {Boolean}			closeable			是否显示关闭图标（默认 false ）
  * @property {Object | String}	overlayStyle		自定义遮罩的样式
  * @property {String | Number}	overlayOpacity		遮罩透明度，0-1之间（默认 0.5）
@@ -42,7 +42,7 @@
  * @property {Object}			customStyle			组件的样式，对象形式
  * @event {Function}            open                弹出层打开
  * @event {Function}            close               弹出层收起
- * @example <zx-popup v-model="show"><text>窗口内容</text></zx-popup>
+ * @example <zx-popup><text>窗口内容</text></zx-popup>
  */
 export default {
 	name: 'zx-popup',
@@ -121,8 +121,8 @@ export default {
 	    },
 	    // 遮罩的透明度，0-1之间
 	    overlayOpacity: {
-	        type: [Number, String],
-	        default: ''
+	        type: Number,
+	        default: 0.8
 	    },
 		customStyle: {
 			type: Object,

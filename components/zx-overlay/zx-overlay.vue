@@ -70,18 +70,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-$zx-overlay-top: 0 !default;
-$zx-overlay-left: 0 !default;
-$zx-overlay-width: 100% !default;
-$zx-overlay-height: 100% !default;
-$zx-overlay-background-color: rgba(0, 0, 0, 0.7) !default;
 .zx-overlay {
 	position: fixed;
-	top: $zx-overlay-top;
-	left: $zx-overlay-left;
-	width: $zx-overlay-width;
-	height: $zx-overlay-height;
-	background-color: $zx-overlay-background-color;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
