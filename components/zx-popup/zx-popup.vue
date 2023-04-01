@@ -121,7 +121,7 @@ export default {
 	    },
 	    // 遮罩的透明度，0-1之间
 	    overlayOpacity: {
-	        type: Number,
+	        type: [String, Number],
 	        default: 0.8
 	    },
 		customStyle: {
