@@ -100,11 +100,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 .zx-avatar-group {
-	@include flex;
-
+	display: flex;
+	flex-direction: row;
+	
 	&__item {
 		margin-left: -10px;
 		position: relative;
@@ -121,7 +120,8 @@ export default {
 			left: 0;
 			right: 0;
 			background-color: rgba(0, 0, 0, 0.3);
-			@include flex;
+			display: flex;
+			flex-direction: row;
 			align-items: center;
 			justify-content: center;
 			border-radius: 100px;

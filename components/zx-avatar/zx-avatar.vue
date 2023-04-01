@@ -212,10 +212,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 .zx-avatar {
-	@include flex;
+	display: flex;
+	flex-direction: row;
 	align-items: center;
 	justify-content: center;
 
