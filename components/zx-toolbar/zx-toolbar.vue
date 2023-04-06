@@ -1,5 +1,5 @@
 <template>
-	<view class="u-toolbar" @touchmove.stop.prevent="noop" v-if="show">
+	<view class="u-toolbar" v-if="show">
 		<view class="u-toolbar__cancel__wrapper" hover-class="u-hover-class">
 			<text
 				class="u-toolbar__wrapper__cancel"

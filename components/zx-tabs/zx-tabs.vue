@@ -84,11 +84,11 @@
 	const animation = uni.requireNativePlugin('animation')
 	const dom = uni.requireNativePlugin('dom')
 	// #endif
-	import props from './props.js';
+
 	/**
 	 * Tabs 标签
 	 * @description tabs标签组件，在标签多的时候，可以配置为左右滑动，标签少的时候，可以禁止滑动。 该组件的一个特点是配置为滚动模式时，激活的tab会自动移动到组件的中间位置。
-	 * @tutorial https://www.uviewui.com/components/tabs.html
+	 * @tutorial https://zxui.org/components/tabs
 	 * @property {String | Number}	duration			滑块移动一次所需的时间，单位秒（默认 200 ）
 	 * @property {String | Number}	swierWidth			swiper的宽度（默认 '750rpx' ）
 	 * @property {String}	keyName	 从`list`元素对象中读取的键名（默认 'name' ）
@@ -98,7 +98,70 @@
 	 */
 	export default {
 		name: 'zx-tabs',
-		mixins: [uni.$u.mpMixin, uni.$u.mixin, props],
+		props: {
+		    // 滑块的移动过渡时间，单位ms
+		    duration: {
+		        type: Number,
+		        default: 300
+		    },
+		    // tabs标签数组
+		    list: {
+		        type: Array,
+		        default: ()=>{
+					return {}
+				}
+		    },
+		    // 菜单选择中时的样式
+		    activeStyle: {
+		        type: [String, Object],
+		        default: '#1989fa'
+		    },
+		    // 菜单非选中时的样式
+		    inactiveStyle: {
+		        type: [String, Object],
+		        default: '#7d7e80'
+		    },
+			// 滑块颜色
+			lineColor: {
+			    type: String,
+			    default: '#ececec'
+			},
+		    // 滑块长度
+		    lineWidth: {
+		        type: [String, Number],
+		        default: uni.$u.props.tabs.lineWidth
+		    },
+		    // 滑块高度
+		    lineHeight: {
+		        type: [String, Number],
+		        default: uni.$u.props.tabs.lineHeight
+		    },
+		    // 滑块背景显示大小，当滑块背景设置为图片时使用
+		    lineBgSize: {
+		        type: String,
+		        default: uni.$u.props.tabs.lineBgSize
+		    },
+		    // 菜单item的样式
+		    itemStyle: {
+		        type: [String, Object],
+		        default: uni.$u.props.tabs.itemStyle
+		    },
+		    // 菜单是否可滚动
+		    scrollable: {
+		        type: Boolean,
+		        default: uni.$u.props.tabs.scrollable
+		    },
+			// 当前选中标签的索引
+			current: {
+				type: [Number, String],
+				default: uni.$u.props.tabs.current
+			},
+			// 默认读取的键名
+			keyName: {
+				type: String,
+				default: uni.$u.props.tabs.keyName
+			}
+		},
 		data() {
 			return {
 				firstTime: true,

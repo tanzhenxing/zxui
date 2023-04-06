@@ -4,7 +4,7 @@
 		<view v-if="fixed && placeholder" class="zx-navbar__placeholder" :style="{height: barHeight}"></view>
 		<view :class="[fixed && 'zx-navbar--fixed']">
 			<zx-status-bar v-if="safeAreaInsetTop" :bgColor="bgColor"></zx-status-bar>
-			<view class="zx-navbar__content" :class="[border && 'zx-border-bottom']" :style="{height: barHeight,backgroundColor: bgColor}">
+			<view class="zx-navbar__content" :class="[border && 'zx-border-bottom']" :style="{height: height,backgroundColor: bgColor}">
 				<view class="zx-navbar__content__left" hover-class="zx-navbar__content__left--hover" hover-start-time="150" @tap="leftClick">
 					<slot name="left">
 						<zx-icon v-if="leftIcon" :name="leftIcon" :size="leftIconSize" :color="leftIconColor"></zx-icon>
@@ -112,7 +112,7 @@ export default {
 		// 导航栏高度
 		height: {
 			type: String,
-			default: '88rpx'
+			default: '44px'
 		},
 		// 左侧返回图标的大小
 		leftIconSize: {
@@ -143,8 +143,6 @@ export default {
 	created() {
 		let sys = uni.getSystemInfoSync();
 		this.barHeight = sys.statusBarHeight + uni.upx2px(parseInt(this.height)) + 'px';
-
-		console.log(JSON.stringify(sys),this.barHeight)
 	},
 	methods: {
 		// 点击左侧区域

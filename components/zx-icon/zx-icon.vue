@@ -43,7 +43,7 @@ export default {
 		},
 		// 字体大小
 		size: {
-			type: String,
+			type: [String,Number],
 			default: '34rpx'
 		},
 		// 是否显示粗体

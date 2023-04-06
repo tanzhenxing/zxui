@@ -76,7 +76,7 @@
 				default: 'small'
 			},
 			customStyle: {
-				type: Object,
+				type: [Object,String],
 				default () {
 					return {}
 				}

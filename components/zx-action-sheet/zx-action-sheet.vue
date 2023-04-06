@@ -24,6 +24,7 @@
 </template>
 
 <script>
+
 export default {
 	name: 'zx-action-sheet',
 	emits: ['click', 'cancel'],
