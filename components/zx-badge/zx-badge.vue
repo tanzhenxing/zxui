@@ -1,7 +1,7 @@
 <template>
 	<view class="zx-badge">
 		<slot></slot>
-		<text v-if="show" :class="[this.size,this.absolute ? 'absolute' : '',this.type]" :style="[positionStyle, getStyle,customStyle, dotStyle]"
+		<text v-if="show || text!==''" :class="[this.size,this.absolute ? 'absolute' : '',this.type]" :style="[positionStyle, getStyle,customStyle, dotStyle]"
 			class="badge" @click="onClick()">{{displayValue}}</text>
 	</view>
 </template>

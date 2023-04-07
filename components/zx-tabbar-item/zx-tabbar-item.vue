@@ -44,7 +44,7 @@ export default {
 	    // 右上角的角标提示信息
 	    badge: {
 	        type: [String, Number, null],
-	        default: '9'
+	        default: ''
 	    },
 	    // 是否显示圆点，将会覆盖badge参数
 	    dot: {
