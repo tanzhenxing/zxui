@@ -1,7 +1,7 @@
 <template>
-	<view class="uni-swiper__warp">
+	<view class="zx-swiper__warp">
 		<slot />
-		<view v-if="mode === 'default'" :style="{ bottom: dots.bottom + 'px' }" class="uni-swiper__dots-box" key="default">
+		<view v-if="mode === 'default'" :style="{ bottom: dots.bottom + 'px' }" class="zx-swiper__dots-box" key="default">
 			<view
 				v-for="(item, index) in info"
 				@click="clickItem(index)"
@@ -12,10 +12,10 @@
 					'border-radius': '0px'
 				}"
 				:key="index"
-				class="uni-swiper__dots-item uni-swiper__dots-bar"
+				class="zx-swiper__dots-item zx-swiper__dots-bar"
 			/>
 		</view>
-		<view v-if="mode === 'dot'" :style="{ bottom: dots.bottom + 'px' }" class="uni-swiper__dots-box" key="dot">
+		<view v-if="mode === 'dot'" :style="{ bottom: dots.bottom + 'px' }" class="zx-swiper__dots-box" key="dot">
 			<view
 				v-for="(item, index) in info"
 				@click="clickItem(index)"
@@ -26,14 +26,14 @@
 					border: index !== current ? dots.border : dots.selectedBorder
 				}"
 				:key="index"
-				class="uni-swiper__dots-item"
+				class="zx-swiper__dots-item"
 			/>
 		</view>
-		<view v-if="mode === 'round'" :style="{ bottom: dots.bottom + 'px' }" class="uni-swiper__dots-box" key="round">
+		<view v-if="mode === 'round'" :style="{ bottom: dots.bottom + 'px' }" class="zx-swiper__dots-box" key="round">
 			<view
 				v-for="(item, index) in info"
 				@click="clickItem(index)"
-				:class="[index === current && 'uni-swiper__dots-long']"
+				:class="[index === current && 'zx-swiper__dots-long']"
 				:style="{
 					width: (index === current ? dots.width * 3 : dots.width) + 'px',
 					height: dots.height + 'px',
@@ -41,13 +41,13 @@
 					border: index !== current ? dots.border : dots.selectedBorder
 				}"
 				:key="index"
-				class="uni-swiper__dots-item "
+				class="zx-swiper__dots-item "
 			/>
 		</view>
-		<view v-if="mode === 'nav'" key="nav" :style="{ 'background-color': dotsStyles.backgroundColor, bottom: '0' }" class="uni-swiper__dots-box uni-swiper__dots-nav">
-			<text :style="{ color: dotsStyles.color }" class="uni-swiper__dots-nav-item">{{ current + 1 + '/' + info.length + ' ' + info[current][field] }}</text>
+		<view v-if="mode === 'nav'" key="nav" :style="{ 'background-color': dotsStyles.backgroundColor, bottom: '0' }" class="zx-swiper__dots-box zx-swiper__dots-nav">
+			<text :style="{ color: dotsStyles.color }" class="zx-swiper__dots-nav-item">{{ current + 1 + '/' + info.length + ' ' + info[current][field] }}</text>
 		</view>
-		<view v-if="mode === 'indexes'" key="indexes" :style="{ bottom: dots.bottom + 'px' }" class="uni-swiper__dots-box">
+		<view v-if="mode === 'indexes'" key="indexes" :style="{ bottom: dots.bottom + 'px' }" class="zx-swiper__dots-box">
 			<view
 				v-for="(item, index) in info"
 				@click="clickItem(index)"
@@ -59,9 +59,9 @@
 					border: index !== current ? dots.border : dots.selectedBorder
 				}"
 				:key="index"
-				class="uni-swiper__dots-item uni-swiper__dots-indexes"
+				class="zx-swiper__dots-item zx-swiper__dots-indexes"
 			>
-				<text class="uni-swiper__dots-indexes-text">{{ index + 1 }}</text>
+				<text class="zx-swiper__dots-indexes-text">{{ index + 1 }}</text>
 			</view>
 		</view>
 	</view>
@@ -159,7 +159,7 @@ export default {
 </script>
 
 <style lang="scss">
-.uni-swiper__warp {
+.zx-swiper__warp {
 	/* #ifndef APP-NVUE */
 	display: flex;
 	/* #endif */
@@ -169,7 +169,7 @@ export default {
 	overflow: hidden;
 }
 
-.uni-swiper__dots-box {
+.zx-swiper__dots-box {
 	position: absolute;
 	bottom: 10px;
 	left: 0;
@@ -183,7 +183,7 @@ export default {
 	align-items: center;
 }
 
-.uni-swiper__dots-item {
+.zx-swiper__dots-item {
 	width: 8px;
 	border-radius: 100px;
 	margin-left: 6px;
@@ -200,23 +200,23 @@ export default {
 	// transition: width 0.2s linear;  不要取消注释，不然会不能变色
 }
 
-.uni-swiper__dots-item:first-child {
+.zx-swiper__dots-item:first-child {
 	margin: 0;
 }
 
-.uni-swiper__dots-default {
+.zx-swiper__dots-default {
 	border-radius: 100px;
 }
 
-.uni-swiper__dots-long {
+.zx-swiper__dots-long {
 	border-radius: 50px;
 }
 
-.uni-swiper__dots-bar {
+.zx-swiper__dots-bar {
 	border-radius: 50px;
 }
 
-.uni-swiper__dots-nav {
+.zx-swiper__dots-nav {
 	bottom: 0px;
 	// height: 26px;
 	padding: 8px 0;
@@ -230,7 +230,7 @@ export default {
 	background-color: rgba(0, 0, 0, 0.2);
 }
 
-.uni-swiper__dots-nav-item {
+.zx-swiper__dots-nav-item {
 	/* overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; */
@@ -239,7 +239,7 @@ export default {
 	margin: 0 15px;
 }
 
-.uni-swiper__dots-indexes {
+.zx-swiper__dots-indexes {
 	/* #ifndef APP-NVUE */
 	display: flex;
 	/* #endif */
@@ -248,7 +248,7 @@ export default {
 	align-items: center;
 }
 
-.uni-swiper__dots-indexes-text {
+.zx-swiper__dots-indexes-text {
 	color: #fff;
 	font-size: 12px;
 	line-height: 14px;

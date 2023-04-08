@@ -1,9 +1,9 @@
 <template>
-	<view v-if="show" class="u-loading-icon" :style="customStyle" :class="[vertical && 'u-loading-icon--vertical']">
+	<view v-if="show" class="zx-loading-icon" :style="customStyle" :class="[vertical && 'zx-loading-icon--vertical']">
 		<view
 			v-if="!webviewHide"
-			class="u-loading-icon__spinner"
-			:class="[`u-loading-icon__spinner--${mode}`]"
+			class="zx-loading-icon__spinner"
+			:class="[`zx-loading-icon__spinner--${mode}`]"
 			ref="ani"
 			:style="{
 				color: color,
@@ -19,18 +19,18 @@
 		>
 			<block v-if="mode === 'spinner'">
 				<!-- #ifndef APP-NVUE -->
-				<view v-for="(item, index) in array12" :key="index" class="u-loading-icon__dot"></view>
+				<view v-for="(item, index) in array12" :key="index" class="zx-loading-icon__dot"></view>
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<!-- 此组件内部图标部分无法设置宽高，即使通过width和height配置了也无效 -->
 				<loading-indicator v-if="!webviewHide"
-					class="u-loading-indicator"
+					class="zx-loading-indicator"
 					:animating="true"
 					:style="{color: color,width: size,height: size}" />
 				<!-- #endif -->
 			</block>
 		</view>
-		<text v-if="text" class="u-loading-icon__text" :style="{fontSize: textSize,color: textColor}">
+		<text v-if="text" class="zx-loading-icon__text" :style="{fontSize: textSize,color: textColor}">
 			{{ text }}
 		</text>
 	</view>
@@ -232,9 +232,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
-.u-loading-icon {
+.zx-loading-icon {
 	/* #ifndef APP-NVUE */
 	// display: inline-flex;
 	/* #endif */
@@ -258,7 +256,7 @@ export default {
 		box-sizing: border-box;
 		max-width: 100%;
 		max-height: 100%;
-		animation: u-rotate 1s linear infinite;
+		animation: zx-rotate 1s linear infinite;
 		/* #endif */
 	}
 
@@ -298,7 +296,7 @@ export default {
 	line-height: 1;
 }
 
-.u-loading-icon {
+.zx-loading-icon {
 	&__spinner--spinner {
 		animation-timing-function: steps(12);
 	}
@@ -332,13 +330,13 @@ export default {
 }
 
 @for $i from 1 through 12 {
-	.u-loading-icon__dot:nth-of-type(#{$i}) {
+	.zx-loading-icon__dot:nth-of-type(#{$i}) {
 		transform: rotate($i * 30deg);
 		opacity: 1 - 0.0625 * ($i - 1);
 	}
 }
 
-@keyframes u-rotate {
+@keyframes zx-rotate {
 	0% {
 		transform: rotate(0deg);
 	}

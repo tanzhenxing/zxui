@@ -91,11 +91,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 .zx-swiper-indicator {
 	&__wrapper {
-		@include flex;
+		display: flex;
 
 		&--line {
 			border-radius: 100px;
