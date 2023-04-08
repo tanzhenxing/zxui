@@ -1,11 +1,11 @@
 <template>
-	<view class="zx-swiper" :style="{backgroundColor: bgColor,height: height,borderRadius: radius}">
+	<view class="zx-swiper" :style="{backgroundColor: bgColor,height: imageHeight,borderRadius: radius}">
 		<view v-if="loading" class="zx-swiper__loading">
 			<zx-loading-icon mode="circle"></zx-loading-icon>
 		</view>
 		<swiper v-else
 			class="zx-swiper__wrapper"
-			:style="{height: height}"
+			:style="{height: imageHeight}"
 			:circular="circular"
 			:interval="interval"
 			:duration="duration"
@@ -24,7 +24,7 @@
 					<image class="zx-swiper__wrapper__item__wrapper__image"
 						:src="getSource(item)"
 						:mode="imgMode"
-						:style="{height: height,borderRadius: radius}"
+						:style="{height: imageHeight,borderRadius: radius}"
 						@tap="clickHandler(index)"
 					></image>
 					<!-- <image v-if="getItemType(item) === 'image'"
@@ -198,12 +198,17 @@ export default {
 		// 图片的裁剪模式
 		imgMode: {
 			type: String,
-			default: 'aspectFill'
+			default: 'widthFix'
 		},
 		// 组件高度
 		height: {
 			type: [String, Number],
-			default: '260rpx'
+			default: '320rpx'
+		},
+		// 是否开启自适应高度，开启之后轮播图的高度，为图片的最大高度
+		autoHeight: {
+			type: Boolean,
+			default: false
 		},
 		// 背景颜色
 		bgColor: {
@@ -228,8 +233,30 @@ export default {
 	},
 	data() {
 		return {
-			currentIndex: 0
+			currentIndex: 0,
+			imageHeight: ''
 		};
+	},
+	created() {
+		this.imageHeight = this.height;
+		// 获取最大的图片高度
+		if(this.autoHeight){
+			this.list.forEach((item,index)=>{
+				let imgUrl = this.getSource(this.list[index]);
+				uni.getImageInfo({
+					src: imgUrl,
+					success: (res) => {
+						let rate = 750 / res.width;
+						let height = res.height * rate;
+						let image_height = parseInt(this.imageHeight);
+						if(height>image_height){
+							this.imageHeight = height + 'rpx';
+						}
+					}
+				})
+			});
+		}
+		
 	},
 	watch: {
 		current(val, preVal) {
@@ -265,9 +292,12 @@ export default {
 		},
 		// 获取目标路径，可能数组中为字符串，对象的形式，额外可指定对象的目标属性名keyName
 		getSource(item) {
-			if (typeof item === 'string') return item;
-			if (typeof item === 'object' && this.keyName) return item[this.keyName];
-			else uni.$u.error('请按格式传递列表参数');
+			if (typeof item === 'string') {
+				return item;
+			}
+			if (typeof item === 'object' && this.keyName) {
+				return item[this.keyName]
+			};
 			return '';
 		},
 		// 轮播切换事件
@@ -300,10 +330,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 .zx-swiper {
-	@include flex;
+	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: relative;
@@ -316,7 +344,7 @@ export default {
 			flex: 1;
 
 			&__wrapper {
-				@include flex;
+				display: flex;
 				position: relative;
 				overflow: hidden;
 				transition: transform 0.3s;
