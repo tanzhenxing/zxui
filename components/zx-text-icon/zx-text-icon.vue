@@ -1,11 +1,11 @@
 <template>
 	<view :style="getStyle">
 		<!-- 图标在左侧或者上方 -->
-		<zx-icon v-if="position==='left' || position==='top'" :name="icon" :size="iconSize" :color="iconColor" :customStyle="iconStyle" style="padding-right: 20rpx;"></zx-icon>
+		<zx-icon v-if="position==='left' || position==='top'" :name="icon" :size="iconSize" :color="iconColor" :top="iconTop" :customStyle="[getIconStyle,iconStyle]"></zx-icon>
 		<!-- 文字内容 -->
 		<zx-text :text="text" :lines="lines" :size="textSize" :color="textColor" :lineHeight="lineHeight" :fontFamily="fontFamily"></zx-text>
 		<!-- 图标在右侧 或 下方 -->
-		<zx-icon v-if="position==='right' || position==='bottom'" :name="icon" :size="iconSize" :color="iconColor" :customStyle="iconStyle"></zx-icon>
+		<zx-icon v-if="position==='right' || position==='bottom'" :name="icon" :size="iconSize" :color="iconColor" :customStyle="[getIconStyle,iconStyle]"></zx-icon>
 	</view>
 </template>
 
@@ -84,10 +84,34 @@
 		},
 		computed: {
 			getIconStyle(){
-				let style = {width:this.space,height:'100%'};
-				if(this.space!==''){
-					style.paddingRight = this.space;
+				let style = {};
+				switch(this.position){
+					case 'left':
+					style.height = this.iconSize;
+					if(this.space!==''){
+						style.paddingRight = this.space;
+					}
+					break;
+					case 'right':
+					style.width = this.iconSize;
+					if(this.space!==''){
+						style.paddingLeft = this.space;
+					}
+					break;
+					case 'top':
+					style.width = this.iconSize;
+					if(this.space!==''){
+						style.paddingBottom = this.space;
+					}
+					break;
+					case 'bottom':
+					style.height = this.iconSize;
+					if(this.space!==''){
+						style.paddingTop = this.space;
+					}
+					break;
 				}
+				
 				return style;
 			},
 			getStyle(){
