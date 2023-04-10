@@ -2,24 +2,15 @@
 	<!-- #ifdef APP-PLUS -->
 	<text :data-url="url" @tap="openUrlForApp" :style="getMyStyle">{{ text }}</text>
 	<!-- #endif -->
-	
+
 	<!-- #ifdef H5 -->
-	<a
-		:href="url"
-		class="link"
-		target="_blank"
-		:style="{
-			color: color,
-			lineHeight: lineHeight,
-			fontSize: fontSize
-		}"
-	>
-		{{ text }}
-	</a>
+	<a :href="url" class="link" target="_blank":style="{color: color,lineHeight: lineHeight,fontSize: fontSize}">{{ text }}</a>
 	<!-- #endif -->
+	
 	<!-- #ifdef MP -->
 	<text class="link" :style="{ color: color, lineHeight: lineHeight, fontSize: fontSize }">{{ url }}</text>
 	<!-- #endif -->
+	
 </template>
 <script>
 /**
@@ -54,30 +45,28 @@ export default {
 			default: '#008AFF'
 		},
 		fontSize: {
-			type: [String,Number],
+			type: [String, Number],
 			default: '28rpx'
 		},
 		lineHeight: {
-			type: [String,Number],
+			type: [String, Number],
 			default: '50rpx'
 		},
 		customStyle: {
 			type: Object,
-			default: function(){
-				return {}
+			default: function() {
+				return {};
 			}
 		}
 	},
 	computed: {
-		getMyStyle(){
-			let myStyle = {color:this.color,fontSize:this.fontSize,lineHeight:this.lineHeight};
-			
+		getMyStyle() {
+			let myStyle = { color: this.color, fontSize: this.fontSize, lineHeight: this.lineHeight };
+
 			return myStyle;
 		}
 	},
-	methods: {
-		
-	}
+	methods: {}
 };
 </script>
 <style scoped>
