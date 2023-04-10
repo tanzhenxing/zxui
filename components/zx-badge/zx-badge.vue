@@ -76,7 +76,7 @@ export default {
 		// 开启绝对定位
 		absolute: {
 			type: String,
-			default: ''
+			default: 'rightTop'
 		},
 		// 距定位角中心点的偏移量
 		offset: {
