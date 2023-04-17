@@ -5,6 +5,7 @@
 </template>
 
 <script>
+	import util from '../../libs/js/util.js';
 	// 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 	const nextTick = () => new Promise(resolve => setTimeout(resolve, 1000 / 50))
 	// nvue动画模块实现细节
@@ -200,7 +201,7 @@ export default {
 	        this.classes = classNames.enter
 	        this.$nextTick(async () => {
 				// #ifdef H5
-				await this.sleep(20)
+				await util.sleep(20);
 				// #endif
 	            // 标识动画尚未结束
 	            this.$emit('enter')
@@ -314,13 +315,6 @@ export default {
 	            this.inited = false
 	        }
 	    },
-		sleep(value = 30) {
-			return new Promise((resolve) => {
-				setTimeout(() => {
-					resolve()
-				}, value)
-			})
-		},
 		noop(){
 			
 		}

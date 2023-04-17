@@ -1,6 +1,6 @@
 <template>
 	<view class="u-collapse-item">
-		<u-cell
+		<zx-cell
 			:title="title"
 			:value="value"
 			:label="label"
@@ -27,7 +27,7 @@
 				<slot name="right-icon"></slot>
 			</template>
 			<!-- #endif -->
-		</u-cell>
+		</zx-cell>
 		<view
 			class="u-collapse-item__content"
 			:animation="animationData"
@@ -39,7 +39,7 @@
 				:ref="elId"
 			><slot /></view>
 		</view>
-		<u-line v-if="parentData.border"></u-line>
+		<zx-line v-if="parentData.border"></zx-line>
 	</view>
 </template>
 

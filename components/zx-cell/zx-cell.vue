@@ -1,7 +1,6 @@
 <template>
 	<view class="zx-cell" :style="[customStyle]"
-		:hover-class="(!disabled && (clickable || isLink)) ? 'zx-cell--clickable' : ''" :hover-stay-time="250"
-		@tap="clickHandler">
+		:hover-class="(!disabled && (clickable || isLink)) ? 'zx-cell--clickable' : ''" :hover-stay-time="250" @tap="clickHandler">
 		<view class="zx-cell__body" :class="[ center && 'zx-cell--center', size === 'large' && 'zx-cell__body--large']">
 			<view class="zx-cell__body__content">
 				<view class="zx-cell__left-icon-wrap" v-if="$slots.icon || icon">
@@ -35,6 +34,8 @@
 </template>
 
 <script>
+	import util from '../../libs/js/util.js';
+	
 	/**
 	 * cell  单元格
 	 * @description cell单元格一般用于一组列表的情况，比如个人中心页，设置页等。
@@ -192,14 +193,18 @@
 		methods: {
 			// 点击cell
 			clickHandler(e) {
-				if (this.disabled) return
+				if (this.disabled) {
+					return;
+				}
+				if(this.url){
+					util.navigate(this.url,'navigateTo');
+					return;
+				}
+				
 				this.$emit('click', {
 					name: this.name
-				})
-				// 如果配置了url(此props参数通过mixin引入)参数，跳转页面
-				this.openPage()
-				// 是否阻止事件传播
-				this.stop && this.preventEvent(e)
+				});
+				
 			},
 		}
 	}
@@ -207,7 +212,6 @@
 
 <style lang="scss" scoped>
 	@import "../../theme.scss";
-	@import "../../libs/css/components.scss";
 
 	$zx-cell-padding: 10px 15px !default;
 	$zx-cell-font-size: 15px !default;
@@ -237,7 +241,7 @@
 
 	.zx-cell {
 		&__body {
-			@include flex();
+			display: flex;
 			/* #ifndef APP-NVUE */
 			box-sizing: border-box;
 			/* #endif */
@@ -248,7 +252,8 @@
 			align-items: center;
 
 			&__content {
-				@include flex(row);
+				display: flex;
+				flex-direction: row;
 				align-items: center;
 				flex: 1;
 			}
@@ -261,7 +266,7 @@
 
 		&__left-icon-wrap,
 		&__right-icon-wrap {
-			@include flex();
+			display: flex;
 			align-items: center;
 			// height: $zx-cell-line-height;
 			font-size: $zx-cell-icon-size;

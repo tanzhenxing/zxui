@@ -1,66 +1,46 @@
 <template>
-	<view class="u-tooltip" :style="[$u.addStyle(customStyle)]">
-		<u-overlay :show="showTooltip && tooltipTop !== -10000 && overlay" customStyle="backgroundColor: rgba(0, 0, 0, 0)" @click="overlayClickHandler"></u-overlay>
-		<view class="u-tooltip__wrapper">
-			<text
-				class="u-tooltip__wrapper__text"
+	<view class="zx-tooltip" :style="customStyle">
+		<zx-overlay :show="showTooltip && tooltipTop !== -10000 && overlay" customStyle="backgroundColor: rgba(0, 0, 0, 0)" @click="overlayClickHandler"></zx-overlay>
+		<view class="zx-tooltip__wrapper">
+			<text class="zx-tooltip__wrapper__text"
 				:id="textId"
 				:ref="textId"
 				:userSelect="false"
 				:selectable="false"
-				@longpress.stop="longpressHandler"
-				:style="{
-					color: color,
-					backgroundColor: bgColor && showTooltip && tooltipTop !== -10000 ? bgColor : 'transparent'
-				}"
-			>
+				:style="{color: color,backgroundColor: bgColor && showTooltip && tooltipTop !== -10000 ? bgColor : 'transparent'}"
+				@longpress.stop="longpressHandler">
 				{{ text }}
 			</text>
-			<u-transition
-				mode="fade"
-				:show="showTooltip"
-				duration="300"
-				:customStyle="{
-					position: 'absolute',
-					top: $u.addUnit(tooltipTop),
-					zIndex: zIndex,
-					...tooltipStyle
-				}"
-			>
-				<view class="u-tooltip__wrapper__popup" :id="tooltipId" :ref="tooltipId">
-					<view
-						class="u-tooltip__wrapper__popup__indicator"
-						hover-class="u-tooltip__wrapper__popup__indicator--hover"
-						v-if="showCopy || buttons.length"
-						:style="[
-							indicatorStyle,
-							{
-								width: $u.addUnit(indicatorWidth),
-								height: $u.addUnit(indicatorWidth)
-							}
-						]"
-					>
+			<zx-transition mode="fade" :show="showTooltip" duration="300" :customStyle="{position: 'absolute',top: tooltipTop,zIndex: zIndex,...tooltipStyle}">
+				<view class="zx-tooltip__wrapper__popup" :id="tooltipId" :ref="tooltipId">
+					<view v-if="showCopy || buttons.length"
+						class="zx-tooltip__wrapper__popup__indicator"
+						hover-class="zx-tooltip__wrapper__popup__indicator--hover"
+						:style="[indicatorStyle,{width: indicatorWidth,height: indicatorWidth}]">
 						<!-- 由于nvue不支持三角形绘制，这里就做一个四方形，再旋转45deg，得到露出的一个三角 -->
 					</view>
-					<view class="u-tooltip__wrapper__popup__list">
-						<view v-if="showCopy" class="u-tooltip__wrapper__popup__list__btn" hover-class="u-tooltip__wrapper__popup__list__btn--hover" @tap="setClipboardData">
-							<text class="u-tooltip__wrapper__popup__list__btn__text">复制</text>
+					<view class="zx-tooltip__wrapper__popup__list">
+						<view v-if="showCopy" class="zx-tooltip__wrapper__popup__list__btn" hover-class="zx-tooltip__wrapper__popup__list__btn--hover" @tap="setClipboardData">
+							<text class="zx-tooltip__wrapper__popup__list__btn__text">复制</text>
 						</view>
-						<u-line direction="column" color="#8d8e90" v-if="showCopy && buttons.length > 0" length="18"></u-line>
+						<zx-line direction="column" color="#8d8e90" v-if="showCopy && buttons.length > 0" length="18"></zx-line>
 						<block v-for="(item, index) in buttons" :key="index">
-							<view class="u-tooltip__wrapper__popup__list__btn" hover-class="u-tooltip__wrapper__popup__list__btn--hover">
-								<text class="u-tooltip__wrapper__popup__list__btn__text" @tap="btnClickHandler(index)">{{ item }}</text>
+							<view class="zx-tooltip__wrapper__popup__list__btn" hover-class="zx-tooltip__wrapper__popup__list__btn--hover">
+								<text class="zx-tooltip__wrapper__popup__list__btn__text" @tap="btnClickHandler(index)">{{ item }}</text>
 							</view>
-							<u-line direction="column" color="#8d8e90" v-if="index < buttons.length - 1" length="18"></u-line>
+							<zx-line v-if="index < buttons.length - 1" direction="column" color="#8d8e90" length="18"></zx-line>
 						</block>
 					</view>
 				</view>
-			</u-transition>
+			</zx-transition>
 		</view>
 	</view>
 </template>
 
 <script>
+import myString from '../../libs/js/string.js';
+import util from '../../libs/js/util.js';
+
 // #ifdef APP-NVUE
 const dom = uni.requireNativePlugin('dom');
 // #endif
@@ -82,7 +62,6 @@ import ClipboardJS from 'clipboard';
  * @property {Array}			buttons		扩展的按钮组
  * @property {Boolean}			overlay		是否显示透明遮罩以防止触摸穿透（默认 true ）
  * @property {Object}			customStyle	定义需要用到的外部样式
- *
  * @event {Function}
  * @example
  */
@@ -93,8 +72,8 @@ export default {
 			// 是否展示气泡
 			showTooltip: true,
 			// 生成唯一id，防止一个页面多个组件，造成干扰
-			textId: uni.$u.guid(),
-			tooltipId: uni.$u.guid(),
+			textId: myString.uuid(),
+			tooltipId: myString.uuid(),
 			// 初始时甚至为很大的值，让其移到屏幕外面，为了计算元素的尺寸
 			tooltipTop: -10000,
 			// 气泡的位置信息
@@ -176,7 +155,7 @@ export default {
 	},
 	watch: {
 		propsChange() {
-			this.getElRect();
+			//this.getElRect();
 		}
 	},
 	computed: {
@@ -190,20 +169,18 @@ export default {
 			const style = {
 					transform: `translateY(${this.direction === 'top' ? '-100%' : '100%'})`
 				},
-				sys = uni.$u.sys(),
-				getPx = uni.$u.getPx,
-				addUnit = uni.$u.addUnit;
+				sys = util.sys();
 			if (this.tooltipInfo.width / 2 > this.textInfo.left + this.textInfo.width / 2 - this.screenGap) {
 				this.indicatorStyle = {};
-				style.left = `-${addUnit(this.textInfo.left - this.screenGap)}`;
-				this.indicatorStyle.left = addUnit(this.textInfo.width / 2 - getPx(style.left) - this.indicatorWidth / 2);
+				style.left = `-${this.textInfo.left - this.screenGap}`;
+				this.indicatorStyle.left = this.textInfo.width / 2 - uni.upx2px(style.left) - this.indicatorWidth / 2;
 			} else if (this.tooltipInfo.width / 2 > sys.windowWidth - this.textInfo.right + this.textInfo.width / 2 - this.screenGap) {
 				this.indicatorStyle = {};
-				style.right = `-${addUnit(sys.windowWidth - this.textInfo.right - this.screenGap)}`;
-				this.indicatorStyle.right = addUnit(this.textInfo.width / 2 - getPx(style.right) - this.indicatorWidth / 2);
+				style.right = `-${sys.windowWidth - this.textInfo.right - this.screenGap}`;
+				this.indicatorStyle.right = this.textInfo.width / 2 - uni.upx2px(style.right) - this.indicatorWidth / 2;
 			} else {
 				const left = Math.abs(this.textInfo.width / 2 - this.tooltipInfo.width / 2);
-				style.left = this.textInfo.width > this.tooltipInfo.width ? addUnit(left) : -addUnit(left);
+				style.left = this.textInfo.width > this.tooltipInfo.width ? left : -left;
 				this.indicatorStyle = {};
 			}
 			if (this.direction === 'top') {
@@ -243,7 +220,7 @@ export default {
 			// #ifndef APP-NVUE
 			// 组件内部一般用this.$uGetRect，对外的为uni.$u.getRect，二者功能一致，名称不同
 			return new Promise(resolve => {
-				this.$uGetRect(`#${ref}`).then(size => {
+				util.getRect(`#${ref}`).then(size => {
 					resolve(size);
 				});
 			});
@@ -264,7 +241,7 @@ export default {
 			// 调用之前，先将指示器调整到屏幕外，方便获取尺寸
 			this.showTooltip = true;
 			this.tooltipTop = -10000;
-			uni.$u.sleep(500).then(() => {
+			util.sleep(500).then(() => {
 				this.queryRect(this.tooltipId).then(size => {
 					this.tooltipInfo = size;
 					// 获取气泡尺寸之后，将其隐藏，为了让下次切换气泡显示与隐藏时，有淡入淡出的效果
@@ -323,14 +300,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
-.u-tooltip {
+.zx-tooltip {
 	position: relative;
-	@include flex;
+	display: flex;
 
 	&__wrapper {
-		@include flex;
+		display: flex;
 		justify-content: center;
 		/* #ifndef APP-NVUE */
 		white-space: nowrap;
@@ -341,7 +316,7 @@ export default {
 		}
 
 		&__popup {
-			@include flex;
+			display: flex;
 			justify-content: center;
 
 			&__list {
@@ -350,7 +325,8 @@ export default {
 				flex: 1;
 				border-radius: 5px;
 				padding: 0px 0;
-				@include flex(row);
+				display: flex;
+				flex-direction: row;
 				align-items: center;
 				overflow: hidden;
 

@@ -1,16 +1,15 @@
 <template>
 	<view class="u-collapse">
-		<u-line v-if="border"></u-line>
+		<zx-line v-if="border"></zx-line>
 		<slot />
 	</view>
 </template>
 
 <script>
-	import props from './props.js';
 	/**
 	 * collapse 折叠面板 
 	 * @description 通过折叠面板收纳内容区域
-	 * @tutorial https://www.uviewui.com/components/collapse.html
+	 * @tutorial https://zxui.org/components/collapse
 	 * @property {String | Number | Array}	value		当前展开面板的name，非手风琴模式：[<string | number>]，手风琴模式：string | number
 	 * @property {Boolean}					accordion	是否手风琴模式（ 默认 false ）
 	 * @property {Boolean}					border		是否显示外边框 ( 默认 true ）
@@ -18,8 +17,24 @@
 	 * @example <u-collapse></u-collapse>
 	 */
 	export default {
-		name: "u-collapse",
-		mixins: [uni.$u.mpMixin, uni.$u.mixin,props],
+		name: "zx-collapse",
+		props: {
+		    // 当前展开面板的name，非手风琴模式：[<string | number>]，手风琴模式：string | number
+		    value: {
+		        type: [String, Number, Array, null],
+		        default: uni.$u.props.collapse.value
+		    },
+		    // 是否手风琴模式
+		    accordion: {
+		        type: Boolean,
+		        default: uni.$u.props.collapse.accordion
+		    },
+		    // 是否显示外边框
+		    border: {
+		        type: Boolean,
+		        default: uni.$u.props.collapse.border
+		    }
+		},
 		watch: {
 			needInit() {
 				this.init()
@@ -85,6 +100,4 @@
 	}
 </script>
 
-<style lang="scss" scoped>
-	@import "../../libs/css/components.scss";
-</style>
+<style lang="scss" scoped></style>

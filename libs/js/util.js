@@ -1,9 +1,11 @@
-let timeout = null
-let flag = null
+// 定时器
+let timeout = null;
+// 节流标志
+let flag = null;
 
 export default {
 	// 获取滚动的坐标
-	getScrollPosition(el){
+	scrollPosition(el){
 		return {
 			x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
 			y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop
@@ -60,14 +62,7 @@ export default {
 	average(arr){
 		return this.sum(arr) / arr.length;
 	},
-	/**
-	 * 节流原理：在一定时间内，只能触发一次
-	 *
-	 * @param {Function} func 要执行的回调函数
-	 * @param {Number} wait 延时的时间
-	 * @param {Boolean} immediate 是否立即执行
-	 * @return null
-	 */
+	// 节流(在一定时间内，只能触发一次)
 	throttle(func, wait = 500, immediate = true) {
 	    if (immediate) {
 	        if (!flag) {
@@ -87,17 +82,12 @@ export default {
 	        }, wait)
 	    }
 	},
-	/**
-	 * 防抖原理：一定时间内，只有最后一次操作，再过wait毫秒后才执行函数
-	 *
-	 * @param {Function} func 要执行的回调函数
-	 * @param {Number} wait 延时的时间
-	 * @param {Boolean} immediate 是否立即执行
-	 * @return null
-	 */
+	// 防抖(一定时间内，只有最后一次操作，再过wait毫秒后才执行函数)
 	debounce(func, wait = 500, immediate = false) {
 	    // 清除定时器
-	    if (timeout !== null) clearTimeout(timeout)
+	    if (timeout !== null){
+			clearTimeout(timeout);
+		}
 	    // 立即执行，此类情况一般用不到
 	    if (immediate) {
 	        const callNow = !timeout
@@ -118,13 +108,19 @@ export default {
 			type = 'navigateTo';
 		}
 		if (!success) {
-			success = function() {};
+			success = function() {
+				
+			};
 		}
 		if (!fail) {
-			fail = function() {};
+			fail = function() {
+				
+			};
 		}
 		if (!complete) {
-			complete = function() {};
+			complete = function() {
+				
+			};
 		}
 		switch (type) {
 			case 'navigateTo':
@@ -162,13 +158,16 @@ export default {
 		}
 	},
 	// 返回
-	back(delta) {
-		if (!delta) {
-			delta = 1;
+	back(path) {
+		if(typeof path === 'number'){
+			uni.navigateBack({
+				delta: path
+			});
+		} else {
+			uni.navigateTo({
+				url: path
+			});
 		}
-		uni.navigateBack({
-			delta: delta
-		});
 	},
 	sleep(value = 30) {
 		return new Promise((resolve) => {
@@ -177,32 +176,25 @@ export default {
 			}, value)
 		})
 	},
-	/**
-	 * @description 运行期判断平台
-	 * @returns {string} 返回所在平台(小写) 
-	 * @link 运行期判断平台 https://uniapp.dcloud.io/frame?id=判断平台
-	 */
+	// 平台信息(运行期判断)
 	os() {
 		return uni.getSystemInfoSync().platform.toLowerCase()
 	},
-	/**
-	 * @description 获取系统信息同步接口
-	 * @link 获取系统信息同步接口 https://uniapp.dcloud.io/api/system/info?id=getsysteminfosync 
-	 */
+	// 获取系统信息
 	sys() {
 		return uni.getSystemInfoSync()
 	},
+	// 获取矩形信息
 	getRect(selector, all) {
 	    return new Promise((resolve) => {
-	        uni.createSelectorQuery().in(this)[all ? 'selectAll' : 'select'](selector)
-	            .boundingClientRect((rect) => {
+	        uni.createSelectorQuery().in(this)[all ? 'selectAll' : 'select'](selector).boundingClientRect((rect) => {
 	                if (all && Array.isArray(rect) && rect.length) {
-	                    resolve(rect)
+	                    resolve(rect);
 	                }
 	                if (!all && rect) {
-	                    resolve(rect)
+	                    resolve(rect);
 	                }
-	            }).exec()
-	    })
+	            }).exec();
+	    });
 	}
 }

@@ -49,24 +49,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	@import "../../theme.scss";
-@import '../../libs/css/components.scss';
-
-$zx-cell-group-title-padding: 16px 16px 8px !default;
-$zx-cell-group-title-font-size: 15px !default;
-$zx-cell-group-title-line-height: 16px !default;
-$zx-cell-group-title-color: $zx-main-color !default;
+@import "../../theme.scss";
 
 .zx-cell-group {
 	flex: 1;
 
 	&__title {
-		padding: $zx-cell-group-title-padding;
+		padding: 16px 16px 8px;
 
 		&__text {
-			font-size: $zx-cell-group-title-font-size;
-			line-height: $zx-cell-group-title-line-height;
-			color: $zx-cell-group-title-color;
+			font-size: 15px;
+			line-height: 16px;
+			color: $zx-main-color;
 		}
 	}
 
