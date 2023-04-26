@@ -1,24 +1,25 @@
 <template>
-	<view class="zx-section" :style="{backgroundColor:bgColor}">
-		<view class="zx-section-header" @click="onClick">
-			<view v-if="type" class="zx-section-header__decoration" :class="type"></view>
-			<slot v-else name="decoration"></slot>
-			
-			<view class="zx-section-header__content">
-				<text :style="{ 'font-size': titleFontSize, color: titleColor }" class="zx-section__content-title" :class="{ distraction: !subTitle }">{{ title }}</text>
-				<text v-if="subTitle" :style="{ 'font-size': subTitleFontSize, color: subTitleColor }" class="zx-section-header__content-sub">{{ subTitle }}</text>
+	<view class="zx-section" :style="{ backgroundColor: bgColor }">
+		<view class="header" :style="{padding: titlePadding}" @click="onClick">
+			<slot name="decoration">
+				<view :class="type" :style="{backgroundColor:decorationColor,height:decorationHeight,width:decorationWidth,marginRight:decorationSpace}"></view>
+			</slot>
+			<view class="content">
+				<zx-text :text="title" :size="titleFontSize" :color="titleColor"></zx-text>
+				<zx-text v-if="subTitle" :text="subTitle" :size="titleFontSize" :color="titleColor"></zx-text>
 			</view>
-			<view class="zx-section-header__slot-right">
-				<slot name="right">
-					<view style="display: flex;justify-content: center;align-items: center;" @click="onMoreLink">
-						<zx-text :text="moreText" size="28rpx" color="#909399"></zx-text>
+			<slot v-if="moreShow" name="right">
+				<view class="slot-right">
+					<view class="center" @click="onMoreLink">
+						<zx-text :text="moreText" :size="moreSize" color="#909399"></zx-text>
 						<zx-icon name="arrow-right-double" size="32rpx" style="margin-left: 10rpx;"></zx-icon>
 					</view>
-				</slot>
-			</view>
+				</view>
+			</slot>
 		</view>
-		<view class="zx-section-content" :style="{ padding: _padding }">
-			<slot />
+		<zx-line v-if="line" :color="lineColor"></zx-line>
+		<view class="content" :style="{ padding: padding }">
+			<slot></slot>
 		</view>
 	</view>
 </template>
@@ -43,7 +44,7 @@ export default {
 	props: {
 		type: {
 			type: String,
-			default: ''
+			default: 'line'
 		},
 		bgColor: {
 			type: String,
@@ -56,11 +57,11 @@ export default {
 		},
 		titleFontSize: {
 			type: String,
-			default: '14px'
+			default: '32rpx'
 		},
 		titleColor: {
 			type: String,
-			default: '#333'
+			default: '#333333'
 		},
 		subTitle: {
 			type: String,
@@ -68,15 +69,23 @@ export default {
 		},
 		subTitleFontSize: {
 			type: String,
-			default: '12px'
+			default: '28rpx'
 		},
 		subTitleColor: {
 			type: String,
-			default: '#999'
+			default: '#999999'
+		},
+		titlePadding: {
+			type: String,
+			default: '25rpx'
 		},
 		padding: {
-			type: [Boolean, String],
+			type: [Boolean,String],
 			default: false
+		},
+		moreShow: {
+			type: Boolean,
+			default: true
 		},
 		moreLink: {
 			type: String,
@@ -85,6 +94,34 @@ export default {
 		moreText: {
 			type: String,
 			default: 'More'
+		},
+		moreSize: {
+			type: String,
+			default: '28rpx'
+		},
+		line: {
+			type: Boolean,
+			default: true
+		},
+		lineColor: {
+			type: String,
+			default: '#ececec'
+		},
+		decorationColor: {
+			type: String,
+			default: '#2979ff'
+		},
+		decorationHeight: {
+			type: String,
+			default: '30rpx'
+		},
+		decorationWidth: {
+			type: String,
+			default: '30rpx'
+		},
+		decorationSpace: {
+			type: String,
+			default: '10rpx'
 		}
 	},
 	computed: {
@@ -103,20 +140,38 @@ export default {
 		onClick() {
 			this.$emit('click');
 		},
-		onMoreLink(){
+		onMoreLink() {
 			uni.navigateTo({
 				url: this.moreLink
-			})
+			});
 		}
 	}
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 $zx-primary: #2979ff !default;
 
 .zx-section {
+	height: 100rpx;
 
-	.zx-section-header {
+	.content {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		flex: 1;
+		color: #333;
+
+		.distraction {
+			flex-direction: row;
+			align-items: center;
+		}
+		&-sub {
+			margin-top: 5rpx;
+		}
+	}
+
+	.header {
 		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -125,55 +180,41 @@ $zx-primary: #2979ff !default;
 		align-items: center;
 		padding: 15rpx 2rpx;
 		font-weight: normal;
-
-		&__decoration {
-			margin-right: 6px;
-			background-color: $zx-primary;
-			&.line {
-				width: 4px;
-				height: 12px;
-				border-radius: 10px;
-			}
-
-			&.circle {
-				width: 8px;
-				height: 8px;
-				border-top-right-radius: 50px;
-				border-top-left-radius: 50px;
-				border-bottom-left-radius: 50px;
-				border-bottom-right-radius: 50px;
-			}
-
-			&.square {
-				width: 8px;
-				height: 8px;
-			}
+		
+		.line {
+			border-radius: 20rpx;
 		}
-
-		&__content {
-			/* #ifndef APP-NVUE */
-			display: flex;
-			/* #endif */
-			flex-direction: column;
-			flex: 1;
-			color: #333;
-
-			.distraction {
-				flex-direction: row;
-				align-items: center;
-			}
-			&-sub {
-				margin-top: 2px;
-			}
+		
+		.circle {
+			border-top-right-radius: 100rpx;
+			border-top-left-radius: 100rpx;
+			border-bottom-left-radius: 100rpx;
+			border-bottom-right-radius: 100rpx;
 		}
-
-		&__slot-right {
-			font-size: 14px;
+		
+		.square {
+			
+		}
+		
+		.slot-right {
+			font-size: 28rpx;
 		}
 	}
 
-	.zx-section-content {
-		font-size: 14px;
+	.content {
+		font-size: 28rpx;
 	}
+}
+
+.decoration {
+	margin-right: 10rpx;
+	background-color: $zx-primary;
+
+	
+}
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 </style>
