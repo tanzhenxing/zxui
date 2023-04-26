@@ -4,7 +4,7 @@
 		@tap="handleClick">
 		<image class="zx-lazyload__img"
 			:class="{'zx-img__hidden':!placeholder && fadeShow && !show,'zx-img__appear':show && !placeholder && fadeShow}"
-			:style="{height:height==='auto'?false:height,borderRadius:radius}" :src="show?src:placeholder"
+			:style="[{height:height==='auto'?false:height,borderRadius:radius},customStyle]" :src="show?src:placeholder"
 			:mode="height&&height!==true?mode:'widthFix'" :webp="webp" :show-menu-by-longpress="showMenuByLongpress"
 			:draggable="draggable" @load="load" @error="error" :id="elId">
 		</image>
@@ -97,6 +97,12 @@
 			padding: {
 				type: String,
 				default: '0rpx'
+			},
+			customStyle: {
+				type: Object,
+				default: ()=>{
+					return {};
+				}
 			}
 		},
 		data() {
