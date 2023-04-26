@@ -4,12 +4,12 @@
 			<slot name="decoration">
 				<view :class="type" :style="{backgroundColor:decorationColor,height:decorationHeight,width:decorationWidth,marginRight:decorationSpace}"></view>
 			</slot>
-			<view class="content">
-				<zx-text :text="title" :size="titleFontSize" :color="titleColor"></zx-text>
-				<zx-text v-if="subTitle" :text="subTitle" :size="titleFontSize" :color="titleColor"></zx-text>
+			<view class="title">
+				<zx-text :text="title" :size="titleFontSize" :color="titleColor" lines="1"></zx-text>
+				<zx-text v-if="subTitle" :text="subTitle" :size="subTitleFontSize" :color="subTitleColor" lineHeight="35rpx" lines="1"></zx-text>
 			</view>
-			<slot v-if="moreShow" name="right">
-				<view class="slot-right">
+			<slot name="right">
+				<view v-if="moreShow" class="slot-right">
 					<view class="center" @click="onMoreLink">
 						<zx-text :text="moreText" :size="moreSize" color="#909399"></zx-text>
 						<zx-icon name="arrow-right-double" size="32rpx" style="margin-left: 10rpx;"></zx-icon>
@@ -57,7 +57,7 @@ export default {
 		},
 		titleFontSize: {
 			type: String,
-			default: '32rpx'
+			default: '34rpx'
 		},
 		titleColor: {
 			type: String,
@@ -80,8 +80,8 @@ export default {
 			default: '25rpx'
 		},
 		padding: {
-			type: [Boolean,String],
-			default: false
+			type: String,
+			default: '25rpx'
 		},
 		moreShow: {
 			type: Boolean,
@@ -125,13 +125,7 @@ export default {
 		}
 	},
 	computed: {
-		_padding() {
-			if (typeof this.padding === 'string') {
-				return this.padding;
-			}
-
-			return this.padding ? '10px' : '';
-		}
+		
 	},
 	watch: {
 		
@@ -149,10 +143,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-$zx-primary: #2979ff !default;
-
 .zx-section {
-	height: 100rpx;
 
 	.content {
 		/* #ifndef APP-NVUE */
@@ -172,7 +163,6 @@ $zx-primary: #2979ff !default;
 	}
 
 	.header {
-		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -181,6 +171,9 @@ $zx-primary: #2979ff !default;
 		padding: 15rpx 2rpx;
 		font-weight: normal;
 		
+		.title {
+			flex: 1;
+		}
 		.line {
 			border-radius: 20rpx;
 		}
@@ -200,18 +193,8 @@ $zx-primary: #2979ff !default;
 			font-size: 28rpx;
 		}
 	}
-
-	.content {
-		font-size: 28rpx;
-	}
 }
 
-.decoration {
-	margin-right: 10rpx;
-	background-color: $zx-primary;
-
-	
-}
 .center {
 	display: flex;
 	justify-content: center;
