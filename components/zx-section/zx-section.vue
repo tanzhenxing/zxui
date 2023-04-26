@@ -121,7 +121,7 @@ export default {
 		},
 		decorationSpace: {
 			type: String,
-			default: '10rpx'
+			default: '15rpx'
 		}
 	},
 	computed: {
