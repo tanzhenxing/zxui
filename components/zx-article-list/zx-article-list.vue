@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<zx-section :title="title">
+		<zx-section :title="title" bgColor="#ffffff">
 			<template v-slot:right>
 				<zx-more :link="getMoreLink"></zx-more>
 			</template>
