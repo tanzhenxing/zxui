@@ -20,8 +20,7 @@
 							:style="[itemStyle]"
 							:class="[`zx-tabs__wrapper__nav__item-${index}`]"
 						>
-						<text :style="{textAlign: 'center',width:width}">{{item[keyName]}}</text>
-						
+						<zx-text :text="item[keyName]" :align="align" :size="size" :style="{width:width}"></zx-text>
 						</view>
 						
 							<view
@@ -78,6 +77,14 @@
 				type: String,
 				default: '70rpx'
 			},
+			size: {
+				type: String,
+				default: '32rpx'
+			},
+			align: {
+				type: String,
+				default: 'center'
+			},
 		    // 菜单选择中时的样式
 		    activeStyle: {
 		        type: [String, Object],
@@ -112,7 +119,7 @@
 		    itemStyle: {
 		        type: [String, Object],
 		        default: ()=>{
-					return {height:'80rpx',width:'100rpx'};
+					return {height:'80rpx'};
 				}
 		    },
 		    // 菜单是否可滚动
