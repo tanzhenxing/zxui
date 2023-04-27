@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { encode } from './base64.js';
+import { encode } from '../../libs/js/base64.js';
 	
 export default {
 	name: 'zx-news',

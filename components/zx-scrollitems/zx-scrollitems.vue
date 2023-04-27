@@ -1,39 +1,18 @@
 <template>
 	<view :style="{ width: width + 'rpx', overflow: 'hidden' }">
 		<zx-touch @thStart="thStart" @thMove="thMove" @thEnd="thEnd">
-			<view style="display: flex; flex-direction: row;flex-wrap: nowrap;"
-				:style="{
-					width: wrapWidth + 'px',
-					transform: 'translateX(' + scLeft + 'px)'
-				}"
-			>
-				<view
-					class="zx-scrollitems zx-img-in"
-					hover-class="zx-tap"
-					:style="{
-						width: itemWidth + 'rpx',
-						height: itemHeight + 'rpx',
-						marginRight: itemMargin + 'rpx'
-					}"
-					v-for="(item, idx) in itemsIn"
-					:key="idx"
-					@tap="tapme(idx)"
-				>
-					<image
-						:style="{
-							width: itemWidth + 'rpx',
-							height: itemHeight + 'rpx'
-						}"
-						:src="item.img"
-					></image>
-					<text class="zx-scrollitems-title zx-block zx-bg-black-opacity3 zx-border-box" :style="{ width: width + 'rpx' }">{{ item.title }}</text>
+			<view style="display: flex; flex-direction: row;flex-wrap: nowrap;" :style="{width: wrapWidth + 'px',transform: 'translateX(' + scLeft + 'px)'}">
+				<view class="zx-scrollitems zx-img-in" hover-class="zx-tap"
+					:style="{width: itemWidth + 'rpx',height: itemHeight + 'rpx',marginRight: itemMargin + 'rpx'}"
+					v-for="(item, idx) in itemsIn" :key="idx" @tap="tapme(idx)">
+					<zx-image :width="itemWidth + 'rpx'" :height="itemHeight + 'rpx'" :src="item.image+'?imageMogr2/thumbnail/750x'"></zx-image>
+					<text class="zx-scrollitems-title zx-block-text zx-bg-black-opacity3 zx-border-box" :style="{ width: width + 'rpx' }">{{ item.title }}</text>
 				</view>
 			</view>
 		</zx-touch>
 	</view>
 </template>
 <script>
-	
 export default {
 	name: 'zx-scrollitems',
 	props: {
@@ -47,7 +26,12 @@ export default {
 				return [];
 			}
 		},
-		duration: { type: Number, default: 25 }
+		duration: { type: Number, default: 25 },
+		// imageMogr2, imageView2
+		imageMode: {
+			type: String,
+			default: 'imageMogr2'
+		}
 	},
 	data() {
 		return {
@@ -114,16 +98,16 @@ export default {
 		tapme: function(idx) {
 			this.$emit('itemTap', this.itemsIn[idx]);
 		}
-	},
-	emits: ['itemTap']
+	}
 };
 </script>
-<style lang="scss" scoped>
+<style scoped>
 .zx-scrollitems {
 	overflow: hidden;
 	position: relative;
 }
 .zx-scrollitems-title {
+	font-family: 'PingFangSC-regular';
 	position: absolute;
 	z-index: 1;
 	left: 0;
