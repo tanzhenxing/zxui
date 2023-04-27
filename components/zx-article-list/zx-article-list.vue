@@ -69,7 +69,7 @@
 </template>
 
 <script>
-	import { encode } from 'js-base64';
+	import { encode } from '../../libs/js/base64.js';
 	
 	export default {
 		name:"zx-pic-items",
