@@ -1,90 +1,53 @@
 <template>
-	<view class="u-tabs">
-		<view class="u-tabs__wrapper">
-			<slot name="left" />
-			<view class="u-tabs__wrapper__scroll-view-wrapper">
-				<scroll-view
-					:scroll-x="scrollable"
-					:scroll-left="scrollLeft"
-					scroll-with-animation
-					class="u-tabs__wrapper__scroll-view"
-					:show-scrollbar="false"
-					ref="u-tabs__wrapper__scroll-view"
-				>
-					<view
-						class="u-tabs__wrapper__nav"
-						ref="u-tabs__wrapper__nav"
-					>
+	<view class="zx-tabs">
+		<view class="zx-tabs__wrapper">
+			<slot name="left"></slot>
+			<view class="zx-tabs__wrapper__scroll-view-wrapper">
+				<scroll-view 
+				:scroll-x="scrollable" 
+				:scroll-left="scrollLeft" 
+				:show-scrollbar="false" 
+				scroll-with-animation
+				class="zx-tabs__wrapper__scroll-view" 
+				ref="zx-tabs__wrapper__scroll-view">
+					<view class="zx-tabs__wrapper__nav" ref="zx-tabs__wrapper__nav">
 						<view
-							class="u-tabs__wrapper__nav__item"
+							class="zx-tabs__wrapper__nav__item"
 							v-for="(item, index) in list"
 							:key="index"
 							@tap="clickHandler(item, index)"
-							:ref="`u-tabs__wrapper__nav__item-${index}`"
-							:style="[$u.addStyle(itemStyle), {flex: scrollable ? '' : 1}]"
-							:class="[`u-tabs__wrapper__nav__item-${index}`, item.disabled && 'u-tabs__wrapper__nav__item--disabled']"
+							:ref="`zx-tabs__wrapper__nav__item-${index}`"
+							:style="[itemStyle]"
+							:class="[`zx-tabs__wrapper__nav__item-${index}`]"
 						>
-							<text
-								:class="[item.disabled && 'u-tabs__wrapper__nav__item__text--disabled']"
-								class="u-tabs__wrapper__nav__item__text"
-								:style="[textStyle(index)]"
-							>{{ item[keyName] }}</text>
-							<u-badge
-								:show="!!(item.badge && (item.badge.show || item.badge.isDot || item.badge.value))"
-								:isDot="item.badge && item.badge.isDot || propsBadge.isDot"
-								:value="item.badge && item.badge.value || propsBadge.value"
-								:max="item.badge && item.badge.max || propsBadge.max"
-								:type="item.badge && item.badge.type || propsBadge.type"
-								:showZero="item.badge && item.badge.showZero || propsBadge.showZero"
-								:bgColor="item.badge && item.badge.bgColor || propsBadge.bgColor"
-								:color="item.badge && item.badge.color || propsBadge.color"
-								:shape="item.badge && item.badge.shape || propsBadge.shape"
-								:numberType="item.badge && item.badge.numberType || propsBadge.numberType"
-								:inverted="item.badge && item.badge.inverted || propsBadge.inverted"
-								customStyle="margin-left: 4px;"
-							></u-badge>
+						<text :style="{textAlign: 'center',width:width}">{{item[keyName]}}</text>
+						
 						</view>
-						<!-- #ifdef APP-NVUE -->
-						<view
-							class="u-tabs__wrapper__nav__line"
-							ref="u-tabs__wrapper__nav__line"
-							:style="[{
-									width: $u.addUnit(lineWidth),
-									height: $u.addUnit(lineHeight),
-									background: lineColor,
-									backgroundSize: lineBgSize,
-								}]"
-						>
-							<!-- #endif -->
-							<!-- #ifndef APP-NVUE -->
+						
 							<view
-								class="u-tabs__wrapper__nav__line"
-								ref="u-tabs__wrapper__nav__line"
+								class="zx-tabs__wrapper__nav__line"
+								ref="zx-tabs__wrapper__nav__line"
 								:style="[{
-										width: $u.addUnit(lineWidth),
+										width: lineWidth,
 										transform: `translate(${lineOffsetLeft}px)`,
 										transitionDuration: `${firstTime ? 0 : duration}ms`,
-										height: $u.addUnit(lineHeight),
+										height: lineHeight,
 										background: lineColor,
 										backgroundSize: lineBgSize,
-									}]"
-							>
-								<!-- #endif -->
+									}]">
+						
 							</view>
-						</view>
+					</view>
 				</scroll-view>
+			
 			</view>
-			<slot name="right" />
+			<slot name="right"></slot>
 		</view>
 	</view>
 </template>
 
 <script>
-	// #ifdef APP-NVUE
-	const animation = uni.requireNativePlugin('animation')
-	const dom = uni.requireNativePlugin('dom')
-	// #endif
-
+	import util from '../../libs/js/util.js';
 	/**
 	 * Tabs 标签
 	 * @description tabs标签组件，在标签多的时候，可以配置为左右滑动，标签少的时候，可以禁止滑动。 该组件的一个特点是配置为滚动模式时，激活的tab会自动移动到组件的中间位置。
@@ -94,7 +57,7 @@
 	 * @property {String}	keyName	 从`list`元素对象中读取的键名（默认 'name' ）
 	 * @event {Function(index)} change 标签改变时触发 index: 点击了第几个tab，索引从0开始
 	 * @event {Function(index)} click 点击标签时触发 index: 点击了第几个tab，索引从0开始
-	 * @example <u-tabs :list="list" :is-scroll="false" :current="current" @change="change"></u-tabs>
+	 * @example <zx-tabs :list="list" :is-scroll="false" :current="current" @change="change"></zx-tabs>
 	 */
 	export default {
 		name: 'zx-tabs',
@@ -111,6 +74,10 @@
 					return {}
 				}
 		    },
+			width: {
+				type: String,
+				default: '70rpx'
+			},
 		    // 菜单选择中时的样式
 		    activeStyle: {
 		        type: [String, Object],
@@ -124,42 +91,44 @@
 			// 滑块颜色
 			lineColor: {
 			    type: String,
-			    default: '#ececec'
+			    default: '#1989fa'
 			},
 		    // 滑块长度
 		    lineWidth: {
-		        type: [String, Number],
-		        default: uni.$u.props.tabs.lineWidth
+		        type: String,
+		        default: '80rpx'
 		    },
 		    // 滑块高度
 		    lineHeight: {
-		        type: [String, Number],
-		        default: uni.$u.props.tabs.lineHeight
+		        type: String,
+		        default: '5rpx'
 		    },
 		    // 滑块背景显示大小，当滑块背景设置为图片时使用
 		    lineBgSize: {
 		        type: String,
-		        default: uni.$u.props.tabs.lineBgSize
+		        default: 'cover'
 		    },
 		    // 菜单item的样式
 		    itemStyle: {
 		        type: [String, Object],
-		        default: uni.$u.props.tabs.itemStyle
+		        default: ()=>{
+					return {height:'80rpx',width:'100rpx'};
+				}
 		    },
 		    // 菜单是否可滚动
 		    scrollable: {
 		        type: Boolean,
-		        default: uni.$u.props.tabs.scrollable
+		        default: true
 		    },
 			// 当前选中标签的索引
 			current: {
 				type: [Number, String],
-				default: uni.$u.props.tabs.current
+				default: 0
 			},
 			// 默认读取的键名
 			keyName: {
 				type: String,
-				default: uni.$u.props.tabs.keyName
+				default: 'name'
 			}
 		},
 		data() {
@@ -173,6 +142,7 @@
 				},
 				innerCurrent: 0,
 				moving: false,
+				scrollItem:0
 			}
 		},
 		watch: {
@@ -200,40 +170,37 @@
 				return index => {
 					const style = {}
 					// 取当期是否激活的样式
-					const customeStyle = index === this.innerCurrent ? uni.$u.addStyle(this.activeStyle) : uni.$u
-						.addStyle(
-							this.inactiveStyle)
+					const customeStyle = index === this.innerCurrent ? this.activeStyle : this.inactiveStyle
 					// 如果当前菜单被禁用，则加上对应颜色，需要在此做处理，是因为nvue下，无法在style样式中通过!import覆盖标签的内联样式
 					if (this.list[index].disabled) {
 						style.color = '#c8c9cc'
 					}
-					return uni.$u.deepMerge(customeStyle, style)
+					return util.deepMerge(customeStyle, style)
 				}
 			},
 			propsBadge() {
-				return uni.$u.props.badge
+				//return uni.$u.props.badge
 			}
 		},
 		async mounted() {
-			this.init()
+			this.init();
 		},
 		methods: {
+			clickItem(item, index){
+				this.scrollItem = index;
+				console.log(index)
+			},
 			setLineLeft() {
 				const tabItem = this.list[this.innerCurrent];
 				if (!tabItem) {
 					return;
 				}
 				// 获取滑块该移动的位置
-				let lineOffsetLeft = this.list
-					.slice(0, this.innerCurrent)
-					.reduce((total, curr) => total + curr.rect.width, 0);
+				let lineOffsetLeft = this.list.slice(0, this.innerCurrent).reduce((total, curr) => total + curr.rect.width, 0);
                 // 获取下划线的数值px表示法
-				const lineWidth = uni.$u.getPx(this.lineWidth);
+				const lineWidth = uni.upx2px(parseInt(this.lineWidth));
 				this.lineOffsetLeft = lineOffsetLeft + (tabItem.rect.width - lineWidth) / 2
-				// #ifdef APP-NVUE
-				// 第一次移动滑块，无需过渡时间
-				this.animation(this.lineOffsetLeft, this.firstTime ? 0 : parseInt(this.duration))
-				// #endif
+				
 
 				// 如果是第一次执行此方法，让滑块在初始化时，瞬间滑动到第一个tab item的中间
 				// 这里需要一个定时器，因为在非nvue下，是直接通过style绑定过渡时间，需要等其过渡完成后，再设置为false(非第一次移动滑块)
@@ -242,18 +209,6 @@
 						this.firstTime = false
 					}, 10);
 				}
-			},
-			// nvue下设置滑块的位置
-			animation(x, duration = 0) {
-				// #ifdef APP-NVUE
-				const ref = this.$refs['u-tabs__wrapper__nav__line']
-				animation.transition(ref, {
-					styles: {
-						transform: `translateX(${x}px)`
-					},
-					duration
-				})
-				// #endif
 			},
 			// 点击某一个标签
 			clickHandler(item, index) {
@@ -272,7 +227,7 @@
 				})
 			},
 			init() {
-				uni.$u.sleep().then(() => {
+				util.sleep().then(() => {
 					this.resize()
 				})
 			},
@@ -286,10 +241,9 @@
 						return total + curr.rect.width
 					}, 0)
 				// 此处为屏幕宽度
-				const windowWidth = uni.$u.sys().windowWidth
+				const windowWidth = util.sys().windowWidth
 				// 将活动的tabs-item移动到屏幕正中间，实际上是对scroll-view的移动
-				let scrollLeft = offsetLeft - (this.tabsRect.width - tabRect.rect.width) / 2 - (windowWidth - this.tabsRect
-					.right) / 2 + this.tabsRect.left / 2
+				let scrollLeft = offsetLeft - (this.tabsRect.width - tabRect.rect.width) / 2 - (windowWidth - this.tabsRect.right) / 2 + this.tabsRect.left / 2
 				// 这里做一个限制，限制scrollLeft的最大值为整个scroll-view宽度减去tabs组件的宽度
 				scrollLeft = Math.min(scrollLeft, this.scrollViewWidth - this.tabsRect.width)
 				this.scrollLeft = Math.max(0, scrollLeft)
@@ -317,50 +271,38 @@
 			// 获取导航菜单的尺寸
 			getTabsRect() {
 				return new Promise(resolve => {
-					this.queryRect('u-tabs__wrapper__scroll-view').then(size => resolve(size))
+					this.queryRect('.zx-tabs__wrapper__scroll-view').then(size => resolve(size))
 				})
 			},
 			// 获取所有标签的尺寸
 			getAllItemRect() {
 				return new Promise(resolve => {
 					const promiseAllArr = this.list.map((item, index) => this.queryRect(
-						`u-tabs__wrapper__nav__item-${index}`, true))
+						`.zx-tabs__wrapper__nav__item-${index}`, true))
 					Promise.all(promiseAllArr).then(sizes => resolve(sizes))
 				})
 			},
 			// 获取各个标签的尺寸
 			queryRect(el, item) {
-				// #ifndef APP-NVUE
-				// $uGetRect为uView自带的节点查询简化方法，详见文档介绍：https://www.uviewui.com/js/getRect.html
-				// 组件内部一般用this.$uGetRect，对外的为uni.$u.getRect，二者功能一致，名称不同
 				return new Promise(resolve => {
-					this.$uGetRect(`.${el}`).then(size => {
-						resolve(size)
-					})
+					const query = uni.createSelectorQuery().in(this);
+					query.select(el).boundingClientRect(data => {
+						resolve(data);
+					}).exec();
 				})
-				// #endif
-
-				// #ifdef APP-NVUE
-				// nvue下，使用dom模块查询元素高度
-				// 返回一个promise，让调用此方法的主体能使用then回调
-				return new Promise(resolve => {
-					dom.getComponentRect(item ? this.$refs[el][0] : this.$refs[el], res => {
-						resolve(res.size)
-					})
-				})
-				// #endif
+				
 			},
 		},
 	}
 </script>
 
 <style lang="scss" scoped>
-	@import "../../libs/css/components.scss";
-
-	.u-tabs {
+	@import "../../theme.scss";
+	.zx-tabs {
 
 		&__wrapper {
-			@include flex;
+			display: flex;
+			flex-direction: row;
 			align-items: center;
 
 			&__scroll-view-wrapper {
@@ -371,17 +313,20 @@
 			}
 
 			&__scroll-view {
-				@include flex;
+				display: flex;
+				flex-direction: row;
 				flex: 1;
 			}
 
 			&__nav {
-				@include flex;
+				display: flex;
+				flex-direction: row;
 				position: relative;
 
 				&__item {
 					padding: 0 11px;
-					@include flex;
+					display: flex;
+					flex-direction: row;
 					align-items: center;
 					justify-content: center;
 
@@ -393,17 +338,18 @@
 
 					&__text {
 						font-size: 15px;
-						color: $u-content-color;
+						color: $zx-content-color;
+						
 
 						&--disabled {
-							color: $u-disabled-color !important;
+							color: $zx-disabled-color !important;
 						}
 					}
 				}
 
 				&__line {
 					height: 3px;
-					background: $u-primary;
+					background: $zx-primary;
 					width: 30px;
 					position: absolute;
 					bottom: 2px;

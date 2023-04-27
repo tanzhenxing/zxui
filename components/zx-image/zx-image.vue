@@ -5,7 +5,7 @@
 		<image class="zx-lazyload__img"
 			:class="{'zx-img__hidden':!placeholder && fadeShow && !show,'zx-img__appear':show && !placeholder && fadeShow}"
 			:style="[{height:height==='auto'?false:height,borderRadius:radius},customStyle]" :src="show?src:placeholder"
-			:mode="height&&height!==true?mode:'widthFix'" :webp="webp" :show-menu-by-longpress="showMenuByLongpress"
+			:mode="mode" :webp="webp" :show-menu-by-longpress="showMenuByLongpress"
 			:draggable="draggable" @load="load" @error="error" :id="elId">
 		</image>
 		<slot></slot>
@@ -38,7 +38,7 @@
 			//图片的裁剪模式，参考image组件mode属性
 			mode: {
 				type: String,
-				default: 'widthFix'
+				default: 'aspectFill'
 			},
 			//图片显示动画效果,无占位图时有效
 			fadeShow: {

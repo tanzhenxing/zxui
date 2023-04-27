@@ -4,6 +4,68 @@ let timeout = null;
 let flag = null;
 
 export default {
+	/**
+	 * @description 深度克隆
+	 * @param {object} obj 需要深度克隆的对象
+	 * @param cache 缓存
+	 * @returns {*} 克隆后的对象或者原值（不是对象）
+	 */
+	deepClone(obj, cache = new WeakMap()) {
+		if (obj === null || typeof obj !== 'object') return obj;
+		if (cache.has(obj)) return cache.get(obj);
+		let clone;
+		if (obj instanceof Date) {
+			clone = new Date(obj.getTime());
+		} else if (obj instanceof RegExp) {
+			clone = new RegExp(obj);
+		} else if (obj instanceof Map) {
+			clone = new Map(Array.from(obj, ([key, value]) => [key, deepClone(value, cache)]));
+		} else if (obj instanceof Set) {
+			clone = new Set(Array.from(obj, value => deepClone(value, cache)));
+		} else if (Array.isArray(obj)) {
+			clone = obj.map(value => deepClone(value, cache));
+		} else if (Object.prototype.toString.call(obj) === '[object Object]') {
+			clone = Object.create(Object.getPrototypeOf(obj));
+			cache.set(obj, clone);
+			for (const [key, value] of Object.entries(obj)) {
+				clone[key] = deepClone(value, cache);
+			}
+		} else {
+			clone = Object.assign({}, obj);
+		}
+		cache.set(obj, clone);
+		return clone;
+	},
+	/**
+	 * @description JS对象深度合并
+	 * @param {object} target 需要拷贝的对象
+	 * @param {object} source 拷贝的来源对象
+	 * @returns {object|boolean} 深度合并后的对象或者false（入参有不是对象）
+	 */
+	deepMerge(target = {}, source = {}) {
+		target = this.deepClone(target)
+		if (typeof target !== 'object' || target === null || typeof source !== 'object' || source === null) return target;
+		const merged = Array.isArray(target) ? target.slice() : Object.assign({}, target);
+		for (const prop in source) {
+			if (!source.hasOwnProperty(prop)) continue;
+			const sourceValue = source[prop];
+			const targetValue = merged[prop];
+			if (sourceValue instanceof Date) {
+				merged[prop] = new Date(sourceValue);
+			} else if (sourceValue instanceof RegExp) {
+				merged[prop] = new RegExp(sourceValue);
+			} else if (sourceValue instanceof Map) {
+				merged[prop] = new Map(sourceValue);
+			} else if (sourceValue instanceof Set) {
+				merged[prop] = new Set(sourceValue);
+			} else if (typeof sourceValue === 'object' && sourceValue !== null) {
+				merged[prop] = this.deepMerge(targetValue, sourceValue);
+			} else {
+				merged[prop] = sourceValue;
+			}
+		}
+		return merged;
+	},
 	// 获取滚动的坐标
 	scrollPosition(el){
 		return {
@@ -187,14 +249,21 @@ export default {
 	// 获取矩形信息
 	getRect(selector, all) {
 	    return new Promise((resolve) => {
-	        uni.createSelectorQuery().in(this)[all ? 'selectAll' : 'select'](selector).boundingClientRect((rect) => {
+			const query = uni.createSelectorQuery().in(this);
+			query.select(selector).boundingClientRect(data => {
+				resolve(data)
+			  console.log("得到布局位置信息" + JSON.stringify(data));
+			  console.log("节点离页面顶部的距离为" + data.top);
+			}).exec();
+			
+	        /* uni.createSelectorQuery().in(this)[all ? 'selectAll' : 'select'](selector).boundingClientRect((rect) => {
 	                if (all && Array.isArray(rect) && rect.length) {
 	                    resolve(rect);
 	                }
 	                if (!all && rect) {
 	                    resolve(rect);
 	                }
-	            }).exec();
+	            }).exec(); */
 	    });
 	}
 }

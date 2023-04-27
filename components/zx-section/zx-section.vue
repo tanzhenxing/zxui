@@ -2,7 +2,7 @@
 	<view class="zx-section" :style="{ backgroundColor: bgColor }">
 		<view class="header" :style="{padding: titlePadding}" @click="onClick">
 			<slot name="decoration">
-				<view :class="type" :style="{backgroundColor:decorationColor,height:decorationHeight,width:type==='line'?decorationWidth*0.5:decorationWidth,marginRight:decorationSpace}"></view>
+				<view :class="type" :style="{backgroundColor:decorationColor,height:decorationHeight,width:decorationWidth,marginRight:decorationSpace}"></view>
 			</slot>
 			<view class="title">
 				<zx-text :text="title" :size="titleFontSize" :color="titleColor" lines="1"></zx-text>
