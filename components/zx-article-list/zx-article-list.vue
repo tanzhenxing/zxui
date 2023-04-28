@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<zx-section :title="title" bgColor="#ffffff">
+		<zx-section :title="title" :bgColor="bgColor" padding="10rpx" :decorationType="decorationType" :decorationColor="decorationColor" :decorationWidth="decorationWidth" :decorationHeight="decorationHeight">
 			<template v-slot:right>
 				<zx-more :link="getMoreLink"></zx-more>
 			</template>
@@ -19,46 +19,31 @@
 			</view>
 			<!-- 图文展示 3列 -->
 			<view v-else-if="modelType===2">
-				<view style="display: flex;flex-direction: row;justify-content: flex-start;flex-wrap: wrap;padding-top: 10rpx;padding-bottom: 10rpx;">
-					<view :style="picBoxStyle" style="margin-left: 20rpx;" v-for="(item, index) in items" :key="index" @click="itemClick(item)">
-						<zx-image :width="imageStyle.width" :height="imageStyle.height" :src="item.image+'?imageMogr2/thumbnail/750x'"></zx-image>
-						<zx-text :text="item.title" :lines="titleStyle.lines" :align="titleStyle.align" size="32rpx" :color="titleStyle.color" :bold="false" lineHeight="50rpx"></zx-text>
-						<zx-text :text="item.introduce" :lines="descStyle.lines" :align="descStyle.align" :color="descStyle.color" size="26rpx" lineHeight="50rpx"></zx-text>
-					</view>
-				</view>
-			</view>
-			<!-- 图文展示 2列 -->
-			<view v-else-if="modelType===3" style="padding-top: 10rpx;padding-left: 20rpx;">
-				<view style="display: flex;flex-direction: row;flex-wrap: wrap;justify-content: space-around;">
-					<view class="zx-waterfall-item" v-for="(lists, lists_index) in getLists" :key="lists_index">
-						<view class="zx-waterfall-items" v-for="(item, index) in lists" :key="index">
-							<view :style="picBoxStyle" @click="itemClick(item)">
-								<view>
-									<zx-image :width="imageStyle.width" :height="imageStyle.height" :src="item.image+'?imageMogr2/thumbnail/750x'" mode="widthFix"></zx-image>
-								</view>
-								<view style="text-align: justify;">
-									<zx-text :text="item.title" :lines="2" :align="titleStyle.align" size="30rpx" :color="titleStyle.color" lineHeight="50rpx"></zx-text>
-								</view>
-								<view style="padding-bottom: 10rpx;text-align: justify;">
-									<zx-text :text="item.introduce" :lines="2" :align="descStyle.align" :color="descStyle.color" :size="descStyle.size" lineHeight="50rpx"></zx-text>
-								</view>
-							</view>
+				<view class="item-box">
+					<view :style="{width: '222rpx',padding: '15rpx 10rpx'}" v-for="(item, index) in items" :key="index" @click="itemClick(item)">
+						<view style="background-color: #ececec;">
+							<zx-image width="100%" height="268rpx" :src="item.image+'?imageMogr2/thumbnail/750x'" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
+						</view>
+						<view class="item-content">
+							<zx-text :text="item.title" :lines="titleStyle.lines" :align="titleStyle.align" size="32rpx" :color="titleStyle.color" :bold="false" lineHeight="45rpx"></zx-text>
+							<zx-text :text="item.introduce" :lines="descStyle.lines" :align="descStyle.align" :color="descStyle.color" size="26rpx" lineHeight="40rpx"></zx-text>
 						</view>
 					</view>
 				</view>
 			</view>
-			<view v-else>
-				<view style="display: flex;flex-direction: row;flex-wrap: wrap;">
-					<view style="340rpx" v-for="(item, index) in items" :key="index">
-						<view :style="picBoxStyle" class="uni-px-2" @click="itemClick(item)">
-							<view>
-								<zx-image :width="imageStyle.width" :height="imageStyle.height" :src="item.image+'?imageMogr2/thumbnail/750x'"></zx-image>
-							</view>
-							<view>
-								<zx-text :text="item.title" :lines="titleStyle.lines" :align="titleStyle.align" :size="titleStyle.size" :color="titleStyle.color" :bold="titleStyle.bold" lineHeight="50rpx"></zx-text>
-							</view>
-							<view class="uni-mx-3" style="height: 60rpx;">
-								<zx-text :text="item.introduce" :lines="descStyle.lines" :align="descStyle.align" :color="descStyle.color" :size="descStyle.size" lineHeight="50rpx"></zx-text>
+			<!-- 图文展示 2列 -->
+			<view v-else-if="modelType===3">
+				<view class="item-box">
+					<view class="zx-waterfall-item" v-for="(lists, lists_index) in getLists" :key="lists_index">
+						<view v-for="(item, index) in lists" :key="index">
+							<view :style="{width: '340rpx',padding: '10rpx'}" @click="itemClick(item)">
+								<view style="background-color: #ececec;">
+									<zx-image width="340rpx" :src="item.image+'?imageMogr2/thumbnail/750x'" mode="widthFix" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
+								</view>
+								<view class="item-content">
+									<zx-text :text="item.title" :lines="2" :align="titleStyle.align" size="30rpx" :color="titleStyle.color" lineHeight="45rpx"></zx-text>
+									<zx-text :text="item.introduce" :lines="2" :align="descStyle.align" :color="descStyle.color" :size="descStyle.size" lineHeight="40rpx"></zx-text>
+								</view>
 							</view>
 						</view>
 					</view>
@@ -72,7 +57,7 @@
 	import { encode } from '../../libs/js/base64.js';
 	
 	export default {
-		name:"zx-pic-items",
+		name:"zx-article-list",
 		data() {
 			return {
 				picBoxStyle: {width:'222rpx',marginTop:'10rpx',marginBottom:'10rpx',backgroundColor:'#ECECEC',borderRadius: '10rpx'},
@@ -92,8 +77,9 @@
 				return result;
 			},
 			getMoreLink(){
-				let currentUrl = this.$store.getters.domain + '/?' + Date.now() + '#' + '/pages/article/list?id=' + this.categoryId + '&model_type=' + this.modelType;
-				return  '/pages/webview/webview?url=' + encode(currentUrl);
+				/* let currentUrl = this.$store.getters.domain + '/?' + Date.now() + '#' + '/pages/article/list?id=' + this.categoryId + '&model_type=' + this.modelType;
+				return  '/pages/webview/webview?url=' + encode(currentUrl); */
+				return  '/pages/webview/webview?url=';
 			}
 		},
 		created() {
@@ -105,6 +91,10 @@
 			}
 		},
 		props: {
+			bgColor: {
+				type: String,
+				default: '#ffffff'
+			},
 			mode: {
 				type: String,
 				default: 'common'  // 普通 common, 滚动 scroll，人物 person
@@ -139,10 +129,30 @@
 					return [];
 				}
 			},
+			decorationType: {
+				type: String,
+				default: "line"
+			},
+			decorationColor:{
+				type:String,
+				default: "#ff0000"
+			},
+			decorationWidth:{
+				type: String,
+				default: "8rpx"
+			},
+			decorationHeight:{
+				type: String,
+				default: "35rpx"
+			},
+			decorationType: {
+				type: String,
+				default: 'line'
+			}
 		},
 		methods: {
 			// 新闻动态，点击列表文章跳转
-			itemClick : function (item) {
+			itemClick(item) {
 				if(item.link===null || item.link===''){
 					uni.navigateTo({
 						url: '../article/article?show=1&name=yszx&id='+item.id
@@ -174,5 +184,11 @@
 	background-color: #101010;width: 335rpx;opacity: 0.4;margin-top: -50rpx;padding-left: 10rpx;
 }
 .zx-waterfall-item{width:360rpx;}
-.zx-waterfall-items{margin-bottom:28rpx;}
+
+.item-box {
+	display: flex;flex-direction: row;flex-wrap: wrap;align-content: space-between;
+}
+.item-content {
+	text-align: justify;background-color: #ececec;border-radius: 0rpx 0rpx 10rpx 10rpx;padding-left: 15rpx; padding-right: 15rpx;padding-bottom: 15rpx;
+}
 </style>
