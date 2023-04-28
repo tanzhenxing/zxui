@@ -40,7 +40,7 @@
 						<view v-for="(item, index) in lists" :key="index">
 							<view :style="{width: '340rpx',padding: '10rpx'}" @click="itemClick(item)">
 								<view style="background-color: #ececec;">
-									<zx-image width="340rpx" :src="item.image+'?imageMogr2/thumbnail/750x'" mode="widthFix" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
+									<zx-image width="340rpx" height="auto" :src="item.image+'?imageMogr2/thumbnail/750x'" mode="widthFix" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
 								</view>
 								<view class="item-content">
 									<zx-text :text="item.title" :lines="2" :align="titleStyle.align" size="30rpx" :color="titleStyle.color" lineHeight="45rpx"></zx-text>
