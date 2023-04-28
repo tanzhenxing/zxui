@@ -28,15 +28,13 @@
 				</view>
 				<zx-line></zx-line>
 			</view>
-			<zx-more-button :url="currentUrl"></zx-more-button>
+			<zx-more-button @click="moreClick"></zx-more-button>
 		</view>
 		
 	</view>
 </template>
 
 <script>
-import { encode } from '../../libs/js/base64.js';
-	
 export default {
 	name: 'zx-news',
 	data() {
@@ -59,6 +57,9 @@ export default {
 		getUrl(id){
 			let currentUrl = this.$store.getters.domain + '/?' + Date.now() + '#' + this.moreLink + id;
 			this.currentUrl = '/pages/webview/webview?url=' + encode(currentUrl);
+		},
+		moreClick(){
+			this.$$emit('moreClick')
 		},
 		navchange(e) {
 			let index = e.index;

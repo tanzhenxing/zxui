@@ -1,9 +1,11 @@
 <template>
 	<view>
 		<zx-section :title="title" :bgColor="bgColor" padding="10rpx" :decorationType="decorationType" :decorationColor="decorationColor" :decorationWidth="decorationWidth" :decorationHeight="decorationHeight">
+			<!-- 右侧更多链接 -->
 			<template v-slot:right>
-				<zx-more :link="getMoreLink"></zx-more>
+				<zx-more @click="moreClick"></zx-more>
 			</template>
+			
 			<!-- 图文滚动 -->
 			<view v-if="modelType===1">
 				<!-- 只有一条记录不滚动 -->
@@ -14,7 +16,7 @@
 					</view>
 				</view>
 				<view v-else style="padding: 25rpx;">
-					<zx-scrollitems :duration="50" :items="items" @itemTap="itemClick"></zx-scrollitems>
+					<zx-scrollitems :duration="50" :items="items" @itemTap="scrollClick"></zx-scrollitems>
 				</view>
 			</view>
 			<!-- 图文展示 3列 -->
@@ -50,12 +52,11 @@
 				</view>
 			</view>
 		</zx-section>
+		<zx-gap></zx-gap>
 	</view>
 </template>
-
-<script>
-	import { encode } from '../../libs/js/base64.js';
 	
+<script>
 	export default {
 		name:"zx-article-list",
 		data() {
@@ -75,11 +76,6 @@
 					result[sort].push(item);
 				});
 				return result;
-			},
-			getMoreLink(){
-				/* let currentUrl = this.$store.getters.domain + '/?' + Date.now() + '#' + '/pages/article/list?id=' + this.categoryId + '&model_type=' + this.modelType;
-				return  '/pages/webview/webview?url=' + encode(currentUrl); */
-				return  '/pages/webview/webview?url=';
 			}
 		},
 		created() {
@@ -125,7 +121,7 @@
 			},
 			items: {
 				type: Array,
-				default() {
+				default: function(){
 					return [];
 				}
 			},
@@ -151,30 +147,15 @@
 			}
 		},
 		methods: {
-			// 新闻动态，点击列表文章跳转
 			itemClick(item) {
-				if(item.link===null || item.link===''){
-					uni.navigateTo({
-						url: '../article/article?show=1&name=yszx&id='+item.id
-					});
-				} else {
-					uni.showModal({
-						title: '外部链接',
-						content: '暂时不支持在小程序打开外部链接',
-						showCancel: false,
-						cancelText: '取消',
-						confirmText: '确认',
-						success: (res)=> {
-							if (res.confirm) {
-							
-							}
-						}
-					});
-					/* uni.navigateTo({
-						url: '/pages/webview/webview?url='+encode(item.link)
-					}); */
-				}
+				this.$emit('itemClick',item);
 			},
+			scrollClick(item){
+				this.$emit('scrollClick',item);
+			},
+			moreClick(){
+				this.$emit('moreClick');
+			}
 		}
 	}
 </script>

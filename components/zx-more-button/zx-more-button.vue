@@ -32,9 +32,7 @@ export default {
 	},
 	methods: {
 		onClick(){
-			uni.navigateTo({
-				url: this.url
-			})
+			this.$emit('click');
 		}
 	}
 };

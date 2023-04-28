@@ -1,6 +1,6 @@
 <template>
 	<view style="display: flex;flex-direction: row;align-items: center;">
-		<zx-text :text="text" :color="color" fontFamily="PingFangSC-regular" size="28rpx" @click="goLink"></zx-text>
+		<zx-text :text="text" :color="color" size="28rpx" @click="onClick"></zx-text>
 		<zx-icon :name="suffixIcon"></zx-icon>
 	</view>
 </template>
@@ -32,12 +32,8 @@
 			}
 		},
 		methods: {
-			goLink(){
-				if(this.link!==null && this.link!==''){
-					uni.navigateTo({
-						url: this.link
-					});
-				}
+			onClick(){
+				this.$emit('click');
 			}
 		}
 	}
