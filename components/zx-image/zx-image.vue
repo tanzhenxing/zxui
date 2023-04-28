@@ -63,12 +63,12 @@
 			//图片宽度
 			width: {
 				type: String,
-				default: '100%'
+				default: '230rpx'
 			},
 			//图片高度，如果高度设置为auto，mode值需要设置为widthFix
 			height: {
 				type: String,
-				default: 'auto'
+				default: '180rpx'
 			},
 			//图片圆角值，如：10rpx
 			radius: {

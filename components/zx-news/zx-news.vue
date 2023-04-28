@@ -45,46 +45,22 @@ export default {
 		};
 	},
 	mounted() {
-		//this.navchange(this.currentIndex);
 		setTimeout(()=>{
 			if(this.items[0]!==undefined){
-				this.currentLists = this.items[0].article;
-				this.getUrl(this.items[0].id);
+				this.currentLists = this.items[this.currentIndex].article;
 			}
 		},500);
 	},
 	methods: {
-		getUrl(id){
-			let currentUrl = this.$store.getters.domain + '/?' + Date.now() + '#' + this.moreLink + id;
-			this.currentUrl = '/pages/webview/webview?url=' + encode(currentUrl);
-		},
 		moreClick(){
-			this.$$emit('moreClick')
+			this.$emit('moreClick',this.items[this.currentIndex]);
 		},
 		navchange(e) {
-			let index = e.index;
-			this.currentLists = this.items[index].article;
-			this.getUrl(this.items[index].id);
+			this.currentIndex = e.index;
+			this.currentLists = this.items[this.currentIndex].article;
 		},
 		clickItem(item){
-			if(item.link===null || item.link===''){
-				uni.navigateTo({
-					url: '/pages/article/article?name=yszx&id='+item.id
-				});
-			} else {
-				uni.showModal({
-					title: '外部链接',
-					content: '暂时不支持在小程序打开外部链接',
-					showCancel: false,
-					cancelText: '取消',
-					confirmText: '确认',
-					success: (res)=> {
-						if (res.confirm) {
-						
-						}
-					}
-				});
-			}
+			this.$emit('itemClick',item);
 		}
 	},
 	props: {

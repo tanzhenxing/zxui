@@ -1,6 +1,6 @@
 <template>
 	<view style="display: flex;flex-direction: row;align-items: center;">
-		<zx-text :text="text" :color="color" size="28rpx" @click="onClick"></zx-text>
+		<zx-text :text="text" :color="color" size="28rpx" @click.stop="onClick"></zx-text>
 		<zx-icon :name="suffixIcon"></zx-icon>
 	</view>
 </template>

@@ -1,6 +1,6 @@
 <template>
 	<view class="button-box">
-		<view class="more" @click="onClick">
+		<view class="more" @click.stop="onClick">
 			<view style="display: flex;flex-direction: row;justify-content: center;align-items: center;">
 				<view style="width: 70rpx;"></view>
 				<view style="flex: 1;">
