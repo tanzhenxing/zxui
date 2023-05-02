@@ -108,23 +108,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 .zx-empty {
-	@include flex;
+	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 
 	.text {
-		@include flex;
+		display: flex;
 		justify-content: center;
 		align-items: center;
 		margin-top: 20rpx;
 	}
 }
 .zx-slot-wrap {
-	@include flex;
+	display: flex;
 	justify-content: center;
 	align-items: center;
 	margin-top: 20rpx;
