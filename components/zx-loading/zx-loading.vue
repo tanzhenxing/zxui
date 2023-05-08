@@ -1,5 +1,5 @@
 <template>
-	<view class="zx-loading-init">
+	<view v-if="show" class="zx-loading-init">
 		<view class="zx-loading-center"></view>
 		<view class="zx-loadmore-tips">{{text}}</view>
 	</view>
@@ -9,6 +9,10 @@
 	export default {
 		name: "zx-loading",
 		props: {
+			show: {
+				type: Boolean,
+				default: false
+			},
 			text: {
 				type: String,
 				default: "正在加载..."

@@ -2,20 +2,23 @@
 	<view v-if="show">
 		<zx-notice-bar :scrollable="true" :height="90" :speed="60" bgColor="#ececec" color="#333333" :content="content" :is-left="true" :isRight="true">
 			<template v-slot:left>
-				<view style="padding-left: 20rpx;padding-right: 10rpx;">
-					<zx-icon name="volume-fill" size="40rpx" color="#333333"></zx-icon>
+				<view class="top-icon">
+					<zx-icon :name="icon" size="35rpx" color="#333333"></zx-icon>
 				</view>
 			</template>
 			<template v-slot:right>
-				<view style="width: 200rpx;display: flex;flex-direction: row;justify-content: center;">
+				<view class="right-button">
 					<button :size="buttonSize" :style="{borderRadius: buttonRadius?'500rpx':'10rpx',backgroundColor: buttonBgColor,color: buttonTextColor}" @click="open">{{buttonText}}</button>
 				</view>
 			</template>
 		</zx-notice-bar>
 		<!-- 二维码弹窗 -->
-		<zx-popup :show="popupShow" mode="center" @close="close">
-			<view>
-				<image v-if="qrCode" :src="qrCode"></image>
+		<zx-popup :show="popupShow" mode="center" bgColor="transparent" @close="close">
+			<view class="pop-box">
+				<zx-image v-if="qrCode" width="500rpx" height="500rpx" mode="aspectFill" :src="qrCode"></zx-image>
+			</view>
+			<view class="close">
+				<zx-icon name="close-circle" size="60rpx" @click="close"></zx-icon>
 			</view>
 		</zx-popup>
 	</view>
@@ -69,7 +72,6 @@
 		},
 		methods: {
 			open(){
-				console.log(this.qrCode)
 				this.popupShow = true;
 			},
 			close(){
@@ -79,6 +81,20 @@
 	}
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.top-icon {
+	padding-left: 20rpx;padding-right: 10rpx;
+}
+.right-button {
+	width: 200rpx;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+.pop-box {
+	width: 550rpx;padding: 30rpx;display: flex;flex-direction: row;align-items: center;justify-content: center;background-color: #ffffff;border-radius: 20rpx;
+}
+.close {
+	padding-top: 30rpx;display: flex;flex-direction: row;align-items: center;justify-content: center;
+}
 </style>
