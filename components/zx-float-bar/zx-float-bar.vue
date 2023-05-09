@@ -1,7 +1,9 @@
 <template>
 	<view class="float-bar">
-		<view class="bar-box" :style="{backgroundColor:bgColor,zIndex:zIndex,opacity:opacity,paddingLeft:padding,paddingRight:padding}">
-			<zx-text :text="text" :size="size" :color="color" :lineHeight="lineHeight" :lines="lines"></zx-text>
+		<view class="bar-box" :style="{backgroundColor:bgColor,zIndex:zIndex,opacity:opacity}">
+			<view :style="{paddingLeft:padding,paddingRight:padding}">
+				<zx-text :text="text" :size="size" :color="color" :lineHeight="lineHeight" :lines="lines"></zx-text>
+			</view>
 		</view>
 	</view>
 </template>
@@ -62,6 +64,7 @@
 <style lang="scss" scoped>
 .float-bar {
 	position: relative;
+	width: 750rpx;
 }
 .bar-box {
 	position: absolute;
