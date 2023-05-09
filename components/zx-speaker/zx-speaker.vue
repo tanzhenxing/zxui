@@ -19,7 +19,7 @@
 					<zx-text text="公告" lineHeight="100rpx" size="36rpx" align="center"></zx-text>
 					<zx-line></zx-line>
 				</view>
-				<view :style="{padding: '30rpx',textAlign: 'justify',fontSize:size}">
+				<view :style="{padding: '30rpx',textAlign: 'justify',fontSize:'28rpx'}">
 					<zx-parse :content="currrentItem[keyName]"></zx-parse>
 				</view>
 			</view>

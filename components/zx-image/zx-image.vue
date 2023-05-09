@@ -4,7 +4,7 @@
 		@tap="handleClick">
 		<image class="zx-lazyload__img"
 			:class="{'zx-img__hidden':!placeholder && fadeShow && !show,'zx-img__appear':show && !placeholder && fadeShow}"
-			:style="[{height:height==='auto'?false:height,borderRadius:radius},customStyle]" :src="show?src:placeholder"
+			:style="[{height:height==='auto'?false:height,borderRadius:radius},customStyle]" :src="show?src+srcParams:placeholder"
 			:mode="mode" :webp="webp" :show-menu-by-longpress="showMenuByLongpress"
 			:draggable="draggable" @load="load" @error="error" :id="elId">
 		</image>
@@ -24,6 +24,10 @@
 			src: {
 				type: String,
 				default: ''
+			},
+			srcParams: {
+				type: String,
+				default: '?imageMogr2/thumbnail/750x'
 			},
 			//占位图路径
 			placeholder: {
