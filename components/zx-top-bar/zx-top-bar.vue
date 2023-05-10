@@ -1,6 +1,6 @@
 <template>
 	<view v-if="show">
-		<zx-notice-bar :scrollable="true" :height="90" :speed="60" bgColor="#ececec" color="#333333" :content="content" :is-left="true" :isRight="true">
+		<zx-notice-bar :scrollable="scrollable" :height="90" :speed="60" bgColor="#ececec" color="#333333" :content="content" :is-left="true" :isRight="true" :single="single">
 			<template v-slot:left>
 				<view class="top-icon">
 					<zx-icon :name="icon" size="35rpx" color="#333333"></zx-icon>
@@ -36,6 +36,14 @@
 			show: {
 				type: Boolean,
 				default: true
+			},
+			single: {
+				type: Boolean,
+				default: false
+			},
+			scrollable: {
+				type: Boolean,
+				default: false
 			},
 			icon: {
 				type: String,

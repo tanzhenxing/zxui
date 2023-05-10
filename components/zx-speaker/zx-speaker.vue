@@ -2,7 +2,7 @@
 	<view v-if="show">
 		<view class="zx-speaker" :style="{backgroundColor:bgColor}">
 			<slot name="icon">
-				<zx-icon :name="icon" :color="iconColor" :size="iconSize" :width="iconWidth" :height="iconHeight"></zx-icon>
+				<zx-icon :customPrefix="customPrefix" :name="icon" :color="iconColor" :size="iconSize" :width="iconWidth" :height="iconHeight"></zx-icon>
 			</slot>
 			<view class="flex1">
 				<swiper :vertical="vertical" @change="change" autoplay="true" :circular="true" :interval="interval" :current="current" :style="{ height: height,paddingLeft:space}">
@@ -14,7 +14,7 @@
 		</view>
 		<!-- 公告内容弹窗-->
 		<zx-popup :show="showPopup" mode="center" :closeable="true" @close="close">
-			<view :style="{width:'600rpx',paddingBottom:'20rpx'}">
+			<view v-if="currrentItem" :style="{width:'600rpx',paddingBottom:'20rpx'}">
 				<view>
 					<zx-text text="公告" lineHeight="100rpx" size="36rpx" align="center"></zx-text>
 					<zx-line></zx-line>
@@ -35,6 +35,10 @@ export default {
 		show: {
 			type: Boolean,
 			default: true
+		},
+		customPrefix: {
+			type: String,
+			default: 'zx-icon'
 		},
 		icon: {
 			type: String,
@@ -77,12 +81,6 @@ export default {
 		interval: { 
 			type: Number, 
 			default: 3000 
-		},
-		itemClass: {
-			type: Array,
-			default: function() {
-				return ['gui-text', 'gui-primary-text'];
-			}
 		},
 		lineHeight: {
 			type: String,
