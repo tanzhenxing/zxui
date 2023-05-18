@@ -1,6 +1,6 @@
 <template>
 	<view :style="{textAlign:'justify',fontFamily:getFontFamily,fontSize:fontSize,color:color,lineHeight:lineHeight,textIndent:textIndent?'2em':'0em'}">
-		<zx-parse v-if="content!==''" :content="getContent" :selectable="true"></zx-parse>
+		<zx-parse v-if="content!==''" :content="getContent" :selectable="true" :lazyLoad="true"></zx-parse>
 	</view>
 </template>
 
@@ -31,6 +31,10 @@
 			textIndent: {
 				type: Boolean,
 				default: false
+			},
+			lazyLoad: {
+				type: Boolean,
+				default: true
 			}
 		},
 		data() {

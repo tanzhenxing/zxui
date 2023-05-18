@@ -2,7 +2,7 @@
 	<zx-transition :show="show" mode="fade" :customStyle="backTopStyle">
 		<view class="zx-back-top" :style="[contentStyle]" @click="backToTop">
 			<zx-icon :name="icon" :customStyle="iconStyle" color="#ffffff" size="40rpx"></zx-icon>
-			<text v-if="text!==''" style="color: #ffffff;font-size: 28rpx;line-height: 25rpx;">{{text}}</text>
+			<zx-text v-if="text!==''" :text="text" color="#ffffff" size="28rpx" lineHeight="30rpx"></zx-text>
 		</view>
 	</zx-transition>
 </template>

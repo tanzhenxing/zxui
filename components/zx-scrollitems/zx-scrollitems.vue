@@ -5,7 +5,7 @@
 				<view class="zx-scrollitems zx-img-in" hover-class="zx-tap"
 					:style="{width: itemWidth + 'rpx',height: itemHeight + 'rpx',marginRight: itemMargin + 'rpx'}"
 					v-for="(item, idx) in itemsIn" :key="idx" @tap="tapme(idx)">
-					<zx-image :width="itemWidth + 'rpx'" :height="itemHeight + 'rpx'" :src="item.image+'?imageMogr2/thumbnail/750x'"></zx-image>
+					<zx-image :width="itemWidth + 'rpx'" :height="itemHeight + 'rpx'" :src="item.image" srcParams="?imageMogr2/thumbnail/750x"></zx-image>
 					<text class="zx-scrollitems-title zx-block-text zx-bg-black-opacity3 zx-border-box" :style="{ width: width + 'rpx' }">{{ item.title }}</text>
 				</view>
 			</view>

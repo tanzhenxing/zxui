@@ -14,33 +14,29 @@
 	</view>
 </template>
 
-<script>
-export default {
-	name: 'zx-more-button',
-	data() {
-		return {};
+<script setup>
+import { ref,getCurrentInstance } from 'vue';
+const { proxy } = getCurrentInstance();
+
+const props = defineProps({
+	text: {
+		type: String,
+		default: '查看更多...'
 	},
-	props: {
-		text: {
-			type: String,
-			default: '查看更多...'
-		},
-		url: {
-			type: String,
-			default: ''
-		}
-	},
-	methods: {
-		onClick(){
-			this.$emit('click');
-		}
+	url: {
+		type: String,
+		default: ''
 	}
-};
+});	
+	
+const onClick = ()=>{
+	proxy.$emit('moreClick');
+}
 </script>
 
 <style lang="scss">
 .button-box {
-	margin: 20rpx 10rpx;
+	
 	padding-top: 10rpx;
 }
 .more {

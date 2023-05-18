@@ -145,7 +145,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      for (this.root = this.$parent; this.root.$options.name !== 'mp-html'; this.root = this.root.$parent);
+      //for (this.root = this.$parent; this.root.$options.name !== 'mp-html'; this.root = this.root.$parent);
     })
     // #ifdef H5 || APP-PLUS
     if (this.opts[0]) {
@@ -299,7 +299,7 @@ export default {
      * @description 检查是否所有图片加载完毕
      */
     checkReady () {
-      if (!this.root.lazyLoad) {
+      /* if (!this.root.lazyLoad) {
         this.root._unloadimgs -= 1
         if (!this.root._unloadimgs) {
           setTimeout(() => {
@@ -310,7 +310,7 @@ export default {
             })
           }, 350)
         }
-      }
+      } */
     },
 
     /**

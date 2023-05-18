@@ -21,12 +21,13 @@
 			<swiper-item class="zx-swiper__wrapper__item" v-for="(item, index) in list" :key="index">
 				<view class="zx-swiper__wrapper__item__wrapper" :style="[itemStyle(index)]">
 					<!-- 在nvue中，image图片的宽度默认为屏幕宽度，需要通过flex:1撑开，另外必须设置高度才能显示图片 -->
-					<image class="zx-swiper__wrapper__item__wrapper__image"
+					<zx-image :src="getSource(item)" :mode="imgMode" width="750rpx" height="auto"></zx-image>
+				<!-- 	<image class="zx-swiper__wrapper__item__wrapper__image"
 						:src="getSource(item)"
 						:mode="imgMode"
 						:style="{height: imageHeight,borderRadius: radius}"
 						@tap="clickHandler(index)"
-					></image>
+					></image> -->
 					<!-- <image v-if="getItemType(item) === 'image'"
 						class="zx-swiper__wrapper__item__wrapper__image"
 						:src="getSource(item)"

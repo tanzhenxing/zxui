@@ -1,8 +1,8 @@
 <template>
-	<view class="zx-section" :style="{ backgroundColor: bgColor }">
-		<view class="header" :style="{padding: titlePadding}" @click="onClick">
+	<view class="zx-section" :style="{ backgroundColor: bgColor,borderRadius:borderRadius }">
+		<view class="header" :style="{ padding: titlePadding,height:height }" @click="onClick">
 			<slot name="decoration">
-				<view :class="type" :style="{backgroundColor:decorationColor,height:decorationHeight,width:decorationWidth,marginRight:decorationSpace}"></view>
+				<view :class="type" :style="{ backgroundColor: decorationColor, height: decorationHeight, width: decorationWidth, marginRight: decorationSpace }"></view>
 			</slot>
 			<view class="title">
 				<zx-text :text="title" :size="titleFontSize" :color="titleColor" lines="1"></zx-text>
@@ -10,17 +10,12 @@
 			</view>
 			<slot name="right">
 				<view v-if="moreShow" class="slot-right">
-					<view class="center" @click="onMoreLink">
-						<zx-text :text="moreText" :size="moreSize" color="#909399"></zx-text>
-						<zx-icon name="arrow-right-double" size="32rpx" style="margin-left: 10rpx;"></zx-icon>
-					</view>
+					<zx-more :text="moreText" :link="moreLink" :size="moreSize"></zx-more>
 				</view>
 			</slot>
 		</view>
 		<zx-line v-if="line" :color="lineColor"></zx-line>
-		<view class="content" :style="{ padding: padding }">
-			<slot></slot>
-		</view>
+		<view class="content" :style="{ padding: padding }"><slot></slot></view>
 	</view>
 </template>
 
@@ -49,6 +44,14 @@ export default {
 		bgColor: {
 			type: String,
 			default: 'transparent'
+		},
+		height: {
+			type: String,
+			default: '80rpx'
+		},
+		borderRadius:{
+			type: String,
+			default: '0rpx'
 		},
 		title: {
 			type: String,
@@ -105,7 +108,7 @@ export default {
 		},
 		lineColor: {
 			type: String,
-			default: '#ececec'
+			default: '#c5c5c5'
 		},
 		decorationColor: {
 			type: String,
@@ -124,12 +127,8 @@ export default {
 			default: '15rpx'
 		}
 	},
-	computed: {
-		
-	},
-	watch: {
-		
-	},
+	computed: {},
+	watch: {},
 	methods: {
 		onClick() {
 			this.$emit('click');
@@ -144,7 +143,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .zx-section {
-
 	.content {
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -170,25 +168,24 @@ export default {
 		align-items: center;
 		padding: 15rpx 2rpx;
 		font-weight: normal;
-		
+
 		.title {
 			flex: 1;
 		}
 		.line {
 			border-radius: 20rpx;
 		}
-		
+
 		.circle {
 			border-top-right-radius: 100rpx;
 			border-top-left-radius: 100rpx;
 			border-bottom-left-radius: 100rpx;
 			border-bottom-right-radius: 100rpx;
 		}
-		
+
 		.square {
-			
 		}
-		
+
 		.slot-right {
 			font-size: 28rpx;
 		}

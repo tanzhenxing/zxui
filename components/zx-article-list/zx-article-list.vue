@@ -10,7 +10,7 @@
 			<view v-if="modelType===1">
 				<!-- 只有一条记录不滚动 -->
 				<view style="padding: 25rpx;" v-if="items.length === 1" @click="itemClick(items[0])">
-					<zx-image width="345rpx" height="200rpx" :src="items[0].image+'?imageMogr2/thumbnail/750x'"></zx-image>
+					<zx-image width="345rpx" height="200rpx" :src="items[0].image" srcParams="?imageMogr2/thumbnail/750x"></zx-image>
 					<view class="item-title">
 						<zx-text :text="items[0].title" color="#ffffff" size="24rpx" lineHeight="45rpx"></zx-text>
 					</view>
@@ -24,7 +24,7 @@
 				<view class="item-box">
 					<view :style="{width: '222rpx',padding: '15rpx 10rpx'}" v-for="(item, index) in items" :key="index" @click="itemClick(item)">
 						<view style="background-color: #ececec;">
-							<zx-image width="100%" height="268rpx" :src="item.image+'?imageMogr2/thumbnail/750x'" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
+							<zx-image width="100%" height="268rpx" :src="item.image" srcParams="?imageMogr2/thumbnail/750x" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
 						</view>
 						<view class="item-content">
 							<zx-text :text="item.title" :lines="titleStyle.lines" :align="titleStyle.align" size="32rpx" :color="titleStyle.color" :bold="false" lineHeight="45rpx"></zx-text>
@@ -40,7 +40,7 @@
 						<view v-for="(item, index) in lists" :key="index">
 							<view :style="{width: '340rpx',padding: '10rpx'}" @click="itemClick(item)">
 								<view style="background-color: #ececec;">
-									<zx-image width="340rpx" height="auto" :src="item.image+'?imageMogr2/thumbnail/750x'" mode="widthFix" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
+									<zx-image width="340rpx" height="auto" :src="item.image"  srcParams="?imageMogr2/thumbnail/750x" mode="widthFix" radius="10rpx 10rpx 0rpx 0rpx"></zx-image>
 								</view>
 								<view class="item-content">
 									<zx-text :text="item.title" :lines="2" :align="titleStyle.align" size="30rpx" :color="titleStyle.color" lineHeight="45rpx"></zx-text>

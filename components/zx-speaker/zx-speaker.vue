@@ -27,8 +27,6 @@
 	</view>
 </template>
 <script>
-import util from '../../libs/js/util.js';
-
 export default {
 	name: 'zx-speaker',
 	props: {
@@ -50,7 +48,7 @@ export default {
 		},
 		iconSize: {
 			type: String,
-			default: '36rpx'
+			default: '32rpx'
 		},
 		iconWidth: {
 			type: String,
@@ -116,7 +114,6 @@ export default {
 		openLink(item){
 			this.currrentItem = item;
 			this.showPopup = true;
-			//util.navigate(item.url,item.type);
 		},
 		close(){
 			this.showPopup = false;

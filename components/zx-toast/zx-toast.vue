@@ -1,12 +1,12 @@
 <template>
-	<view class="u-toast">
+	<view class="zx-toast">
 		<zx-overlay :show="isShow" :custom-style="overlayStyle">
-			<view class="u-toast__content" :style="[contentStyle]"
-				:class="['u-type-' + type, type === 'loading' || loading ? 'u-toast__content--loading' : '']">
+			<view class="zx-toast__content" :style="[contentStyle]"
+				:class="['zx-type-' + type, type === 'loading' || loading ? 'zx-toast__content--loading' : '']">
 				<zx-loading-icon v-if="type === 'loading'" mode="circle" color="rgb(255, 255, 255)" inactiveColor="rgb(120, 120, 120)" size="25"></zx-loading-icon>
 				<zx-icon v-if="type !== 'loading'" :name="icon" size="34rpx" :color="type" :customStyle="iconStyle"></zx-icon>
 				<zx-gap v-if="type === 'loading' || loading" height="12" bgColor="transparent"></zx-gap>
-				<text class="u-toast__content__text" :class="['u-toast__content__text--' + type]" style="max-width: 400rpx;">{{ message }}</text>
+				<text class="zx-toast__content__text" :class="['zx-toast__content__text--' + type]" style="max-width: 400rpx;">{{ message }}</text>
 			</view>
 		</zx-overlay>
 	</view>
@@ -176,43 +176,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
+$zx-toast-color: #fff !default;
+$zx-toast-border-radius: 4px !default;
+$zx-toast-border-background-color: #585858 !default;
+$zx-toast-border-font-size: 14px !default;
+$zx-toast-border-padding: 12px 20px !default;
+$zx-toast-loading-border-padding: 20px 20px !default;
+$zx-toast-content-text-color: #fff !default;
+$zx-toast-content-text-font-size: 15px !default;
+$zx-toast-u-icon: 10rpx !default;
+$zx-toast-zx-type-primary-color: #3c9cff !default;
+$zx-toast-zx-type-primary-background-color: #ecf5ff !default;
+$zx-toast-zx-type-primary-border-color: rgb(215, 234, 254) !default;
+$zx-toast-zx-type-primary-border-width: 1px !default;
+$zx-toast-zx-type-success-color: #5ac725 !default;
+$zx-toast-zx-type-success-background-color: #dbf1e1 !default;
+$zx-toast-zx-type-success-border-color: #bef5c8 !default;
+$zx-toast-zx-type-success-border-width: 1px !default;
+$zx-toast-zx-type-error-color: #f56c6c !default;
+$zx-toast-zx-type-error-background-color: #fef0f0 !default;
+$zx-toast-zx-type-error-border-color: #fde2e2 !default;
+$zx-toast-zx-type-error-border-width: 1px !default;
+$zx-toast-zx-type-warning-color: #f9ae3d !default;
+$zx-toast-zx-type-warning-background-color: #fdf6ec !default;
+$zx-toast-zx-type-warning-border-color: #faecd8 !default;
+$zx-toast-zx-type-warning-border-width: 1px !default;
+$zx-toast-zx-type-default-color: #fff !default;
+$zx-toast-zx-type-default-background-color: #585858 !default;
 
-$u-toast-color: #fff !default;
-$u-toast-border-radius: 4px !default;
-$u-toast-border-background-color: #585858 !default;
-$u-toast-border-font-size: 14px !default;
-$u-toast-border-padding: 12px 20px !default;
-$u-toast-loading-border-padding: 20px 20px !default;
-$u-toast-content-text-color: #fff !default;
-$u-toast-content-text-font-size: 15px !default;
-$u-toast-u-icon: 10rpx !default;
-$u-toast-u-type-primary-color: #3c9cff !default;
-$u-toast-u-type-primary-background-color: #ecf5ff !default;
-$u-toast-u-type-primary-border-color: rgb(215, 234, 254) !default;
-$u-toast-u-type-primary-border-width: 1px !default;
-$u-toast-u-type-success-color: #5ac725 !default;
-$u-toast-u-type-success-background-color: #dbf1e1 !default;
-$u-toast-u-type-success-border-color: #bef5c8 !default;
-$u-toast-u-type-success-border-width: 1px !default;
-$u-toast-u-type-error-color: #f56c6c !default;
-$u-toast-u-type-error-background-color: #fef0f0 !default;
-$u-toast-u-type-error-border-color: #fde2e2 !default;
-$u-toast-u-type-error-border-width: 1px !default;
-$u-toast-u-type-warning-color: #f9ae3d !default;
-$u-toast-u-type-warning-background-color: #fdf6ec !default;
-$u-toast-u-type-warning-border-color: #faecd8 !default;
-$u-toast-u-type-warning-border-width: 1px !default;
-$u-toast-u-type-default-color: #fff !default;
-$u-toast-u-type-default-background-color: #585858 !default;
-
-.u-toast {
+.zx-toast {
 	&__content {
-		@include flex;
-		padding: $u-toast-border-padding;
-		border-radius: $u-toast-border-radius;
-		background-color: $u-toast-border-background-color;
-		color: $u-toast-color;
+		display: flex;
+		padding: $zx-toast-border-padding;
+		border-radius: $zx-toast-border-radius;
+		background-color: $zx-toast-border-background-color;
+		color: $zx-toast-color;
 		align-items: center;
 		/* #ifndef APP-NVUE */
 		max-width: 600rpx;
@@ -221,16 +219,16 @@ $u-toast-u-type-default-background-color: #585858 !default;
 
 		&--loading {
 			flex-direction: column;
-			padding: $u-toast-loading-border-padding;
+			padding: $zx-toast-loading-border-padding;
 		}
 
 		&__text {
-			color: $u-toast-content-text-color;
-			font-size: $u-toast-content-text-font-size;
-			line-height: $u-toast-content-text-font-size;
+			color: $zx-toast-content-text-color;
+			font-size: $zx-toast-content-text-font-size;
+			line-height: $zx-toast-content-text-font-size;
 
 			&--default {
-				color: $u-toast-content-text-color;
+				color: $zx-toast-content-text-color;
 			}
 
 			&--error {
@@ -252,36 +250,36 @@ $u-toast-u-type-default-background-color: #585858 !default;
 	}
 }
 
-.u-type-primary {
-	color: $u-toast-u-type-primary-color;
-	background-color: $u-toast-u-type-primary-background-color;
-	border-color: $u-toast-u-type-primary-border-color;
-	border-width: $u-toast-u-type-primary-border-width;
+.zx-type-primary {
+	color: $zx-toast-zx-type-primary-color;
+	background-color: $zx-toast-zx-type-primary-background-color;
+	border-color: $zx-toast-zx-type-primary-border-color;
+	border-width: $zx-toast-zx-type-primary-border-width;
 }
 
-.u-type-success {
-	color: $u-toast-u-type-success-color;
-	background-color: $u-toast-u-type-success-background-color;
-	border-color: $u-toast-u-type-success-border-color;
+.zx-type-success {
+	color: $zx-toast-zx-type-success-color;
+	background-color: $zx-toast-zx-type-success-background-color;
+	border-color: $zx-toast-zx-type-success-border-color;
 	border-width: 1px;
 }
 
-.u-type-error {
-	color: $u-toast-u-type-error-color;
-	background-color: $u-toast-u-type-error-background-color;
-	border-color: $u-toast-u-type-error-border-color;
-	border-width: $u-toast-u-type-error-border-width;
+.zx-type-error {
+	color: $zx-toast-zx-type-error-color;
+	background-color: $zx-toast-zx-type-error-background-color;
+	border-color: $zx-toast-zx-type-error-border-color;
+	border-width: $zx-toast-zx-type-error-border-width;
 }
 
-.u-type-warning {
-	color: $u-toast-u-type-warning-color;
-	background-color: $u-toast-u-type-warning-background-color;
-	border-color: $u-toast-u-type-warning-border-color;
+.zx-type-warning {
+	color: $zx-toast-zx-type-warning-color;
+	background-color: $zx-toast-zx-type-warning-background-color;
+	border-color: $zx-toast-zx-type-warning-border-color;
 	border-width: 1px;
 }
 
-.u-type-default {
-	color: $u-toast-u-type-default-color;
-	background-color: $u-toast-u-type-default-background-color;
+.zx-type-default {
+	color: $zx-toast-zx-type-default-color;
+	background-color: $zx-toast-zx-type-default-background-color;
 }
 </style>

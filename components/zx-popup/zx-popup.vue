@@ -1,6 +1,6 @@
 <template>
 	<view class="zx-popup">
-		<zx-overlay v-if="overlay" :show="show" @click="overlayClick" :duration="overlayDuration" :customStyle="overlayStyle" :opacity="overlayOpacity"></zx-overlay>
+		<zx-overlay v-if="overlay" :show="show" @click="overlayClick" :duration="overlayDuration" :customStyle="overlayStyle" :opacity="overlayOpacity" :zIndex="zIndex-1"></zx-overlay>
 		<zx-transition :show="show" :customStyle="transitionStyle" :mode="position" :duration="duration" @afterEnter="afterEnter" @click="clickHandler">
 			<view class="zx-popup__content" :style="[contentStyle]" @tap.stop="noop">
 				<zx-status-bar v-if="safeAreaInsetTop"></zx-status-bar>

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-	import util from '../../libs/js/util.js';
+	import util from '@tanzhenxing/zxui/libs/js/util.js';
 	/**
 	 * Tabs 标签
 	 * @description tabs标签组件，在标签多的时候，可以配置为左右滑动，标签少的时候，可以禁止滑动。 该组件的一个特点是配置为滚动模式时，激活的tab会自动移动到组件的中间位置。
@@ -304,7 +304,7 @@
 </script>
 
 <style lang="scss" scoped>
-	@import "../../theme.scss";
+	@import "@tanzhenxing/zxui/theme.scss";
 	.zx-tabs {
 
 		&__wrapper {
