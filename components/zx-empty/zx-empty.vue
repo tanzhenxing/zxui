@@ -26,7 +26,7 @@
  *
  * @event {Function} click 点击组件时触发
  * @event {Function} close 点击关闭按钮时触发
- * @example <u-empty text="无数据" icon="data"></u-empty>
+ * @example <zx-empty text="无数据" icon="data"></zx-empty>
  */
 
 import { ref, computed } from 'vue';
@@ -35,7 +35,7 @@ const props = defineProps({
 	// 内置图标名称，或图片路径，建议绝对路径
 	icon: {
 		type: String,
-		default: ''
+		default: 'https://files.wufu-app.com/images/empty/data.png'
 	},
 	// 提示文字
 	text: {

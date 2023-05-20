@@ -1,7 +1,7 @@
 (function() {
-  var crypt = require('./word-byte'),
-      utf8 = require('./string-byte').utf8,
-      bin = require('./string-byte').bin,
+  var crypt = require('@tanzhenxing/word-byte'),
+      utf8 = require('@tanzhenxing/string-byte').utf8,
+      bin = require('@tanzhenxing/string-byte').bin,
 
   // The core
   sha1 = function (message) {

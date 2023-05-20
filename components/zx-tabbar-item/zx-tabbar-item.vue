@@ -83,7 +83,7 @@ export default {
 	},
 	methods: {
 		clickHandler(item) {
-			this.$emit('click', item);
+			
 		}
 	}
 };

@@ -1,3 +1,6 @@
+/* 规划 H5 端字体 */
+/* #ifdef H5 */
+
 /* 加载字体 */
 @font-face {
 	font-family: 'PingFangSC-bold';
@@ -33,3 +36,5 @@
 	font-weight: normal;
 	src: url('https://files.wufu-app.com/fonts/PingFangSC/Thin.woff2') format('woff2');
 }
+
+/* #endif */

@@ -5,7 +5,7 @@
 	</view>
 </template>
 
-<script>
+<script setup>
 /**
  * Badge 数字角标
  * @description 数字角标一般和其它控件配合使用，用于数量提示
@@ -24,160 +24,153 @@
  * @event {Function}          click    点击 Badge 触发事件
  * @example <zx-badge text="1"></zx-badge>
  */
-export default {
-	name: 'zx-badge',
-	emits: ['click'],
-	props: {
-		// 是否显示
-		show: {
-			type: Boolean,
-			default: true
-		},
-		// 角标内容
-		text: {
-			type: [String, Number],
-			default: ''
-		},
-		// 颜色类型
-		type: {
-			type: String,
-			default: 'error'
-		},
-		// 背景颜色，优先级比type高，如设置，type参数会失效
-		bgColor: {
-			type: String,
-			default: ''
-		},
-		// 字体颜色
-		color: {
-			type: String,
-			default: '#ffffff'
-		},
-		// 字体大小
-		size: {
-			type: String,
-			default: '22rpx'
-		},
-		// 角标缩放比率
-		scale: {
-			type: Number,
-			default: 0.8
-		},
-		// 最大值
-		maxNum: {
-			type: Number,
-			default: 99
-		},
-		// 是否显示为一个小点
-		isDot: {
-			type: Boolean,
-			default: false
-		},
-		// 开启绝对定位
-		absolute: {
-			type: String,
-			default: 'rightTop'
-		},
-		// 距定位角中心点的偏移量
-		offset: {
-			type: Array,
-			default() {
-				return [0, 0];
-			}
-		},
-		// 自定义样式
-		customStyle: {
-			type: Object,
-			default() {
-				return {};
-			}
-		}
-	},
-	data() {
-		return {};
-	},
-	computed: {
-		width() {
-			return String(this.text).length * 8 + 12;
-		},
-		classNames() {
-			let classArr = [];
-			classArr.push(this.type);
-			if(this.absolute){
-				classArr.push('absolute');
-			}
-			return classArr;
-		},
-		positionStyle() {
-			if (!this.absolute){
-				return {};
-			}
-			let w = this.width / 2,
-				h = 10;
-			if (this.isDot) {
-				w = 5;
-				h = 5;
-			}
-			const x = `${-w + this.offset[0]}px`;
-			const y = `${-h + this.offset[1]}px`;
+import { ref, getCurrentInstance, computed } from 'vue';
+const { proxy } = getCurrentInstance();
 
-			const whiteList = {
-				rightTop: {
-					right: x,
-					top: y
-				},
-				rightBottom: {
-					right: x,
-					bottom: y
-				},
-				leftBottom: {
-					left: x,
-					bottom: y
-				},
-				leftTop: {
-					left: x,
-					top: y
-				}
-			};
-			const match = whiteList[this.absolute];
-			return match ? match : whiteList['rightTop'];
-		},
-		dotStyle() {
-			if (!this.isDot) return {};
-			return {
-				width: '20rpx',
-				minWidth: '0',
-				height: '20rpx',
-				padding: '0',
-				borderRadius: '20rpx'
-			};
-		},
-		getStyle() {
-			let style = {fontSize:this.size,transform: `scale(${this.scale})`,transformOrigin:'center center'};
-			if (this.bgColor) {
-				style.backgroundColor = this.bgColor;
-			}
-			if(this.color){
-				style.color = this.color;
-			}
-			return style;
-		},
-		// 显示内容
-		displayValue() {
-			const { isDot, text, maxNum } = this;
-			return isDot ? '' : Number(text) > maxNum ? `${maxNum}+` : text;
+const props = defineProps({
+	// 是否显示
+	show: {
+		type: Boolean,
+		default: true
+	},
+	// 角标内容
+	text: {
+		type: [String, Number],
+		default: ''
+	},
+	// 颜色类型
+	type: {
+		type: String,
+		default: 'error'
+	},
+	// 背景颜色，优先级比type高，如设置，type参数会失效
+	bgColor: {
+		type: String,
+		default: ''
+	},
+	// 字体颜色
+	color: {
+		type: String,
+		default: '#ffffff'
+	},
+	// 字体大小
+	size: {
+		type: String,
+		default: '22rpx'
+	},
+	// 角标缩放比率
+	scale: {
+		type: Number,
+		default: 0.8
+	},
+	// 最大值
+	maxNum: {
+		type: Number,
+		default: 99
+	},
+	// 是否显示为一个小点
+	isDot: {
+		type: Boolean,
+		default: false
+	},
+	// 开启绝对定位
+	absolute: {
+		type: String,
+		default: 'rightTop'
+	},
+	// 距定位角中心点的偏移量
+	offset: {
+		type: Array,
+		default() {
+			return [0, 0];
 		}
 	},
-	methods: {
-		onClick() {
-			this.$emit('click');
+	// 自定义样式
+	customStyle: {
+		type: Object,
+		default() {
+			return {};
 		}
 	}
+});
+
+const width = computed(() => {
+	return String(props.text).length * 8 + 12;
+});
+const classNames = computed(() => {
+	let classArr = [];
+	classArr.push(props.type);
+	if (props.absolute) {
+		classArr.push('absolute');
+	}
+	return classArr;
+});
+const positionStyle = computed(() => {
+	if (!props.absolute) {
+		return {};
+	}
+	let w = props.width / 2,
+		h = 10;
+	if (props.isDot) {
+		w = 5;
+		h = 5;
+	}
+	const x = `${-w + props.offset[0]}px`;
+	const y = `${-h + props.offset[1]}px`;
+
+	const whiteList = {
+		rightTop: {
+			right: x,
+			top: y
+		},
+		rightBottom: {
+			right: x,
+			bottom: y
+		},
+		leftBottom: {
+			left: x,
+			bottom: y
+		},
+		leftTop: {
+			left: x,
+			top: y
+		}
+	};
+	const match = whiteList[props.absolute];
+	return match ? match : whiteList['rightTop'];
+});
+const dotStyle = computed(() => {
+	if (!props.isDot) return {};
+	return {
+		width: '20rpx',
+		minWidth: '0',
+		height: '20rpx',
+		padding: '0',
+		borderRadius: '20rpx'
+	};
+});
+const getStyle = computed(() => {
+	let style = { fontSize: props.size, transform: `scale(${props.scale})`, transformOrigin: 'center center' };
+	if (props.bgColor) {
+		style.backgroundColor = props.bgColor;
+	}
+	if (props.color) {
+		style.color = props.color;
+	}
+	return style;
+});
+// 显示内容
+const displayValue = computed(() => {
+	const { isDot, text, maxNum } = props;
+	return isDot ? '' : Number(text) > maxNum ? `${maxNum}+` : text;
+});
+const onClick = () => {
+	proxy.$emit('click');
 };
 </script>
 
-<style lang="scss">
-@import '../../theme.scss';
+<style lang="scss" scoped>
+@import '@tanzhenxing/zxui/theme.scss';
 
 .zx-badge {
 	/* #ifndef APP-NVUE */
@@ -189,13 +182,13 @@ export default {
 	.absolute {
 		position: absolute;
 	}
-	
+
 	.badge {
 		/* #ifndef APP-NVUE */
 		display: flex;
 		overflow: hidden;
 		box-sizing: border-box;
-		font-feature-settings: "tnum";
+		font-feature-settings: 'tnum';
 		min-width: 40rpx;
 		/* #endif */
 
@@ -203,7 +196,7 @@ export default {
 		z-index: 999;
 		cursor: pointer;
 		/* #endif */
-		
+
 		justify-content: center;
 		flex-direction: row;
 		height: 40rpx;
@@ -217,7 +210,7 @@ export default {
 		font-feature-settings: 'tnum';
 	}
 }
-	
+
 .info {
 	color: #ffffff;
 	background-color: $zx-info;
