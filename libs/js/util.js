@@ -111,7 +111,7 @@ export default {
 			share_url += '?' + Date.now() + '#' + shareData.link;
 		}
 		// 重新拼接参数
-		let option_str = this.objectToQuery(param);
+		let option_str = this.queryParams(param);
 		if (option_str !== '') {
 			share_url += option_str
 		}
@@ -423,6 +423,9 @@ export default {
 			nonceStr += $chars.charAt(Math.floor(Math.random() * maxPos));
 		}
 		return nonceStr;
+	},
+	random(min, max) {
+	  return Math.floor(Math.random() * (max - min) ) + min;
 	},
 	/**
 	 * @description utf8 加密
