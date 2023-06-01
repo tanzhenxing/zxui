@@ -5,7 +5,7 @@
 				<view :class="type" :style="{ backgroundColor: decorationColor, height: decorationHeight, width: decorationWidth, marginRight: decorationSpace }"></view>
 			</slot>
 			<view class="title">
-				<zx-text :text="title" :size="titleFontSize" :color="titleColor" lines="1"></zx-text>
+				<zx-text :text="title" :size="titleFontSize" :color="titleColor" :bold="titleBold" lines="1"></zx-text>
 				<zx-text v-if="subTitle" :text="subTitle" :size="subTitleFontSize" :color="subTitleColor" lineHeight="35rpx" lines="1"></zx-text>
 			</view>
 			<slot name="right">
@@ -65,6 +65,10 @@ export default {
 		titleColor: {
 			type: String,
 			default: '#333333'
+		},
+		titleBold: {
+			type: Boolean,
+			default: false
 		},
 		subTitle: {
 			type: String,

@@ -14,13 +14,13 @@
 		>
 			<!-- 上方卡槽 -->
 			<slot name="top"></slot>
-
+			
 			<view style="padding-bottom: 20rpx;">
 				<!-- 课程列表 -->
 				<view v-if="item.catalogue.length>0" style="display: flex;flex-direction: row;flex-wrap: wrap;justify-content: space-between;">
 					<view v-for="(catalogue,catalogue_index) in item.catalogue" :key="catalogue_index" :style="(item.catalogue.length%2)===0?{width:'315rpx'}:{width:'650rpx'}">
 						<view style="display: flex;flex-direction: row;align-items: center;justify-content: center;">
-							<zx-image :width="(item.catalogue.length%2)===0?'315rpx':'650rpx'" height="auto" radius="10rpx" :src="catalogue.image" mode="widthFix" @click="goDetail(item)"></zx-image>
+							<zx-image :width="(item.catalogue.length%2)===0?'315rpx':'650rpx'" height="auto" radius="10rpx" :src="catalogue.image" mode="widthFix" @click="goDetail(catalogue)"></zx-image>
 						</view>
 						<zx-text :text="catalogue.title" lines="2" size="32rpx" color="#313131" :bold="false" lineHeight="60rpx"></zx-text>
 						<view style="display: flex;flex-direction: row;">
@@ -222,6 +222,8 @@ const goList = (item) => {
 	});
 };
 const goDetail = (item) => {
+	console.log(JSON.stringify(item))
+
 	uni.navigateTo({
 		url: '/pages/course/player?p=true&res=1&id=' + item.id
 	});

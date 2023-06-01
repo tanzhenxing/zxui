@@ -73,32 +73,117 @@ export default {
 			url: url
 		});
 	},
+	// 设置微信分享信息
+	async setShare(shareData = null, param = null, article_info = null, share_type = 1) {
+		// url中的推荐人id
+		let url_r_id = 0;
+		if (param.r_id !== undefined && parseInt(param.r_id) > 0) {
+			url_r_id = parseInt(param.r_id);
+		}
+
+		// 权限验证配置
+		await this.setJsApiConfig();
+
+		// 显示微信分享功能
+		this.wechatJsSdk('showAllNonBaseMenuItem');
+
+		let user_info = uni.getStorageSync(appConfig.userInfoName);
+		if (user_info !== '') {
+			param.r_id = user_info.id;
+		}
+
+		// 设置默认分享信息
+		if (shareData.title === undefined) {
+			shareData.title = '未知标题';
+		}
+		if (shareData.desc === undefined) {
+			shareData.desc = '未知简介';
+		}
+		if (shareData.imgUrl == undefined) {
+			shareData.imgUrl = appConfig.appUrl + '/static/img/nopic.jpg';
+		}
+
+		// 获取当前url
+		let share_url = window.location.origin + window.location.pathname;
+		if (shareData.link === undefined) {
+			share_url += '?' + Date.now() + window.location.hash.replace(/\?(.*)/g, '');
+		} else {
+			share_url += '?' + Date.now() + '#' + shareData.link;
+		}
+		// 重新拼接参数
+		let option_str = this.objectToQuery(param);
+		if (option_str !== '') {
+			share_url += option_str
+		}
+		shareData.link = share_url;
+
+		jweixin.ready(() => {
+			let share_data = {
+				title: shareData.title,
+				desc: shareData.desc,
+				link: shareData.link,
+				imgUrl: shareData.imgUrl,
+				success: res => {
+					if (url_r_id > 0) {
+						this.postShareData(share_type, article_info, url_r_id);
+					}
+				},
+				trigger: (res) => {
+					//this.postShareData(share_type,article_info);
+				}
+			};
+
+			//分享给朋友接口  
+			jweixin.updateAppMessageShareData(share_data);
+			//jweixin.onMenuShareAppMessage(share_data);
+			//分享到朋友圈接口  
+			jweixin.updateTimelineShareData({
+				title: shareData.title,
+				desc: shareData.desc,
+				link: shareData.link,
+				imgUrl: shareData.imgUrl
+			});
+			//jweixin.onMenuShareTimeline(share_data);
+			//jweixin.onMenuShareWeibo(share_data);
+			//jweixin.onMenuShareQZone(share_data);
+		});
+
+		// 错误信息
+		jweixin.error((res) => {
+			console.log('error:' + JSON.stringify(res))
+			this.getJsApiTicket();
+		});
+
+	},
 	// 获取微信code
-	getWxCode(){
+	getWxCode() {
 		return new Promise((resolve, reject) => {
 			wx.login({
-			  success: (res)=> {
-				resolve(res)
-			  },
-			  fail: res => {
-			  	reject(res);
-			  }
+				success: (res) => {
+					resolve(res)
+				},
+				fail: res => {
+					reject(res);
+				}
 			});
 		});
 	},
 	// 跳转到微信支付链接
-	goWechatPay(sec_type,id,appid,pid=-1){
-		let new_uri = 'https://app.wufu-app.com/pages/course/buy?sec_type='+sec_type+'&id=' + id + '&token='+uni.getStorageSync(appConfig.tokenName)+'&appid='+ uni.getStorageSync(appConfig.appIdName)+'&s_id='+ uni.getStorageSync(appConfig.schoolIdName);
+	goWechatPay(sec_type, id, appid, pid = -1) {
+		let new_uri = 'https://app.wufu-app.com/pages/course/buy?sec_type=' + sec_type + '&id=' + id + '&token=' + uni
+			.getStorageSync(appConfig.tokenName) + '&appid=' + uni.getStorageSync(appConfig.appIdName) + '&s_id=' + uni
+			.getStorageSync(appConfig.schoolIdName);
 		// 拼团订单
-		if(pid>=0){
+		if (pid >= 0) {
 			new_uri = new_uri + '&pid=' + pid;
 		}
 		// 检测是否为测试环境
-		if(window.location.host==='m.wufu-app.com' || window.location.host==='localhost:8080'){
+		if (window.location.host === 'm.wufu-app.com' || window.location.host === 'localhost:8080') {
 			new_uri = new_uri + '&from=test';
 		}
 		// 跳转微信购买链接
-		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=' + encodeURIComponent(new_uri) + '&response_type=code&scope=snsapi_base#wechat_redirect';
+		window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=' +
+			encodeURIComponent(new_uri) + '&response_type=code&scope=snsapi_base#wechat_redirect';
 	},
 	// 获取微信jssdk 签名 Signature
 	async setJsApiConfig(config = {}) {
@@ -483,10 +568,32 @@ export default {
 			}, time)
 		})
 	},
+	// 转换时间格式
+	videoTimeFormat(s) {
+		s = Math.floor(s);
+		if (s < 60) {
+			if (s < 10) {
+				return '00:0' + s;
+			}
+			return '00:' + s;
+		} else {
+			var second = s % 60;
+			s = s - second;
+			var minute = s / 60;
+			if (minute < 10) {
+				minute = '0' + minute;
+			}
+			if (second < 10) {
+				second = '0' + second;
+			}
+
+			return minute + ':' + second;
+		}
+	},
 	// 格式化价格
-	priceFormat(price){
+	priceFormat(price) {
 		let price_str = '免费'
-		if(price>0){
+		if (price > 0) {
 			price_str = '¥ ' + (price * 0.01).toFixed(2);
 		}
 		return price_str;
@@ -543,12 +650,15 @@ export default {
 		return formatStr
 	},
 	// 显示、隐藏配置格式化
-	formatConfig(data){
+	formatConfig(data) {
 		let obj = {};
-		data.forEach(item=>{
+		data.forEach(item => {
 			for (let key in item) {
-				if(key!=='title'){
-					obj[key] = {title:item.title,show:item[key]};
+				if (key !== 'title') {
+					obj[key] = {
+						title: item.title,
+						show: item[key]
+					};
 				}
 			}
 		});

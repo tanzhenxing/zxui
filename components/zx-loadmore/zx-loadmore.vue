@@ -148,7 +148,13 @@ export default {
 	    dashed: {
 	        type: Boolean,
 	        default: false
-	    }
+	    },
+		customStyle: {
+			type: Object,
+			default: ()=>{
+				return {}
+			}
+		}
 	},
 	data() {
 		return {

@@ -91,10 +91,6 @@
 				type: String,
 				default: '#ffffff'
 			},
-			mode: {
-				type: String,
-				default: 'common'  // 普通 common, 滚动 scroll，人物 person
-			},
 			title: {
 				type: String,
 				default: '暂无分类名称'

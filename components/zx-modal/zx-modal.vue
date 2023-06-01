@@ -3,36 +3,36 @@
 		:customStyle="{borderRadius: '6px',overflow: 'hidden',marginTop: `-${negativeTop}`}"
 		:closeOnClickOverlay="closeOnClickOverlay" :safeAreaInsetBottom="false" :duration="400"
 		@click="clickHandler">
-		<view class="u-modal" :style="{width: width}">
-			<text v-if="title" class="u-modal__title">{{ title }}</text>
-			<view class="u-modal__content" :style="{paddingTop: `${title ? 12 : 25}px`}">
+		<view class="zx-modal" :style="{width: width}">
+			<text v-if="title" class="zx-modal__title">{{ title }}</text>
+			<view class="zx-modal__content" :style="{paddingTop: `${title ? 12 : 25}px`}">
 				<slot>
-					<text class="u-modal__content__text">{{ content }}</text>
+					<text class="zx-modal__content__text">{{ content }}</text>
 				</slot>
 			</view>
-			<view v-if="$slots.confirmButton" class="u-modal__button-group--confirm-button">
+			<view v-if="$slots.confirmButton" class="zx-modal__button-group--confirm-button">
 				<slot name="confirmButton"></slot>
 			</view>
 			<template v-else>
 				<zx-line></zx-line>
-				<view class="u-modal__button-group" :style="{flexDirection: buttonReverse ? 'row-reverse' : 'row'}">
+				<view class="zx-modal__button-group" :style="{flexDirection: buttonReverse ? 'row-reverse' : 'row'}">
 					<view v-if="showCancelButton"
-						class="u-modal__button-group__wrapper u-modal__button-group__wrapper--cancel"
+						class="zx-modal__button-group__wrapper u-modal__button-group__wrapper--cancel"
 						:hover-stay-time="150"
-						hover-class="u-modal__button-group__wrapper--hover"
+						hover-class="zx-modal__button-group__wrapper--hover"
 						:class="[showCancelButton && !showConfirmButton && 'u-modal__button-group__wrapper--only-cancel']"
 						@tap="cancelHandler">
-						<text class="u-modal__button-group__wrapper__text" :style="{color: cancelColor}">{{ cancelText }}</text>
+						<text class="zx-modal__button-group__wrapper__text" :style="{color: cancelColor}">{{ cancelText }}</text>
 					</view>
 					<zx-line direction="column" v-if="showConfirmButton && showCancelButton"></zx-line>
-					<view v-if="showConfirmButton" class="u-modal__button-group__wrapper u-modal__button-group__wrapper--confirm"
+					<view v-if="showConfirmButton" class="zx-modal__button-group__wrapper u-modal__button-group__wrapper--confirm"
 						:hover-stay-time="150"
-						hover-class="u-modal__button-group__wrapper--hover"
+						hover-class="zx-modal__button-group__wrapper--hover"
 						:class="[!showCancelButton && showConfirmButton && 'u-modal__button-group__wrapper--only-confirm']"
 						@tap="confirmHandler">
 						<zx-loading-icon v-if="loading"></zx-loading-icon>
 						<text v-else
-							class="u-modal__button-group__wrapper__text"
+							class="zx-modal__button-group__wrapper__text"
 							:style="{
 								color: confirmColor
 							}"
@@ -43,7 +43,7 @@
 				</view>
 			</template>
 		</view>
-	</u-popup>
+	</zx-popup>
 </template>
 
 <script>
@@ -196,36 +196,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-$u-modal-border-radius: 6px;
+
+$zx-modal-border-radius: 6px;
+$zx-content-color: #333333;
+$zx-bg-color: #ececec;
 
 .u-modal {
 	width: 650rpx;
-	border-radius: $u-modal-border-radius;
+	border-radius: $zx-modal-border-radius;
 	overflow: hidden;
 
 	&__title {
 		font-size: 16px;
 		font-weight: bold;
-		color: $u-content-color;
+		color: $zx-content-color;
 		text-align: center;
 		padding-top: 25px;
 	}
 
 	&__content {
 		padding: 12px 25px 25px 25px;
-		@include flex;
+		display: flex;
 		justify-content: center;
 
 		&__text {
 			font-size: 15px;
-			color: $u-content-color;
+			color: $zx-content-color;
 			flex: 1;
 		}
 	}
 
 	&__button-group {
-		@include flex;
+		display: flex;
 
 		&--confirm-button {
 			flex-direction: column;
@@ -234,27 +236,27 @@ $u-modal-border-radius: 6px;
 
 		&__wrapper {
 			flex: 1;
-			@include flex;
+			display: flex;
 			justify-content: center;
 			align-items: center;
 			height: 48px;
 
 			&--confirm,
 			&--only-cancel {
-				border-bottom-right-radius: $u-modal-border-radius;
+				border-bottom-right-radius: $zx-modal-border-radius;
 			}
 
 			&--cancel,
 			&--only-confirm {
-				border-bottom-left-radius: $u-modal-border-radius;
+				border-bottom-left-radius: $zx-modal-border-radius;
 			}
 
 			&--hover {
-				background-color: $u-bg-color;
+				background-color: $zx-bg-color;
 			}
 
 			&__text {
-				color: $u-content-color;
+				color: $zx-content-color;
 				font-size: 16px;
 				text-align: center;
 			}

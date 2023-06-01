@@ -1,9 +1,11 @@
 <template>
 	<view v-if="show && items" style="background-color: #ffffff;">
-		<view class="news-title" style="padding: 20rpx;">
-			<view style="display: flex;align-items: center;">
-				<view class="line-icon" :style="{ backgroundColor: lineBgColor }"></view>
-				<zx-tabs :list="items" keyName="name" width="140rpx" size="34rpx" lineColor="#ff0000" @change="navchange"></zx-tabs>
+		<view class="news-title">
+			<view style="display: flex;align-items: center;flex-direction: row;">
+				<view class="line-icon" :style="{backgroundColor:lineBgColor}"></view>
+				<view style="overflow: hidden;">
+					<zx-tabs :list="items" keyName="name" width="140rpx" size="34rpx" lineColor="#ff0000" @change="navchange"></zx-tabs>
+				</view>
 			</view>
 		</view>
 		<view class="line"></view>
@@ -20,7 +22,7 @@
 						<zx-text v-if="showTime" :text="item.create_time_day" size="26rpx" lines="2" color="#9B9B9B" lineHeight="50rpx"></zx-text>
 					</view>
 					<view style="width: 220rpx;margin-left: 20rpx;">
-						<zx-image width="200rpx" height="160rpx" radius="10rpx" :src="item.image"></zx-image>
+						<zx-image width="220rpx" height="160rpx" radius="10rpx" :src="item.image"></zx-image>
 						<view v-if="item.link === null || item.link === ''">
 							<zx-text :text="'阅读数:' + item.pageview" size="26rpx" lines="2" color="#9B9B9B" lineHeight="50rpx" align="right"></zx-text>
 						</view>
@@ -66,10 +68,6 @@ const props = defineProps({
 		default() {
 			return [];
 		}
-	},
-	moreLink: {
-		type: String,
-		default: ''
 	}
 });
 
@@ -106,9 +104,11 @@ const clickItem = item => {
 	width: 8rpx;
 	height: 35rpx;
 	border-radius: 5rpx;
+	margin-right: 10rpx;
 }
 .news-title {
-	background-color: #ffffff;
+	padding: 20rpx;
+	width: 690rpx;
 }
 .item-flex {
 	-webkit-flex: 1;

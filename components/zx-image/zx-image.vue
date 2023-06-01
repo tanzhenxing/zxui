@@ -37,7 +37,7 @@
 			//占位背景色，placeholder有值时失效
 			backgroundColor: {
 				type: String,
-				default: '#E7E7E7'
+				default: 'transparent'
 			},
 			//图片的裁剪模式，参考image组件mode属性
 			mode: {

@@ -4,7 +4,7 @@
 			<zx-empty></zx-empty>
 		</view>
 		<view v-else>
-			<video id="myVideo" :style="{width: '100%'}" :src="videoUrl" :poster="videoImg" object-fit="fill" :autoplay="false" controls></video>
+			<video :id="videoId" :style="{width: '100%'}" :src="videoUrl" :poster="videoImg" object-fit="fill" :autoplay="autoplay" :muted="muted" controls></video>
 		</view>
 		<view class="introduce-content">
 			<rich-text :nodes="content"></rich-text>
@@ -23,6 +23,9 @@ export default {
 		};
 	},
 	created() {
+		setTimeout(()=>{
+		  uni.createVideoContext(this.videoId).pause();
+		},1000);
 		/* setTimeout(()=>{
 			if(this.videoUrl!==''){
 				uni.getVideoInfo({
@@ -36,10 +39,11 @@ export default {
 			}
 		},500) */
 	},
-	computed: {
-		
-	},
 	props: {
+		videoId: {
+			type: String,
+			default: 'videoId'
+		},
 		videoUrl: {
 			type: String,
 			default: ''
@@ -51,6 +55,14 @@ export default {
 		content: {
 			type: String,
 			default: ''
+		},
+		autoplay: {
+			type: Boolean,
+			default: true
+		},
+		muted: {
+			type: Boolean,
+			default: false
 		}
 	}
 };
