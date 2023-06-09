@@ -8,6 +8,7 @@
 /uni_modules
 /static
 /unpackage
+/config
 app.vue
 index.html
 main.js
