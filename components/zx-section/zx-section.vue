@@ -4,10 +4,12 @@
 			<slot name="decoration">
 				<view :class="type" :style="{ backgroundColor: decorationColor, height: decorationHeight, width: decorationWidth, marginRight: decorationSpace }"></view>
 			</slot>
-			<view class="title">
-				<zx-text :text="title" :size="titleFontSize" :color="titleColor" :bold="titleBold" lines="1"></zx-text>
-				<zx-text v-if="subTitle" :text="subTitle" :size="subTitleFontSize" :color="subTitleColor" lineHeight="35rpx" lines="1"></zx-text>
-			</view>
+			<slot name="title">
+				<view class="title">
+					<zx-text :text="title" :size="titleFontSize" :color="titleColor" :bold="titleBold" lines="1"></zx-text>
+					<zx-text v-if="subTitle" :text="subTitle" :size="subTitleFontSize" :color="subTitleColor" lineHeight="35rpx" lines="1"></zx-text>
+				</view>
+			</slot>
 			<slot name="right">
 				<view v-if="moreShow" class="slot-right">
 					<zx-more :text="moreText" :link="moreLink" :size="moreSize"></zx-more>

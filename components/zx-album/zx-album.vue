@@ -240,13 +240,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
-
 .zx-album {
-	@include flex(column);
+	display: flex;
+	flex-direction: column;
 
 	&__row {
-		@include flex(row);
+		display: flex;
+		flex-direction: row;
 		flex-wrap: wrap;
 
 		&__wrapper {
@@ -259,7 +259,8 @@ export default {
 				right: 0;
 				bottom: 0;
 				background-color: rgba(0, 0, 0, 0.3);
-				@include flex(row);
+				display: flex;
+				flex-direction: row;
 				justify-content: center;
 				align-items: center;
 			}

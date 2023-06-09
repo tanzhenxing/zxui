@@ -289,8 +289,8 @@
 </script>
 
 <style lang="scss" scoped>
-@import "../../theme.scss";
-@import "../../libs/css/components.scss";
+@import "@tanzhenxing/zxui/theme.scss";
+
 $zx-search-content-padding: 0 10px !default;
 $zx-search-label-color: $zx-main-color !default;
 $zx-search-label-font-size: 14px !default;
@@ -317,12 +317,13 @@ $zx-search-action-margin-left: 5px !default;
 /* #endif */
 
 .zx-search {
-	@include flex(row);
+	display: flex;
+	flex-direction: row;
 	align-items: center;
 	flex: 1;
 
 	&__content {
-		@include flex;
+		display: flex;
 		align-items: center;
 		padding: $zx-search-content-padding;
 		flex: 1;
@@ -333,7 +334,7 @@ $zx-search-action-margin-left: 5px !default;
 		overflow: hidden;
 
 		&__icon {
-			@include flex;
+			display: flex;
 			align-items: center;
 		}
 
@@ -351,7 +352,8 @@ $zx-search-action-margin-left: 5px !default;
 			border-bottom-left-radius: $zx-search-close-radius;
 			border-bottom-right-radius: $zx-search-close-radius;
 			background-color: $zx-search-close-bgColor;
-			@include flex(row);
+			display: flex;
+			flex-direction: row;
 			align-items: center;
 			justify-content: center;
 			transform: $zx-search-close-transform;
