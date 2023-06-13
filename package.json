@@ -17,9 +17,6 @@
     "url": "https://github.com/tanzhenxing/zxui.git"
   },
   "dependencies": {
-    "cropperjs": "^1.5.13",
-    "default-passive-events": "^2.0.0",
-    "moment": "^2.29.4",
-    "vue-cropperjs": "^5.0.0"
+    "default-passive-events": "^2.0.0"
   }
 }
