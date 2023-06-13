@@ -1,100 +1,82 @@
 <template>
-	<view v-show="show">
-		<!-- 加载数据 -->
-		<view v-if="fileList" class="flex-row">
-			<view v-if="fileList.length < maxCount" class="flex-column flex-center"
-				:style="{ borderRadius: borderRadius, backgroundColor: bgColor, width: width, height: height }" @tap="chooseFile">
-				<view><zx-icon :name="uploadIcon" :color="uploadIconColor" :bold="true" size="50rpx"></zx-icon></view>
-				<view><zx-text :text="uploadText" :color="uploadIconColor" size="26rpx" lineHeight="40rpx"></zx-text></view>
+	<view v-if="show">
+		<view v-if="fileList" class="flex-row" style="flex-wrap: wrap;">
+			<!-- 选择图片 -->
+			<view @tap.stop="chooseFile">
+				<slot name="chooseFile">
+					<view v-if="fileList.length < maxCount" class="flex-column flex-center" :style="{ borderRadius: borderRadius, backgroundColor: bgColor, width: width, height: height }">
+						<view><zx-icon :name="uploadIcon" :color="uploadIconColor" :bold="true" :size="uploadIconSize"></zx-icon></view>
+						<view><zx-text :text="uploadText" :color="uploadTextColor" :size="uploadTextSize" lineHeight="40rpx"></zx-text></view>
+					</view>
+				</slot>
 			</view>
-			<view v-if="fileList.length > 0" class="zx-add-list-items" :style="{ borderRadius: borderRadius, backgroundColor: bgColor, width: width }">
+			<!-- 展示图片 -->
+			<view v-if="fileList.length > 0" :style="{ borderRadius: borderRadius, backgroundColor: bgColor, width: width }">
 				<template v-for="(item, index) in fileList" :key="index">
-					<view>
-						<view v-if="accept === 'image'">
-							<image
+					<!-- 图片 -->
+					<view :style="{ borderRadius: borderRadius, width: width,backgroundColor: bgColor,position: 'relative' }">
+						<view v-if="item.key">
+							<image v-if="accept === 'image'"
 								:src="item.url"
 								:data-imgurl="item.url"
-								:style="{ borderRadius: borderRadius, width: width, height: height }"
-								@tap="showImgs"
-								class="zx-add-list-img"
+								:style="{ borderRadius: borderRadius, width: width, height: imageMode==='widthFix'?false:height }"
 								:mode="imageMode"
+								@tap="showImgs"
+							></image>
+							<image v-else-if="accept === 'video'"
+								:src="item.url + videoPosterParams"
+								:data-imgurl="item.url + videoPosterParams"
+								:style="{ borderRadius: borderRadius, width: width, height: height }"
+								:mode="imageMode"
+								@tap="openVideo"
 							></image>
 						</view>
-						<view v-else-if="accept === 'video' && item.key !== undefined">
-							<image
-								:src="item.url + '?vframe/jpg/offset/2/w/300/h/300'"
-								:data-imgurl="item.url + '?vframe/jpg/offset/2/w/300/h/300'"
-								:style="{ borderRadius: borderRadius, width: width, height: height }"
-								@tap="openVideo"
-								class="zx-add-list-img"
-								:mode="imageMode"
-							></image>
-							<!-- 视频弹窗 -->
-							<zx-popup :show="videoShow" mode="right" :overlayOpacity="1" :closeOnClickOverlay="false">
-								<view style="background-color: #000000;width: 750rpx;height: 100%;">
-									<view style="width: 750rpx;">
-										<view :style="'height: ' + topHeight + 'px;color:#ffffff;'"><text class="zx-icons app-arrow-left" @click="closeVideo">&#xe600;</text></view>
-										<video
-											id="myVideo"
-											:style="'width: 750rpx;height: ' + videoHeight + 'px'"
-											:src="item.path"
-											:poster="item.url + '?vframe/jpg/offset/2/w/300/h/300'"
-											:autoplay="true"
-											controls
-										></video>
-									</view>
-									<view :style="'height:' + footerHeight + ' px;'"></view>
-								</view>
-							</zx-popup>
+						<!-- 上传中 -->
+						<view v-if="!item.key" class="flex-row flex-center" :style="{ borderRadius: borderRadius, width: width, height: height }">
+							<zx-loading-icon></zx-loading-icon>
+						</view>
+						<!-- 删除 -->
+						<view v-if="showDelete" class="delete-icon" @tap="remove(index)">
+							<zx-icon name="close" :color="removeBtnColor" size="26rpx" style="line-height: 30rpx;"></zx-icon>
 						</view>
 					</view>
 					<!-- 进度条 -->
-					<view class="zx-upload-progress" v-if="showProgress">
+					<view v-if="showProgress" class="zx-upload-progress">
 						<progress
-							v-if="item.progress !== undefined"
+							v-if="item.progress"
 							:percent="item.progress"
 							:stroke-width="progressSize"
 							:activeColor="progressColor"
 							:backgroundColor="progressBGColor"
-						/>
+						></progress>
 						<view style="background-color: #101010;opacity: 0.4;">
 							<zx-text :text="'已上传:' + item.progress + '%'" color="#ffffff" size="24rpx" align="center"></zx-text>
 						</view>
 					</view>
-					<!-- 上传失败 -->
-					<view class="zx-add-list-reup zx-flex zx-columns zx-justify-content-center zx-align-items-center" @tap.stop="retry" :data-index="index" v-if="item.error">
-						<text class="zx-add-list-reup-icon zx-icons icon-retry zx-color-white">&#xe635;</text>
-						<text class="zx-add-list-reup-text zx-color-white">失败重试</text>
-					</view>
-					<!-- 删除 -->
-					<view style="position: absolute;z-index: 5;right: 0;top: 0;background-color: #101010;padding: 4rpx;" @tap="remove(item, index)">
-						<zx-icon v-if="showDelete" name="close" :color="removeBtnColor" size="26rpx" ></zx-icon>
+					<!-- 失败重试 -->
+					<view v-if="item.error" class="flex-column flex-center" @tap.stop="retry" :data-index="index">
+						<zx-icon name="zhongbo-m" customPrefix="jxgy-iconfont" :color="failColor"></zx-icon>
+						<zx-text :text="failText" :color="failColor" :size="failSize"></zx-text>
 					</view>
 				</template>
 			</view>
 		</view>
 
-		<!-- 裁剪图片 -->
-		<zx-popup :show="showCropper" mode="right" :overlay="true" :overlayOpacity="1" :closeOnClickOverlay="true" bgColor="transparent" :closeable="true">
-			<view class="zx-img-crop" style="background-color: #999999;">
-				<view class="zx-cropper-wrapper" :style="{ height: getCropperHeight + 'rpx', width: getCropperWidth + 'rpx' }">
-					<canvas
-						canvas-id="bgCropper"
-						id="bgCropper"
-						class="zx-cropper-bg"
-						:disable-scroll="true"
-						@touchstart="touchStart"
-						@touchmove="touchMove"
-						@touchend="touchEnd"
-						:style="{ width: getCropperWidth + 'rpx', height: getCropperHeight + 'rpx' }"
-					></canvas>
-					<canvas canvas-id="prevCropper" id="prevCropper" class="zx-cropper-prev" :disable-scroll="true"></canvas>
+		<!-- 视频弹窗 -->
+		<zx-popup :show="videoShow" mode="right" :overlayOpacity="1" :closeOnClickOverlay="false">
+			<view style="background-color: #000000;width: 750rpx;height: 100%;">
+				<view style="width: 750rpx;">
+					<view :style="'height: ' + topHeight + 'px;color:#ffffff;'"><text class="zx-icons app-arrow-left" @click="closeVideo">&#xe600;</text></view>
+					<video
+						id="myVideo"
+						:style="'width: 750rpx;height: ' + videoHeight + 'px'"
+						:src="item.path"
+						:poster="item.url + videoPosterParams"
+						:autoplay="true"
+						controls
+					></video>
 				</view>
-				<view style="display: flex;flex-direction: row;flex-wrap: nowrap;">
-					<view class="zx-cropper-btn" @tap="closeCropper">取消</view>
-					<view class="zx-cropper-btn" @tap="selectImg">+ 选择图片</view>
-					<view class="zx-cropper-btn" @tap="getCropperImg">保存</view>
-				</view>
+				<view :style="'height:' + footerHeight + ' px;'"></view>
 			</view>
 		</zx-popup>
 	</view>
@@ -102,7 +84,6 @@
 
 <script setup>
 import { ref, getCurrentInstance, computed } from 'vue';
-import * as cropper from '@tanzhenxing/zxui/libs/js/we-cropper.js';
 
 // #ifdef H5
 //import jweixin from '@tanzhenxing/zxui/libs/js/jweixin.js';
@@ -115,9 +96,10 @@ const props = defineProps({
 		type: Boolean,
 		default: true
 	},
+	// 是否展示删除按钮
 	showDelete: {
 		type: Boolean,
-		default: false
+		default: true
 	},
 	showSelect: {
 		type: Boolean,
@@ -139,14 +121,10 @@ const props = defineProps({
 		type: String,
 		default: '#f4f5f7'
 	},
-	showProgress: {
-		type: Boolean,
-		default: true
+	removeBtnColor: {
+		type: String,
+		default: '#ffffff'
 	},
-	progressSize: { type: Number, default: 4 },
-	progressColor: { type: String, default: '#0ba308' },
-	progressBGColor: { type: String, default: '#F8F8F8' },
-	removeBtnColor: { type: String, default: '#ffffff' },
 	// 接受的文件类型, 可选值为all media image file video
 	accept: {
 		type: String,
@@ -155,7 +133,7 @@ const props = defineProps({
 	// 	图片或视频拾取模式，当accept为image类型时设置capture可选额外camera可以直接调起摄像头
 	sourceType: {
 		type: [String, Array],
-		default: function() {
+		default: () => {
 			return ['album', 'camera'];
 		}
 	},
@@ -172,22 +150,7 @@ const props = defineProps({
 	// 当accept为video时生效，拍摄视频最长拍摄时间，单位秒
 	maxDuration: {
 		type: Number,
-		default: 300
-	},
-	// 上传区域的图标，只能内置图标
-	uploadIcon: {
-		type: String,
-		default: 'plus'
-	},
-	// 上传区域的图标的颜色，默认
-	uploadIconColor: {
-		type: String,
-		default: '#666666'
-	},
-	// 上传区域的提示文字
-	uploadText: {
-		type: String,
-		default: '选择图片'
+		default: 3000
 	},
 	// 是否开启文件读取前事件
 	useBeforeRead: {
@@ -208,11 +171,6 @@ const props = defineProps({
 		type: Function,
 		default: null
 	},
-	// 是否显示组件自带的图片预览功能
-	previewFullImage: {
-		type: Boolean,
-		default: true
-	},
 	selectCount: {
 		type: Number,
 		default: 9
@@ -220,12 +178,7 @@ const props = defineProps({
 	// 最大上传数量
 	maxCount: {
 		type: [String, Number],
-		default: 1
-	},
-	// 是否启用
-	disabled: {
-		type: Boolean,
-		default: false
+		default: 999
 	},
 	// 预览上传的图片时的裁剪模式，和image组件mode属性一致
 	imageMode: {
@@ -248,11 +201,6 @@ const props = defineProps({
 	multiple: {
 		type: Boolean,
 		default: false
-	},
-	// 是否展示删除按钮
-	deletable: {
-		type: Boolean,
-		default: true
 	},
 	// 文件大小限制，单位为byte
 	maxSize: {
@@ -292,29 +240,89 @@ const props = defineProps({
 		type: [String, Number],
 		default: 500
 	},
+	// 是否显示组件自带的图片预览功能
+	previewFullImage: {
+		type: Boolean,
+		default: true
+	},
 	// 是否在上传完成后展示预览图
 	previewImage: {
 		type: Boolean,
 		default: true
+	},
+	showProgress: {
+		type: Boolean,
+		default: false
+	},
+	progressSize: {
+		type: Number,
+		default: 4
+	},
+	progressColor: {
+		type: String,
+		default: '#0ba308'
+	},
+	progressBGColor: {
+		type: String,
+		default: '#F8F8F8'
+	},
+	failText: {
+		type: String,
+		default: '重试'
+	},
+	failColor: {
+		type: String,
+		default: '#666666'
+	},
+	failSize: {
+		type: String,
+		default: '28rpx'
+	},
+	// 上传区域的图标，只能内置图标
+	uploadIcon: {
+		type: String,
+		default: 'plus'
+	},
+	// 上传区域的图标的颜色，默认
+	uploadIconColor: {
+		type: String,
+		default: '#666666'
+	},
+	uploadIconSize: {
+		type: String,
+		default: '50rpx'
+	},
+	// 上传区域的提示文字
+	uploadText: {
+		type: String,
+		default: '选择图片'
+	},
+	uploadTextColor: {
+		type: String,
+		default: '#666666'
+	},
+	uploadTextSize: {
+		type: String,
+		default: '28rpx'
 	}
 });
 
 const videoShow = ref(false);
-
 const topHeight = ref(40);
 const footerHeight = ref(30);
 // 获取屏幕高度
 const videoHeight = ref(0);
 videoHeight.value = uni.getSystemInfoSync.windowHeight - topHeight.value - footerHeight.value;
 
-const showCropper = ref(false);
-const WeCropper = ref(null);
 const temImg = ref(null);
-const imgLists = ref(null);
+// 视频封面参数（七牛云存储的视频文件有效）
+const videoPosterParams = computed(() => {
+	return '?vframe/jpg/offset/1/w/' + parseInt(props.width) + '/h/' + parseInt(props.height);
+});
 
 // 选择文件数量
 const getSelectCount = () => {
-	let count = props.selectCount;
+	let count = 1;
 	if (props.multiple) {
 		count = 9;
 	}
@@ -368,6 +376,7 @@ const openVideo = e => {
 const closeVideo = e => {
 	videoShow.value = false;
 };
+// 图片预览
 const showImgs = e => {
 	var currentImg = e.currentTarget.dataset.imgurl;
 	var imgs = [];
@@ -376,8 +385,10 @@ const showImgs = e => {
 	}
 	uni.previewImage({ urls: imgs, current: currentImg });
 };
-const retry = () => {};
-const remove = (item, index) => {
+const retry = (e) => {
+	console.log(JSON.stringify(e))
+};
+const remove = (index) => {
 	proxy.$emit('delete', index);
 	props.fileList.splice(index, 1);
 };
@@ -386,7 +397,6 @@ const chooseFile = async () => {
 	// 裁剪图片
 	if (props.isCropper) {
 		let select_img = await chooseImage();
-		console.log(JSON.stringify(select_img));
 		return;
 	}
 
@@ -426,8 +436,8 @@ const chooseFile = async () => {
 					}
 				}, 500);
 			} else {
-				file_arr = await chooseImage(props.selectCount);
-				uploadFile(file_arr);
+				await chooseImage(getSelectCount());
+				await uploadFile();
 			}
 			break;
 		case 'video':
@@ -454,11 +464,17 @@ const chooseImage = async (count = 1) => {
 			sizeType: props.sizeType,
 			sourceType: props.sourceType,
 			success: res => {
-				let selectImgArr = [];
 				res.tempFilePaths.forEach((item, index) => {
-					selectImgArr.push({ path: item, thumb: '', progress: 0, progressShow: true, finished: false, file: res.tempFiles[index], url: item });
+					props.fileList.push({ 
+						url: item,
+						filePath:item,  
+						file: res.tempFiles[index], 
+						finished:false,
+						progress: 0,
+						progressShow: true
+					});
 				});
-				resolve(selectImgArr);
+				resolve(props.fileList);
 			},
 			fail: res => {
 				uni.showToast({
@@ -516,9 +532,8 @@ const chooseVideo = async () => {
 		uni.chooseVideo({
 			sourceType: props.sourceType,
 			success: res => {
-				let selectImgArr = [];
-				selectImgArr.push({
-					path: res.tempFilePath,
+				props.fileList.push({
+					filePath: res.tempFilePath,
 					duration: res.duration,
 					width: res.width,
 					height: res.height,
@@ -530,7 +545,7 @@ const chooseVideo = async () => {
 					file: res.tempFile,
 					url: res.tempFilePath
 				});
-				resolve(selectImgArr);
+				resolve(props.fileList);
 			}
 		});
 	});
@@ -570,9 +585,9 @@ const wxBlob2File = async blob_url => {
 // 获取七牛token
 const getQiNiuToken = async (is_temp = 1) => {
 	let res = await proxy.$util.http({
-		path: '/qiniutemp', 
-		method: 'get', 
-		data: { is_temp: is_temp}
+		path: '/qiniutemp',
+		method: 'get',
+		data: { is_temp: is_temp }
 	});
 	if (res.code !== 0) {
 		return false;
@@ -580,183 +595,56 @@ const getQiNiuToken = async (is_temp = 1) => {
 	return res.data.token;
 };
 // 批量上传文件
-const uploadFile = async file_arr => {
-	file_arr.forEach((item, index) => {
-		props.fileList.push(item);
-	});
-	uni.showLoading({
-		title: '文件上传中'
-	});
-	setTimeout(() => {
-		uni.hideLoading();
-	}, 3000);
-	// 批量上传文件
-	let count = props.fileList.length;
-	let number = 0;
-	let upload_status = false;
-	let intervalID = setInterval(() => {
-		// 正在上传文件中
-		if (number < count && upload_status === false) {
-			upload_status = true;
-			if (props.fileList[number].finished) {
-				number++;
-				upload_status = false;
-			} else {
-				uploadFileToQiniu(number, props.fileList[number].file, props.accept + '/').then(res => {
-					props.fileList[number].finished = true;
-					props.fileList[number].key = res.key;
-					props.fileList[number].progress = 100;
-					if (props.accept === 'video') {
-						props.fileList[number].url = 'https://wufutest.wufzx-app.com/' + res.key;
-					}
-					number++;
-					upload_status = false;
-				});
+const uploadFile = async () => {
+	for(let i=0;i<props.fileList.length;i++){
+		await proxy.$util.sleep(1000);
+		if(!props.fileList[i].finished){
+			let res = await uploadFileToQiniu(props.fileList[i].filePath, props.accept + '/');
+			props.fileList[i].key = res.key;
+			props.fileList[i].finished = true;
+			if (props.accept === 'video') {
+				props.fileList[i].url = 'https://wufutest.wufu-app.com/' + res.key;
 			}
-		}
-		// 文件全部上传完毕 unshift
-		proxy.$emit('afterUpload', props.fileList);
-		if (number >= count) {
-			uni.hideLoading();
-			clearTimeout(intervalID);
-		}
-	}, 500);
+		}		
+	}
+	proxy.$emit('afterUpload', props.fileList);
 };
+// 获取随机文件key
 const getFileKey = () => {
 	return proxy.$util.timeFormat(Date.now()) + '__' + proxy.$util.getNonceStr();
 };
 // 上传文件到七牛云
-const uploadFileToQiniu = async (index, file, file_path = 'img/') => {
-	
+const uploadFileToQiniu = async (file_path, root_path = 'img/') => {
 	let token = await getQiNiuToken();
-	let file_ext = 'jpg'
-	if(file.path){
-		let file_ext_arr = file.path.split('.');
-		file_ext = file_ext_arr[file_ext_arr.length - 1];
-	}
+	let fileKey = root_path + getFileKey();
 	
-	let fileKey = file_path + getFileKey() + '.' + file_ext;
-	
-	// #ifdef MP
-	console.log('uploadFileToQiniu:' ,fileKey, JSON.stringify(file));
 	return new Promise((resolve, reject) => {
 		uni.uploadFile({
 			url: 'https://upload-z2.qiniup.com',
-			filePath: file.path,
+			filePath: file_path,
 			name: 'file',
 			formData: {
 				key: fileKey,
 				token: token
 			},
-			success: (res) => {
-				resolve(res.data);
+			success: res => {
+				resolve(JSON.parse(res.data));
 			},
-			fail: (res)=>{
-				console.log('fail:' + JSON.stringify(res));
+			fail: res => {
 				uni.showToast({
 					title: '文件上传失败',
 					duration: 2000,
-					icon:'none'
-				});
-				resolve(res);
-			}
-		});
-	});
-	// #endif
-	
-	// #ifdef H5
-	return new Promise((resolve, reject) => {
-		const config = {
-			useCdnDomain: true,
-			region: qiniu.region.z2
-		};
-		const putExtra = {};
-		const observer = {
-			next: res => {
-				console.log('next:' + JSON.stringify(res));
-				/* if (res.total.percent !== undefined) {
-					props.fileList[index].progress = res.total.percent.toFixed(0);
-				} */
-			},
-			error:(err)=> {
-				uni.showToast({
-					title: '上传失败，请重试',
 					icon: 'none'
 				});
-				console.log('error:' + JSON.stringify(err));
-			},
-			complete: res => {
-				console.log('complete:' + JSON.stringify(res));
 				resolve(res);
 			}
-		};
-		const observable = qiniu.upload(file, fileKey, token, putExtra, config);
-		const subscription = observable.subscribe(observer); // 上传开始
-	});
-	// #endif
-	
-};
-// 打开裁剪界面
-const openCropper = temFile => {
-	uni.showLoading({
-		title: '加载中'
-	});
-	WeCropper.value = new cropper(getCropperSets());
-
-	setTimeout(() => {
-		showCropper.value = true;
-		WeCropper.value.pushOrign(temFile);
-		uni.hideLoading();
-	}, 500);
-};
-// 关闭裁剪界面
-const closeCropper = () => {
-	showCropper.value = false;
-};
-
-const touchStart = e => {
-	WeCropper.value.touchStart(e);
-};
-const touchMove = e => {
-	WeCropper.value.touchMove(e);
-};
-const touchEnd = e => {
-	WeCropper.value.touchEnd(e);
-};
-// 获取裁剪图片
-const getCropperImg = () => {
-	if (temImg.value === '') {
-		uni.showToast({
-			title: '请选择图片',
-			icon: 'none'
 		});
-		return;
-	}
-	uni.showLoading({ mask: true, title: '正在保存' });
-	setTimeout(() => {
-		uni.hideLoading();
-	}, 2000);
-
-	WeCropper.value.getCropperImage(tempFilePath => {
-		if (tempFilePath) {
-			let fileKey = props.accept + '/' + getFileKey() + '.jpg';
-			let new_file = proxy.$util.dataURLtoFile(tempFilePath, fileKey);
-			let file_arr = [{ path: temImg.value, progress: 0, progressShow: true, finished: false, url: tempFilePath, file: new_file }];
-			// 上传文件
-			uploadFile(file_arr);
-			closeCropper();
-		} else {
-			uni.showToast({
-				title: '保存图片失败',
-				icon: 'none'
-			});
-		}
 	});
-	proxy.$emit('afterRead', props.fileList);
 };
+
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .flex-row {
 	display: flex;
 	flex-direction: row;
@@ -769,40 +657,16 @@ const getCropperImg = () => {
 	align-items: center;
 	justify-content: center;
 }
-.hoverClass {
-	background-color: #949494;
-}
-.zx-add-list-btn-text {
-	font-size: 26rpx;
-	line-height: 50rpx;
-	text-align: center;
-}
-.zx-add-list-btn-icon {
-	font-size: 80rpx;
-	height: 80rpx;
-	line-height: 80rpx;
-}
-.zx-add-list-items {
-	overflow: hidden;
-	margin: 9rpx;
-	background-color: #ffffff;
-	font-size: 0;
-	position: relative;
-}
-.zx-add-list-remove {
-	width: 60rpx;
-	height: 60rpx;
-	line-height: 60rpx;
-	text-align: center;
-	font-size: 44rpx;
+.delete-icon {
 	position: absolute;
 	z-index: 5;
 	right: 0;
 	top: 0;
+	background-color: #101010;
+	padding: 0rpx 0rpx 10rpx 10rpx;
+	border-radius: 0rpx 10rpx 0rpx 40rpx;
 }
-.zx-add-list-img {
-	background-color: #ffffff;
-}
+
 .zx-upload-progress {
 	position: absolute;
 	z-index: 2;
@@ -811,23 +675,7 @@ const getCropperImg = () => {
 	width: 100%;
 	padding: 0 0rpx;
 }
-.zx-add-list-reup {
-	position: absolute;
-	z-index: 3;
-	left: 0;
-	top: 0rpx;
-	background-color: rgba(0, 0, 0, 0.3);
-}
-.zx-add-list-reup-icon {
-	text-align: center;
-	font-size: 68rpx;
-	line-height: 100rpx;
-}
-.zx-add-list-reup-text {
-	text-align: center;
-	font-size: 20rpx;
-	line-height: 30rpx;
-}
+
 .zx-img-crop {
 	width: 750rpx;
 	background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAB90RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgOLVo0ngAAAAWdEVYdENyZWF0aW9uIFRpbWUAMDkvMjIvMjBpulvaAAAAQ0lEQVRIie3VsQ0AIAwDQZth2H8eljET0JgGiXf/OilNLGmqXJLVtqMNbwcMDAwMDHyck/SxXb/U/04NDAwMDPw+vAGUagde2qkMXgAAAABJRU5ErkJggg==');

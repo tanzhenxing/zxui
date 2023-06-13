@@ -40,7 +40,7 @@
 		</view> -->
 		
 		<!-- 弹窗 -->
-		<zx-group-popup  v-if="show_popup" :item="group_info" :show="show_popup" :showPopupButton="true" :disabled="disabled" :popupText="disabled?'拼团中':'参与拼团'" @close="closePopup"></zx-group-popup>
+		<!-- <zx-group-popup  v-if="show_popup" :item="group_info" :show="show_popup" :showPopupButton="true" :disabled="disabled" :popupText="disabled?'拼团中':'参与拼团'" @close="closePopup"></zx-group-popup> -->
 	</view>
 </template>
 

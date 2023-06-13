@@ -37,7 +37,7 @@
 			<view class="group-hr-down" v-if="item.group_list.length > 0"></view>
 		</view>
 	
-		<uni-popup ref="popupComment">
+		<zx-popup ref="popupComment">
 			<view class="group-window">					
 				<view class="popup-comment">
 					<view>
@@ -62,7 +62,7 @@
 						</view>	
 						<view class="group-users-one" v-for="n in group_info.remain_group_fans">
 							<view>
-								<image class="create-group-image" src="/static/icon/group_circle.png"></image>
+								<image class="create-group-image" src="https://files.wufu-app.com/images/icon/group_circle.png"></image>
 							</view>
 						</view>
 					</view>
@@ -71,10 +71,10 @@
 					</view>
 				</view>
 				<view class="publish-options-close" @tap="toPublish()">
-					<uni-icons style="background-color:lightgray;border-radius: 50%;" type="closeempty" size="18"></uni-icons>
+					<zx-icon style="background-color:lightgray;border-radius: 50%;" type="closeempty" size="18"></zx-icon>
 				</view>
 			</view>
-		</uni-popup>
+		</zx-popup>
 	</view>
 </template>
 

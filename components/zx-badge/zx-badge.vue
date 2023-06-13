@@ -109,7 +109,7 @@ const positionStyle = computed(() => {
 	if (!props.absolute) {
 		return {};
 	}
-	let w = props.width / 2,
+	let w = width.value / 2,
 		h = 10;
 	if (props.isDot) {
 		w = 5;
@@ -136,9 +136,11 @@ const positionStyle = computed(() => {
 			top: y
 		}
 	};
+	
 	const match = whiteList[props.absolute];
 	return match ? match : whiteList['rightTop'];
 });
+
 const dotStyle = computed(() => {
 	if (!props.isDot) return {};
 	return {

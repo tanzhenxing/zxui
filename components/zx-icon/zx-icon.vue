@@ -23,7 +23,8 @@
  * @property {Boolean}			stop			是否阻止事件传播
  * @property {Object}			customStyle		icon的样式，对象形式
  * @event {Function}            click           点击图标时触发
- * @example <zx-icon name="eye"></zx-icon>
+ * @example <zx-icon name="eye"></zx-icon>  
+ * <zx-icon name="zhongbo-m" customPrefix="jxgy-iconfont"></zx-icon>
  */
 import { ref, getCurrentInstance, computed } from 'vue';
 const { proxy } = getCurrentInstance();
