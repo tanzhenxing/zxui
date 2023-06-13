@@ -5,18 +5,18 @@
 				<swiper-item v-for="(item, index) in lists" :key="index">
 					<view class="gui-flex gui-rows gui-justify-content-center gui-align-items-center">
 						<view style="width: 100rpx;">
-							<u-avatar :src="item.avatar" size="80rpx" mode="aspectFill"></u-avatar>
+							<zx-avatar :src="item.avatar" size="80rpx" mode="aspectFill"></zx-avatar>
 						</view>
 						<view class="gui-flex1">
-							<u-text :text="item.nickname" size="32rpx" :bold="true" color="#101010" lines="1"></u-text>
+							<zx-text :text="item.nickname" size="32rpx" :bold="true" color="#101010" lines="1"></zx-text>
 						</view>
 						<view style="width: 220rpx;">
 							<view style="display: flex;">
 								<view style="width: 70rpx;">
-									<u-text color="#666666" text="剩余" size="30rpx"></u-text>
+									<zx-text color="#666666" text="剩余" size="30rpx"></zx-text>
 								</view>
 								<view style="flex: 1;">
-									<u-count-down :time="(item.end_time * 1000 - Date.parse(new Date())) % (60 * 60 * 24 * 1000)" format="HH:mm:ss"></u-count-down>
+									<zx-countdown :time="(item.end_time * 1000 - Date.parse(new Date())) % (60 * 60 * 24 * 1000)" format="HH:mm:ss"></zx-countdown>
 								</view>
 							</view>
 						</view>
@@ -26,7 +26,7 @@
 					</view>
 				</swiper-item>
 			</swiper>
-			<u-line></u-line>
+			<zx-line></zx-line>
 		</view>
 		<!-- <view class="uni-py-4">
 			<view style="display: flex;">
@@ -40,15 +40,15 @@
 		</view> -->
 		
 		<!-- 弹窗 -->
-		<my-group-popup  v-if="show_popup" :item="group_info" :show="show_popup" :showPopupButton="true" :disabled="disabled" :popupText="disabled?'拼团中':'参与拼团'" @close="closePopup"></my-group-popup>
+		<zx-group-popup  v-if="show_popup" :item="group_info" :show="show_popup" :showPopupButton="true" :disabled="disabled" :popupText="disabled?'拼团中':'参与拼团'" @close="closePopup"></zx-group-popup>
 	</view>
 </template>
 
 <script>
-	import myGroupPopup from './my-group-popup.vue';
+	import myGroupPopup from './zx-group-popup.vue';
 	
 	export default {
-		name:"my-course-catalogue-group",
+		name:"zx-course-catalogue-group",
 		components: {
 			myGroupPopup
 		},
