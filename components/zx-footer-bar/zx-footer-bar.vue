@@ -1,7 +1,6 @@
 <template>
-	
 	<view v-if="show" class="zx-footer" :style="{ height: height, backgroundColor: backgroundColor }">
-		<zx-line :color="lineColor"></zx-line>
+		<zx-line v-if="line" :color="lineColor"></zx-line>
 		<view class="flex-center" :style="{ height: height }">
 			<slot></slot>
 		</view>

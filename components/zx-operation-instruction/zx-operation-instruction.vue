@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<zx-popup :show="popupShow" mode="center" :closeOnClickOverlay="false" round="20rpx" @close="close">
+		<zx-popup :show="popupShow" mode="center" :closeOnClickOverlay="false" round="20rpx" :zIndex="998" @close="close">
 			<view style="width: 550rpx;padding: 30rpx;text-align: justify;">
 				<view>
 					<zx-text :text="title" size="40rpx" :bold="true" align="center" lineHeight="70rpx"></zx-text>
@@ -16,12 +16,14 @@
 						></zx-text>
 					</scroll-view>
 				</view>
-				<view style="margin-top: 10rpx;display: flex;">
-					<radio justifyContent="flex-start" :checked="agreement" @change="radioChange"></radio>
-					<text style="flex: 1;color: #666666;" @click="agree">{{ agreeText }}</text>
+				<view style="margin-top: 10rpx;display: flex;flex-direction: row;">
+					<radio-group @change="radioChange">
+						<radio :checked="agreement"></radio>
+					</radio-group>
+					<zx-text text="我已阅读" size="28rpx" color="#666666"></zx-text>
 				</view>
 				<view style="margin-top: 20rpx;margin-bottom: 20rpx;">
-					<button :text="buttonText" color="#ff0000" @click="createButtom">{{ buttonText }}</button>
+					<button :text="buttonText" style="background-color: #ff0000; color: #ffffff;font-size: 30rpx;padding: 5rpx;" @click="createButtom">{{ buttonText }}</button>
 				</view>
 			</view>
 		</zx-popup>
@@ -87,9 +89,6 @@ const createButtom = () => {
 	}
 };
 const radioChange = e => {
-	agreement.value = e[0];
-};
-const agree = () => {
 	agreement.value = !agreement.value;
 };
 const scroll = e => {

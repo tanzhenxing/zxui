@@ -6,9 +6,7 @@
 			</template>
 			<template v-slot:right>
 				<view class="right-button">
-					<button :size="buttonSize" :style="{ borderRadius: buttonRadius ? '500rpx' : '10rpx', backgroundColor: buttonBgColor, color: buttonTextColor }" @click="open">
-						{{ buttonText }}
-					</button>
+					<button :size="buttonSize" :style="{ borderRadius: buttonRadius ? '50rpx' : '10rpx', backgroundColor: buttonBgColor, color: buttonTextColor }" @click="open">{{ buttonText }}</button>
 				</view>
 			</template>
 		</zx-notice-bar>
@@ -93,7 +91,7 @@ const close = () => {
 	padding-right: 10rpx;
 }
 .right-button {
-	width: 200rpx;
+	width: 210rpx;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
