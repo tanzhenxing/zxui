@@ -1,360 +1,414 @@
 <template>
-	<view
-		class="zx-tag"
-		:hover-class="hover ? 'zx-tag-opcity' : ''"
-		:hover-stay-time="150"
-		:class="[originLeft ? 'zx-origin-left' : '', originRight ? 'zx-origin-right' : '', getClassName(shape, plain), getTypeClass(type, plain)]"
-		:style="{ transform: `scale(${scaleMultiple})`, padding: padding, margin: margin, fontSize: size, lineHeight: size }"
-		@tap="handleClick"
-	>
-		<slot></slot>
-	</view>
+	<zx-transition mode="fade" :show="show">
+		<view class="zx-tag-wrapper">
+			<view
+				class="zx-tag"
+				:class="[
+					`zx-tag--${shape}`,
+					!plain && `zx-tag--${type}`,
+					plain && `zx-tag--${type}--plain`,
+					`zx-tag--${size}`,
+					plain && plainFill && `zx-tag--${type}--plain--fill`
+				]"
+				@tap.stop="clickHandler"
+				:style="[
+					{
+						marginRight: closable ? '10px' : 0,
+						marginTop: closable ? '10px' : 0
+					},
+					style
+				]"
+			>
+				<slot name="icon">
+					<view class="zx-tag__icon" v-if="icon">
+						<image v-if="image(icon)" :src="icon" :style="[imgStyle]"></image>
+						<zx-icon v-else :color="elIconColor" :name="icon" :size="iconSize"></zx-icon>
+					</view>
+				</slot>
+				<text class="zx-tag__text" :style="[textColor]" :class="[`zx-tag__text--${type}`, plain && `zx-tag__text--${type}--plain`, `zx-tag__text--${size}`]">
+					{{ text }}
+				</text>
+			</view>
+			<view class="zx-tag__close" :class="[`zx-tag__close--${size}`]" v-if="closable" @tap.stop="closeHandler" :style="{ backgroundColor: closeColor }">
+				<zx-icon name="close" :size="closeSize" color="#ffffff"></zx-icon>
+			</view>
+		</view>
+	</zx-transition>
 </template>
 
-<script>
-export default {
-	name: 'zx-tag',
-	emits: ['click'],
-	props: {
-		type: {
-			type: String,
-			default: 'primary'
-		},
-		//padding
-		padding: {
-			type: String,
-			default: '16rpx 26rpx'
-		},
-		margin: {
-			type: String,
-			default: '0'
-		},
-		//文字大小 rpx
-		size: {
-			type: String,
-			default: '28rpx'
-		},
-		// circle, square，circleLeft，circleRight
-		shape: {
-			type: String,
-			default: 'square'
-		},
-		//是否空心
-		plain: {
-			type: Boolean,
-			default: false
-		},
-		//点击效果
-		hover: {
-			type: Boolean,
-			default: false
-		},
-		//缩放倍数
-		scaleMultiple: {
-			type: Number,
-			default: 1
-		},
-		originLeft: {
-			type: Boolean,
-			default: false
-		},
-		originRight: {
-			type: Boolean,
-			default: false
-		},
-		index: {
-			type: Number,
-			default: 0
-		}
+<script setup>
+/**
+ * Tag 标签
+ * @description tag组件一般用于标记和选择，我们提供了更加丰富的表现形式，能够较全面的涵盖您的使用场景
+ * @tutorial https://zxui.org/components/tag
+ * @property {String}			type		标签类型info、primary、success、warning、error （默认 'primary' ）
+ * @property {Boolean | String}	disabled	不可用（默认 false ）
+ * @property {String}			size		标签的大小，large，medium，mini （默认 'medium' ）
+ * @property {String}			shape		tag的形状，circle（两边半圆形）, square（方形，带圆角）（默认 'square' ）
+ * @property {String | Number}	text		标签的文字内容
+ * @property {String}			bgColor		背景颜色，默认为空字符串，即不处理
+ * @property {String}			color		标签字体颜色，默认为空字符串，即不处理
+ * @property {String}			borderColor	镂空形式标签的边框颜色
+ * @property {String}			closeColor	关闭按钮图标的颜色（默认 #C6C7CB）
+ * @property {String | Number}	name		点击时返回的索引值，用于区分例遍的数组哪个元素被点击了
+ * @property {Boolean}			plainFill	镂空时是否填充背景色（默认 false ）
+ * @property {Boolean}			plain		是否镂空（默认 false ）
+ * @property {Boolean}			closable	是否可关闭，设置为true，文字右边会出现一个关闭图标（默认 false ）
+ * @property {Boolean}			show		标签显示与否（默认 true ）
+ * @property {String}			icon		内置图标，或绝对路径的图片
+ * @event {Function(index)} click 点击标签时触发 index: 传递的index参数值
+ * @event {Function(index)} close closable为true时，点击标签关闭按钮触发 index: 传递的index参数值
+ * @example <zx-tag text="标签" type="error" plain plainFill></zx-tag>
+ */
+import { ref, getCurrentInstance, computed } from 'vue';
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	// 标签类型info、primary、success、warning、error
+	type: {
+		type: String,
+		default: 'primary'
 	},
-	methods: {
-		handleClick() {
-			this.$emit('click', {
-				index: this.index
-			});
-		},
-		getTypeClass: function(type, plain) {
-			return plain ? 'zx-' + type + '-outline' : 'zx-' + type;
-		},
-		getClassName: function(shape, plain) {
-			//circle, square，circleLeft，circleRight
-			var className = plain ? 'zx-tag-outline ' : '';
-			if (shape != 'square') {
-				if (shape == 'circle') {
-					className = className + (plain ? 'zx-tag-outline-fillet' : 'zx-tag-fillet');
-				} else if (shape == 'circleLeft') {
-					className = className + 'zx-tag-fillet-left';
-				} else if (shape == 'circleRight') {
-					className = className + 'zx-tag-fillet-right';
-				}
-			}
-			return className;
-		}
+	// 不可用
+	disabled: {
+		type: [Boolean, String],
+		default: false
+	},
+	// 标签的大小，large，medium，mini
+	size: {
+		type: String,
+		default: 'medium'
+	},
+	// tag的形状，circle（两边半圆形）, square（方形，带圆角）
+	shape: {
+		type: String,
+		default: 'square'
+	},
+	// 标签文字
+	text: {
+		type: [String, Number],
+		default: ''
+	},
+	// 背景颜色，默认为空字符串，即不处理
+	bgColor: {
+		type: String,
+		default: ''
+	},
+	// 标签字体颜色，默认为空字符串，即不处理
+	color: {
+		type: String,
+		default: ''
+	},
+	// 标签的边框颜色
+	borderColor: {
+		type: String,
+		default: ''
+	},
+	// 关闭按钮图标的颜色
+	closeColor: {
+		type: String,
+		default: ''
+	},
+	// 点击时返回的索引值，用于区分例遍的数组哪个元素被点击了
+	name: {
+		type: [String, Number],
+		default: ''
+	},
+	// 镂空时是否填充背景色
+	plainFill: {
+		type: Boolean,
+		default: false
+	},
+	// 是否镂空
+	plain: {
+		type: Boolean,
+		default: false
+	},
+	// 是否可关闭
+	closable: {
+		type: Boolean,
+		default: false
+	},
+	// 是否显示
+	show: {
+		type: Boolean,
+		default: true
+	},
+	// 内置图标，或绝对路径的图片
+	icon: {
+		type: String,
+		default: ''
+	},
+	iconColor: {
+		type: String,
+		default: '#ffffff'
 	}
+});
+
+const style = computed(() => {
+	const style = {};
+	if (props.bgColor) {
+		style.backgroundColor = props.bgColor;
+	}
+	if (props.color) {
+		style.color = props.color;
+	}
+	if (props.borderColor) {
+		style.borderColor = props.borderColor;
+	}
+	return style;
+});
+// nvue下，文本颜色无法继承父元素
+const textColor = computed(() => {
+	const style = {};
+	if (props.color) {
+		style.color = props.color;
+	}
+	return style;
+});
+const imgStyle = computed(() => {
+	const width = props.size === 'large' ? '17px' : props.size === 'medium' ? '15px' : '13px';
+	return {
+		width,
+		height: width
+	};
+});
+// 文本的样式
+const closeSize = computed(() => {
+	const size = props.size === 'large' ? 15 : props.size === 'medium' ? 13 : 12;
+	return size;
+});
+// 图标大小
+const iconSize = computed(() => {
+	const size = props.size === 'large' ? 21 : props.size === 'medium' ? 19 : 16;
+	return size;
+});
+// 图标颜色
+const elIconColor = computed(() => {
+	return props.iconColor ? props.iconColor : props.plain ? props.type : '#ffffff';
+});
+
+// 点击关闭按钮
+const closeHandler = () => {
+	proxy.$emit('close', props.name);
+};
+// 点击标签
+const clickHandler = () => {
+	proxy.$emit('click', props.name);
+};
+// 是否图片格式
+const image = (value) => {
+	const newValue = value.split('?')[0];
+	const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
+	return IMAGE_REGEXP.test(newValue);
 };
 </script>
 
-<style scoped>
-/* color start*/
-
-.zx-primary {
-	background-color: #5677fc !important;
-	color: #fff;
+<style lang="scss" scoped>
+@import '@tanzhenxing/zxui/theme.scss';
+.zx-tag-wrapper {
+	position: relative;
 }
-
-.zx-light-primary {
-	background-color: #5c8dff !important;
-	color: #fff;
-}
-
-.zx-dark-primary {
-	background-color: #4a67d6 !important;
-	color: #fff;
-}
-
-.zx-dLight-primary {
-	background-color: #4e77d9 !important;
-	color: #fff;
-}
-
-.zx-danger {
-	background-color: #ed3f14 !important;
-	color: #fff;
-}
-
-.zx-red {
-	background-color: #ff201f !important;
-	color: #fff;
-}
-
-.zx-warning {
-	background-color: #ff7900 !important;
-	color: #fff;
-}
-
-.zx-green {
-	background-color: #19be6b !important;
-	color: #fff;
-}
-
-.zx-high-green {
-	background-color: #52dcae !important;
-	color: #52dcae;
-}
-
-.zx-black {
-	background-color: #000 !important;
-	color: #fff;
-}
-
-.zx-white {
-	background-color: #fff !important;
-	color: #333 !important;
-}
-
-.zx-translucent {
-	background-color: rgba(0, 0, 0, 0.7);
-}
-
-.zx-light-black {
-	background-color: #333 !important;
-}
-
-.zx-gray {
-	background-color: #ededed !important;
-}
-
-.zx-phcolor-gray {
-	background-color: #ccc !important;
-}
-
-.zx-divider-gray {
-	background-color: #eaeef1 !important;
-}
-
-.zx-btn-gray {
-	background-color: #ededed !important;
-	color: #999 !important;
-}
-
-.zx-hover-gray {
-	background-color: #f7f7f9 !important;
-}
-
-.zx-bg-gray {
-	background-color: #fafafa !important;
-}
-
-.zx-light-blue {
-	background-color: #ecf6fd;
-	color: #4dabeb !important;
-}
-
-.zx-light-brownish {
-	background-color: #fcebef;
-	color: #8a5966 !important;
-}
-
-.zx-light-orange {
-	background-color: #fef5eb;
-	color: #faa851 !important;
-}
-
-.zx-light-green {
-	background-color: #e8f6e8;
-	color: #44cf85 !important;
-}
-
-.zx-primary-outline::after {
-	border: 1px solid #5677fc !important;
-}
-
-.zx-primary-outline {
-	color: #5677fc !important;
-	background-color: none;
-}
-
-.zx-danger-outline {
-	color: #ed3f14 !important;
-	background-color: none;
-}
-
-.zx-danger-outline::after {
-	border: 1px solid #ed3f14 !important;
-}
-
-.zx-red-outline {
-	color: #ff201f !important;
-	background-color: none;
-}
-
-.zx-red-outline::after {
-	border: 1px solid #ff201f !important;
-}
-
-.zx-warning-outline {
-	color: #ff7900 !important;
-	background-color: none;
-}
-
-.zx-warning-outline::after {
-	border: 1px solid #ff7900 !important;
-}
-
-.zx-green-outline {
-	color: #44cf85 !important;
-	background-color: none;
-}
-
-.zx-green-outline::after {
-	border: 1px solid #44cf85 !important;
-}
-
-.zx-high-green-outline {
-	color: #52dcae !important;
-	background-color: none;
-}
-
-.zx-high-green-outline::after {
-	border: 1px solid #52dcae !important;
-}
-
-.zx-gray-outline {
-	color: #999 !important;
-	background-color: none;
-}
-
-.zx-gray-outline::after {
-	border: 1px solid #ccc !important;
-}
-
-.zx-black-outline {
-	color: #333 !important;
-	background-color: none;
-}
-
-.zx-black-outline::after {
-	border: 1px solid #333 !important;
-}
-
-.zx-white-outline {
-	color: #fff !important;
-	background-color: none;
-}
-
-.zx-white-outline::after {
-	border: 1px solid #fff !important;
-}
-
-/* color end*/
-
-/* tag start*/
 
 .zx-tag {
 	display: flex;
+	flex-direction: row;
 	align-items: center;
-	justify-content: center;
-	border-radius: 6rpx;
-	flex-shrink: 0;
-}
+	border-style: solid;
 
-.zx-tag-outline {
-	position: relative;
-	background-color: none;
-	color: #5677fc;
-}
+	&--circle {
+		border-radius: 100px;
+	}
 
-.zx-tag-outline::after {
-	content: ' ';
-	position: absolute;
-	width: 200%;
-	height: 200%;
-	transform: scale(0.5) translateZ(0);
-	transform-origin: 0 0;
-	box-sizing: border-box;
-	left: 0;
-	top: 0;
-	border-radius: 12rpx;
-}
+	&--square {
+		border-radius: 3px;
+	}
 
-.zx-tag-fillet {
-	border-radius: 50rpx;
-}
+	&__icon {
+		margin-right: 4px;
+	}
 
-.zx-white.zx-tag-fillet::after {
-	border-radius: 80rpx;
-}
+	&__text {
+		&--mini {
+			font-size: 12px;
+			line-height: 12px;
+		}
 
-.zx-tag-outline-fillet::after {
-	border-radius: 80rpx;
-}
+		&--medium {
+			font-size: 13px;
+			line-height: 13px;
+		}
 
-.zx-tag-fillet-left {
-	border-radius: 50rpx 0 0 50rpx;
-}
+		&--large {
+			font-size: 15px;
+			line-height: 15px;
+		}
+	}
 
-.zx-tag-fillet-right {
-	border-radius: 0 50rpx 50rpx 0;
-}
+	&--mini {
+		height: 22px;
+		line-height: 22px;
+		padding: 0 5px;
+	}
 
-.zx-tag-fillet-left.zx-tag-outline::after {
-	border-radius: 100rpx 0 0 100rpx;
-}
+	&--medium {
+		height: 26px;
+		line-height: 22px;
+		padding: 0 10px;
+	}
 
-.zx-tag-fillet-right.zx-tag-outline::after {
-	border-radius: 0 100rpx 100rpx 0;
-}
+	&--large {
+		height: 32px;
+		line-height: 32px;
+		padding: 0 15px;
+	}
 
-/* tag end*/
-.zx-origin-left {
-	transform-origin: 0 center;
-}
+	&--primary {
+		background-color: $zx-primary;
+		border-width: 1px;
+		border-color: $zx-primary;
+	}
 
-.zx-origin-right {
-	transform-origin: 100% center;
-}
+	&--primary--plain {
+		border-width: 1px;
+		border-color: $zx-primary;
+	}
 
-.zx-tag-opcity {
-	opacity: 0.5;
+	&--primary--plain--fill {
+		background-color: #ecf5ff;
+	}
+
+	&__text--primary {
+		color: #ffffff;
+	}
+
+	&__text--primary--plain {
+		color: $zx-primary;
+	}
+
+	&--error {
+		background-color: $zx-error;
+		border-width: 1px;
+		border-color: $zx-error;
+	}
+
+	&--error--plain {
+		border-width: 1px;
+		border-color: $zx-error;
+	}
+
+	&--error--plain--fill {
+		background-color: #fef0f0;
+	}
+
+	&__text--error {
+		color: #ffffff;
+	}
+
+	&__text--error--plain {
+		color: $zx-error;
+	}
+
+	&--warning {
+		background-color: $zx-warning;
+		border-width: 1px;
+		border-color: $zx-warning;
+	}
+
+	&--warning--plain {
+		border-width: 1px;
+		border-color: $zx-warning;
+	}
+
+	&--warning--plain--fill {
+		background-color: #fdf6ec;
+	}
+
+	&__text--warning {
+		color: #ffffff;
+	}
+
+	&__text--warning--plain {
+		color: $zx-warning;
+	}
+
+	&--success {
+		background-color: $zx-success;
+		border-width: 1px;
+		border-color: $zx-success;
+	}
+
+	&--success--plain {
+		border-width: 1px;
+		border-color: $zx-success;
+	}
+
+	&--success--plain--fill {
+		background-color: #f5fff0;
+	}
+
+	&__text--success {
+		color: #ffffff;
+	}
+
+	&__text--success--plain {
+		color: $zx-success;
+	}
+
+	&--info {
+		background-color: $zx-info;
+		border-width: 1px;
+		border-color: $zx-info;
+	}
+
+	&--info--plain {
+		border-width: 1px;
+		border-color: $zx-info;
+	}
+
+	&--info--plain--fill {
+		background-color: #f4f4f5;
+	}
+
+	&__text--info {
+		color: #ffffff;
+	}
+
+	&__text--info--plain {
+		color: $zx-info;
+	}
+
+	&__close {
+		position: absolute;
+		z-index: 999;
+		top: 10px;
+		right: 10px;
+		border-radius: 100px;
+		background-color: #c6c7cb;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		/* #ifndef APP-NVUE */
+		transform: scale(0.6) translate(80%, -80%);
+		/* #endif */
+		/* #ifdef APP-NVUE */
+		transform: scale(0.6) translate(50%, -50%);
+		/* #endif */
+
+		&--mini {
+			width: 18px;
+			height: 18px;
+		}
+
+		&--medium {
+			width: 22px;
+			height: 22px;
+		}
+
+		&--large {
+			width: 25px;
+			height: 25px;
+		}
+	}
 }
 </style>

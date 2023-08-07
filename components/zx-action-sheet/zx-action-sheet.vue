@@ -1,99 +1,97 @@
 <template>
 	<view @touchmove.stop.prevent>
 		<view class="zx-actionsheet" :class="{ 'zx-actionsheet-show': show, 'zx-actionsheet-radius': radius }">
-			<view class="zx-actionsheet-tips" :style="{ fontSize: size + 'rpx', color: color }" v-if="tips">{{ tips }}</view>
+			<view v-if="tips" class="zx-actionsheet-tips" :style="{ fontSize: size + 'rpx', color: color }">{{ tips }}</view>
 			<view :class="[isCancel ? 'zx-operate-box' : '']">
-				<block v-for="(item, index) in itemList" :key="index">
+				<block v-for="(item, index) in items" :key="index">
 					<view
 						class="zx-actionsheet-btn zx-actionsheet-divider"
-						:class="{ 'zx-btn-last': !isCancel && index == itemList.length - 1 }"
+						:class="{ 'zx-btn-last': !isCancel && index == items.length - 1 }"
 						hover-class="zx-actionsheet-hover"
 						:hover-stay-time="150"
 						:data-index="index"
 						:style="{ color: item.color || '#2B2B2B' }"
-						@tap="handleClickItem"
+						@tap.stop="handleClickItem"
 					>
 						{{ item.text }}
 					</view>
 				</block>
 			</view>
-			<view class="zx-actionsheet-btn zx-actionsheet-cancel" hover-class="zx-actionsheet-hover" :hover-stay-time="150" v-if="isCancel" @tap="handleClickCancel">取消</view>
+			<view v-if="isCancel" class="zx-actionsheet-btn zx-actionsheet-cancel" hover-class="zx-actionsheet-hover" :hover-stay-time="150" @tap="handleClickCancel">取消</view>
 		</view>
 		<view class="zx-actionsheet-mask" :class="{ 'zx-mask-show': show }" @tap="handleClickMask"></view>
 	</view>
 </template>
 
-<script>
+<script setup>
+import { ref, getCurrentInstance } from 'vue';
 
-export default {
-	name: 'zx-action-sheet',
-	emits: ['click', 'cancel'],
-	props: {
-		//点击遮罩 是否可关闭
-		maskClosable: {
-			type: Boolean,
-			default: true
-		},
-		//显示操作菜单
-		show: {
-			type: Boolean,
-			default: false
-		},
-		//菜单按钮数组，自定义文本颜色，红色参考色：#e53a37
-		itemList: {
-			type: Array,
-			default: function() {
-				return [
-					{
-						text: '确定',
-						color: '#2B2B2B'
-					}
-				];
-			}
-		},
-		//提示文字
-		tips: {
-			type: String,
-			default: ''
-		},
-		//提示文字颜色
-		color: {
-			type: String,
-			default: '#808080'
-		},
-		//提示文字大小 rpx
-		size: {
-			type: Number,
-			default: 26
-		},
-		//是否需要圆角
-		radius: {
-			type: Boolean,
-			default: true
-		},
-		//是否需要取消按钮
-		isCancel: {
-			type: Boolean,
-			default: true
+const { proxy } = getCurrentInstance();
+
+const props = defineProps({
+	//显示操作菜单
+	show: {
+		type: Boolean,
+		default: false
+	},
+	//点击遮罩 是否可关闭
+	maskClosable: {
+		type: Boolean,
+		default: true
+	},
+	//菜单按钮数组
+	items: {
+		type: Array,
+		default: () => {
+			return [
+				{
+					text: '确定',
+					color: '#2B2B2B'
+				}
+			];
 		}
 	},
-	methods: {
-		handleClickMask() {
-			if (!this.maskClosable) return;
-			this.handleClickCancel();
-		},
-		handleClickItem(e) {
-			if (!this.show) return;
-			const index = Number(e.currentTarget.dataset.index);
-			this.$emit('click', {
-				index: index,
-				...this.itemList[index]
-			});
-		},
-		handleClickCancel() {
-			this.$emit('cancel');
-		}
+	//提示文字
+	tips: {
+		type: String,
+		default: ''
+	},
+	//提示文字颜色
+	color: {
+		type: String,
+		default: '#808080'
+	},
+	//提示文字大小 rpx
+	size: {
+		type: Number,
+		default: 26
+	},
+	//是否需要圆角
+	radius: {
+		type: Boolean,
+		default: true
+	},
+	//是否需要取消按钮
+	isCancel: {
+		type: Boolean,
+		default: true
 	}
+});
+
+const handleClickMask = () => {
+	if (!props.maskClosable) return;
+	handleClickCancel();
+};
+const handleClickItem = (e) => {
+	if (!props.show) return;
+	const index = Number(e.currentTarget.dataset.index);
+	proxy.$emit('onClick', {
+		index: index,
+		...props.items[index]
+	});
+};
+const handleClickCancel = () => {
+	proxy.$emit('onCancel');
 };
 </script>
 

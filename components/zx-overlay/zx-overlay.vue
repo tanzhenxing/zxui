@@ -4,7 +4,7 @@
 	</zx-transition>
 </template>
 
-<script>
+<script setup>
 /**
  * overlay 遮罩
  * @description 创建一个遮罩层，用于强调特定的页面元素，并阻止用户对遮罩下层的内容进行操作，一般用于弹窗场景
@@ -17,55 +17,53 @@
  * @event {Function} click 点击遮罩发送事件
  * @example <zx-overlay :show="show" @click="show = false"></zx-overlay>
  */
-export default {
-	name: 'zx-overlay',
-	props: {
-	    // 是否显示遮罩
-	    show: {
-	        type: Boolean,
-	        default: false
-	    },
-	    // 层级z-index
-	    zIndex: {
-	        type: [String, Number],
-	        default: 10070
-	    },
-	    // 遮罩的过渡时间，单位为ms
-	    duration: {
-	        type: [String, Number],
-	        default: 500
-	    },
-	    // 不透明度值，当做rgba的第四个参数
-	    opacity: {
-	        type: [String, Number],
-	        default: 0.5
-	    },
-		customStyle: {
-			type: Object,
-			default: function(){
-				return {};
-			}
-		}
+import { ref, getCurrentInstance, computed } from 'vue';
+
+const { proxy } = getCurrentInstance();
+
+const props = defineProps({
+	// 是否显示遮罩
+	show: {
+		type: Boolean,
+		default: false
 	},
-	computed: {
-		overlayStyle() {
-			const style = {
-				position: 'fixed',
-				top: 0,
-				left: 0,
-				right: 0,
-				zIndex: this.zIndex,
-				bottom: 0,
-				'background-color': `rgba(0, 0, 0, ${this.opacity})`
-			};
-			return style;
-		}
+	// 层级z-index
+	zIndex: {
+		type: [String, Number],
+		default: 10070
 	},
-	methods: {
-		clickHandler() {
-			this.$emit('click');
+	// 遮罩的过渡时间，单位为ms
+	duration: {
+		type: [String, Number],
+		default: 500
+	},
+	// 不透明度值，当做rgba的第四个参数
+	opacity: {
+		type: [String, Number],
+		default: 0.5
+	},
+	customStyle: {
+		type: Object,
+		default: () => {
+			return {};
 		}
 	}
+});
+
+const overlayStyle = computed(() => {
+	const style = {
+		position: 'fixed',
+		top: 0,
+		left: 0,
+		right: 0,
+		zIndex: props.zIndex,
+		bottom: 0,
+		backgroundColor: `rgba(0, 0, 0, ${props.opacity})`
+	};
+	return style;
+});
+const clickHandler = () => {
+	proxy.$emit('click');
 };
 </script>
 

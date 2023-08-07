@@ -62,8 +62,8 @@ const { proxy } = getCurrentInstance();
  * @property {String | Number}	gutter			星星之间的距离 （默认 4 ）
  * @property {String | Number}	minCount		最少选中星星的个数 （默认 1 ）
  * @property {Boolean}			allowHalf		是否允许半星选择 （默认 false ）
- * @property {String}			activeIcon		选中时的图标名，只能为uView的内置图标 （默认 'star-fill' ）
- * @property {String}			inactiveIcon	未选中时的图标名，只能为uView的内置图标 （默认 'star' ）
+ * @property {String}			activeIcon		选中时的图标名，（默认 'star-fill' ）
+ * @property {String}			inactiveIcon	未选中时的图标名， （默认 'star' ）
  * @property {Boolean}			touchable		是否可以通过滑动手势选择评分 （默认 'true' ）
  * @property {Object}			customStyle		组件的样式，对象形式
  * @event {Function} change 选中的星星发生变化时触发
@@ -247,7 +247,7 @@ const getActiveIndex = (x, isClick = false) => {
 	// 判断当前操作的点的x坐标值，是否在允许的边界范围内
 	const allRateWidth = rateWidth.value * props.count + rateBoxLeft.value;
 	// 如果小于第一个图标的左边界，设置为最小值，如果大于所有图标的宽度，则设置为最大值
-	x = proxy.$util.range(rateBoxLeft.value, allRateWidth, x) - rateBoxLeft.value;
+	x = range(rateBoxLeft.value, allRateWidth, x) - rateBoxLeft.value;
 	// 滑动点相对于评分盒子左边的距离
 	const distance = x;
 	// 滑动的距离，相当于多少颗星星
@@ -287,8 +287,19 @@ const getActiveIndex = (x, isClick = false) => {
 	setTimeout(() => {
 		moving.value = false;
 	}, 10);
+	/**
+	 * @description 如果value小于min，取min；如果value大于max，取max
+	 * @param {number} min
+	 * @param {number} max
+	 * @param {number} value
+	 */
+	
 };
 
+const range=(min = 0, max = 0, value = 0)=> {
+		return Math.max(min, Math.min(max, Number(value)))
+	}
+	
 init();
 </script>
 

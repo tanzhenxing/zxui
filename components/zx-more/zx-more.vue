@@ -1,5 +1,5 @@
 <template>
-	<view class="flex-center" @click="onClick">
+	<view class="zx-flex-row zx-flex-align-xy" @click="onClick">
 		<zx-text :text="text" :color="color" :size="size"></zx-text>
 		<zx-icon :name="iconName" :color="color" size="32rpx"></zx-icon>
 	</view>
@@ -33,17 +33,14 @@ const props = defineProps({
 });
 
 const onClick = () => {
-	uni.navigateTo({
-		url:props.link
-	});
+	if(props.link){
+		uni.navigateTo({
+			url:props.link
+		});
+	}
 };
 </script>
 
 <style lang="scss" scoped>
-.flex-center {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-}
+
 </style>

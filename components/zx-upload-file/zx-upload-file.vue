@@ -1,5 +1,5 @@
 <template>
-	<view v-if="show">
+	<view>
 		<view v-if="fileList" class="flex-row" style="flex-wrap: wrap;">
 			<!-- 选择图片 -->
 			<view @tap.stop="chooseFile">
@@ -11,6 +11,7 @@
 				</slot>
 			</view>
 			<!-- 展示图片 -->
+			<view v-show="show">
 			<view v-if="fileList.length > 0" :style="{ borderRadius: borderRadius, backgroundColor: bgColor, width: width }">
 				<template v-for="(item, index) in fileList" :key="index">
 					<!-- 图片 -->
@@ -28,7 +29,7 @@
 								:data-imgurl="item.url + videoPosterParams"
 								:style="{ borderRadius: borderRadius, width: width, height: height }"
 								:mode="imageMode"
-								@tap="openVideo"
+								@tap="openVideo(item)"
 							></image>
 						</view>
 						<!-- 上传中 -->
@@ -60,18 +61,19 @@
 					</view>
 				</template>
 			</view>
+			</view>
 		</view>
 
 		<!-- 视频弹窗 -->
 		<zx-popup :show="videoShow" mode="right" :overlayOpacity="1" :closeOnClickOverlay="false">
 			<view style="background-color: #000000;width: 750rpx;height: 100%;">
-				<view style="width: 750rpx;">
+				<view v-if="currentVideo" style="width: 750rpx;">
 					<view :style="'height: ' + topHeight + 'px;color:#ffffff;'"><text class="zx-icons app-arrow-left" @click="closeVideo">&#xe600;</text></view>
 					<video
 						id="myVideo"
 						:style="'width: 750rpx;height: ' + videoHeight + 'px'"
-						:src="item.path"
-						:poster="item.url + videoPosterParams"
+						:src="currentVideo.path"
+						:poster="currentVideo.url + videoPosterParams"
 						:autoplay="true"
 						controls
 					></video>
@@ -83,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance, computed } from 'vue';
+import { ref, getCurrentInstance, computed, defineExpose } from 'vue';
 
 // #ifdef H5
 //import jweixin from '@tanzhenxing/zxui/libs/js/jweixin.js';
@@ -308,6 +310,7 @@ const props = defineProps({
 });
 
 const videoShow = ref(false);
+const currentVideo = ref(null);
 const topHeight = ref(40);
 const footerHeight = ref(30);
 // 获取屏幕高度
@@ -372,6 +375,7 @@ const getCropperSets = () => {
 
 const openVideo = e => {
 	videoShow.value = true;
+	currentVideo.value = e;
 };
 const closeVideo = e => {
 	videoShow.value = false;
@@ -436,8 +440,12 @@ const chooseFile = async () => {
 					}
 				}, 500);
 			} else {
+				uni.showLoading({
+					title: '正在上传'
+				});
 				await chooseImage(getSelectCount());
 				await uploadFile();
+				uni.hideLoading();
 			}
 			break;
 		case 'video':
@@ -595,11 +603,14 @@ const getQiNiuToken = async (is_temp = 1) => {
 	return res.data.token;
 };
 // 批量上传文件
-const uploadFile = async () => {
+const uploadFile = async (root_path=null) => {
+	if(!root_path){
+		root_path = props.accept
+	}
 	for(let i=0;i<props.fileList.length;i++){
 		await proxy.$util.sleep(1000);
 		if(!props.fileList[i].finished){
-			let res = await uploadFileToQiniu(props.fileList[i].filePath, props.accept + '/');
+			let res = await uploadFileToQiniu(props.fileList[i].filePath, root_path + '/');
 			props.fileList[i].key = res.key;
 			props.fileList[i].finished = true;
 			if (props.accept === 'video') {
@@ -641,6 +652,8 @@ const uploadFileToQiniu = async (file_path, root_path = 'img/') => {
 		});
 	});
 };
+
+defineExpose({ uploadFile });
 
 </script>
 

@@ -4,9 +4,10 @@
 			<view class="flex-center column" :style="{backgroundColor:bgColor,borderRadius:round,padding: padding,margin:margin}">
 				<zx-image :width="getImageWidth+'rpx'" :height="imgHeight" :src="src" :radius="imgRadius" :mode="imgMode" @click="goLink"></zx-image>
 				<zx-text v-if="text" :text="text" align="center" lineHeight="50rpx" size="30rpx"></zx-text>
+				<slot></slot>
 			</view>
 			<view v-if="closeIcon" class="flex-center row close">
-				<zx-icon name="close-circle-fill" color="#c5c5c5" size="60rpx" @click="close"></zx-icon>
+				<zx-icon name="close-circle-fill" color="#c5c5c5" size="60rpx" @onClick="close"></zx-icon>
 			</view>
 		</zx-popup>
 	</view>

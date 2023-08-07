@@ -1,6 +1,6 @@
 <template>
-	<view class="zx-section" :style="{ backgroundColor: bgColor,borderRadius:borderRadius }">
-		<view class="header" :style="{ padding: titlePadding,height:height }" @click="onClick">
+	<view class="zx-section" :style="{ backgroundColor: bgColor, borderRadius: borderRadius }">
+		<view class="header" :style="{ padding: titlePadding, height: height }" @click="onClick">
 			<slot name="decoration">
 				<view :class="type" :style="{ backgroundColor: decorationColor, height: decorationHeight, width: decorationWidth, marginRight: decorationSpace }"></view>
 			</slot>
@@ -21,7 +21,7 @@
 	</view>
 </template>
 
-<script>
+<script setup>
 /**
  * Section 标题栏
  * @description 标题栏
@@ -34,117 +34,113 @@
  * @property {String} subTitleColor 副标题字体颜色
  * @property {String} padding 默认插槽 padding
  */
+import { ref, getCurrentInstance } from 'vue';
 
-export default {
-	name: 'zx-section',
-	emits: ['click'],
-	props: {
-		type: {
-			type: String,
-			default: 'line'
-		},
-		bgColor: {
-			type: String,
-			default: 'transparent'
-		},
-		height: {
-			type: String,
-			default: '80rpx'
-		},
-		borderRadius:{
-			type: String,
-			default: '0rpx'
-		},
-		title: {
-			type: String,
-			required: true,
-			default: ''
-		},
-		titleFontSize: {
-			type: String,
-			default: '34rpx'
-		},
-		titleColor: {
-			type: String,
-			default: '#333333'
-		},
-		titleBold: {
-			type: Boolean,
-			default: false
-		},
-		subTitle: {
-			type: String,
-			default: ''
-		},
-		subTitleFontSize: {
-			type: String,
-			default: '28rpx'
-		},
-		subTitleColor: {
-			type: String,
-			default: '#999999'
-		},
-		titlePadding: {
-			type: String,
-			default: '25rpx'
-		},
-		padding: {
-			type: String,
-			default: '25rpx'
-		},
-		moreShow: {
-			type: Boolean,
-			default: true
-		},
-		moreLink: {
-			type: String,
-			default: ''
-		},
-		moreText: {
-			type: String,
-			default: 'More'
-		},
-		moreSize: {
-			type: String,
-			default: '28rpx'
-		},
-		line: {
-			type: Boolean,
-			default: true
-		},
-		lineColor: {
-			type: String,
-			default: '#c5c5c5'
-		},
-		decorationColor: {
-			type: String,
-			default: '#2979ff'
-		},
-		decorationHeight: {
-			type: String,
-			default: '35rpx'
-		},
-		decorationWidth: {
-			type: String,
-			default: '35rpx'
-		},
-		decorationSpace: {
-			type: String,
-			default: '15rpx'
-		}
+const { proxy } = getCurrentInstance();
+
+const props = defineProps({
+	type: {
+		type: String,
+		default: 'line'
 	},
-	computed: {},
-	watch: {},
-	methods: {
-		onClick() {
-			this.$emit('click');
-		},
-		onMoreLink() {
-			uni.navigateTo({
-				url: this.moreLink
-			});
-		}
+	bgColor: {
+		type: String,
+		default: 'transparent'
+	},
+	height: {
+		type: String,
+		default: '80rpx'
+	},
+	borderRadius: {
+		type: String,
+		default: '0rpx'
+	},
+	title: {
+		type: String,
+		required: true,
+		default: ''
+	},
+	titleFontSize: {
+		type: String,
+		default: '34rpx'
+	},
+	titleColor: {
+		type: String,
+		default: '#333333'
+	},
+	titleBold: {
+		type: Boolean,
+		default: false
+	},
+	subTitle: {
+		type: String,
+		default: ''
+	},
+	subTitleFontSize: {
+		type: String,
+		default: '28rpx'
+	},
+	subTitleColor: {
+		type: String,
+		default: '#999999'
+	},
+	titlePadding: {
+		type: String,
+		default: '25rpx'
+	},
+	padding: {
+		type: String,
+		default: '25rpx'
+	},
+	moreShow: {
+		type: Boolean,
+		default: true
+	},
+	moreLink: {
+		type: String,
+		default: ''
+	},
+	moreText: {
+		type: String,
+		default: 'More'
+	},
+	moreSize: {
+		type: String,
+		default: '28rpx'
+	},
+	line: {
+		type: Boolean,
+		default: true
+	},
+	lineColor: {
+		type: String,
+		default: '#c5c5c5'
+	},
+	decorationColor: {
+		type: String,
+		default: '#2979ff'
+	},
+	decorationHeight: {
+		type: String,
+		default: '35rpx'
+	},
+	decorationWidth: {
+		type: String,
+		default: '35rpx'
+	},
+	decorationSpace: {
+		type: String,
+		default: '15rpx'
 	}
+});
+
+const onClick = () => {
+	proxy.$emit('click');
+};
+const onMoreLink = () => {
+	uni.navigateTo({
+		url: props.moreLink
+	});
 };
 </script>
 <style lang="scss" scoped>

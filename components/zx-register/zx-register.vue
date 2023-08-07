@@ -59,8 +59,10 @@
 		<zx-popup :show="agreementPopup" mode="center" bgColor="transparent">
 			<view class="agreement-box">
 				<view style="height: 100rpx;" class="flex-center"><zx-text text="用户协议与隐私协议" align="center" size="36rpx"></zx-text></view>
-				<scroll-view scroll-y :style="{ height: contentHeight + 'px', backgroundColor: '#f8f8f8' }">
-					<view class="agree-content"><rich-text :nodes="agreeContent"></rich-text></view>
+				<scroll-view scroll-y :enable-flex="true" :style="{ height: contentHeight + 'px', backgroundColor: '#f8f8f8' }">
+					<view class="agree-content">
+						<rich-text :nodes="agreeContent"></rich-text>
+					</view>
 				</scroll-view>
 				<view class="agreement-button">
 					<zx-text text="不同意" size="34rpx" align="center" @click="disagree"></zx-text>
@@ -68,7 +70,6 @@
 				</view>
 			</view>
 		</zx-popup>
-		
 		
 	</view>
 </template>

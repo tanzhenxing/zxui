@@ -12,128 +12,116 @@
 		</view>
 	</view>
 </template>
-<script>
-export default {
-	name: 'zx-turntable',
-	props: {
-		// 奖品名称
-		rewardNames: {
-			type: Array,
-			default: function() {
-				return ['', '', '', '', '', ''];
-			}
-		},
-		// 奖品展示区背景颜色
-		rewardBGColors: {
-			type: Array,
-			default: function() {
-				return [];
-			}
-		},
-		// 奖品展示区文本颜色
-		rewardColors: {
-			type: Array,
-			default: function() {
-				return [];
-			}
-		},
-		// 文本尺寸
-		fontSize: {
-			type: String,
-			default: '32rpx'
+<script setup>
+import { ref, getCurrentInstance, onMounted } from 'vue';
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	// 奖品名称
+	rewardNames: {
+		type: Array,
+		default: () => {
+			return ['', '', '', '', '', ''];
 		}
 	},
-	data() {
-		return {
-			// 是否正在抽奖
-			luckyStatus: 0,
-			// 动画对象
-			animationData: {},
-			tpmimgtimmer: null,
-			// 中奖奖品 index
-			RewardIndex: -1,
-			// 角度
-			averageRotate: 0,
-			inital: 0,
-			textTrX: '43rpx',
-			textRotate: '-30deg'
-		};
-	},
-	created: function() {
-		this.init();
-	},
-	watch: {
-		rewardNames: function() {
-			this.init();
+	// 奖品展示区背景颜色
+	rewardBGColors: {
+		type: Array,
+		default: () => {
+			return [];
 		}
 	},
-	methods: {
-		init: function() {
-			var length = this.rewardNames.length;
-			this.averageRotate = 360 / length;
-			this.inital = (360 / length / 2) * -1;
-			switch (length) {
-				case 4:
-					this.textTrX = '0rpx';
-					this.textRotate = '-45deg';
-					break;
-				case 6:
-					this.textTrX = '43rpx';
-					this.textRotate = '55deg';
-					break;
-				case 8:
-					this.textTrX = '72rpx';
-					this.textRotate = '65deg';
-					break;
-			}
-			var animation = null;
-			animation = uni.createAnimation({
-				duration: 0,
-				timingFunction: 'ease'
-			});
-			animation.rotateZ(this.averageRotate / 2).step();
-			this.animationData = animation.export();
-		},
-		goto: function(index) {
-			if (this.luckyStatus != 0) {
-				return;
-			}
-			this.RewardIndex = index;
-			this.animationData = {};
-			this.luckyStatus = 1;
+	// 奖品展示区文本颜色
+	rewardColors: {
+		type: Array,
+		default: () => {
+			return [];
+		}
+	},
+	// 文本尺寸
+	fontSize: {
+		type: String,
+		default: '32rpx'
+	}
+});
 
-			// 轮盘归零
-			var animation = null;
-			animation = uni.createAnimation({
-				duration: 0,
-				timingFunction: 'ease'
-			});
-			animation.rotateZ(this.averageRotate / 2).step();
-			this.animationData = animation.export();
+// 是否正在抽奖
+const luckyStatus = ref(0);
+// 动画对象
+const animationData = ref({});
+const tpmimgtimmer = ref(null);
+// 中奖奖品 index
+const RewardIndex = ref(-1);
+// 角度
+const averageRotate = ref(0);
+const inital = ref(0);
+const textTrX = ref('43rpx');
+const textRotate = ref('-30deg');
 
-			// 计算奖品角度
-			var rewardRadiu = 360 / this.rewardNames.length;
-			var rewardRadiuNeed = 360 * 6 + rewardRadiu * this.RewardIndex;
-			setTimeout(() => {
-				animation = uni.createAnimation({
-					duration: 5000,
-					timingFunction: 'ease'
-				});
-				animation.rotateZ(rewardRadiuNeed).step();
-				this.animationData = animation.export();
-			}, 100);
-			setTimeout(() => {
-				// 停止动画
-				this.luckyStatus = 0;
-				this.$emit('end', index);
-				this.RewardIndex = -1;
-			}, 5000);
-		}
-	},
-	emits: ['end']
+onMounted(() => {});
+
+const init = () => {
+	let length = props.rewardNames.length;
+	averageRotate.value = 360 / length;
+	inital.value = (360 / length / 2) * -1;
+	switch (length) {
+		case 4:
+			textTrX.value = '0rpx';
+			textRotate.value = '-45deg';
+			break;
+		case 6:
+			textTrX.value = '43rpx';
+			textRotate.value = '55deg';
+			break;
+		case 8:
+			textTrX.value = '72rpx';
+			textRotate.value = '65deg';
+			break;
+	}
+	let animation = null;
+	animation = uni.createAnimation({
+		duration: 0,
+		timingFunction: 'ease'
+	});
+	animation.rotateZ(averageRotate.value / 2).step();
+	animationData.value = animation.export();
+};
+const goto = (index) => {
+	if (luckyStatus.value != 0) {
+		return;
+	}
+	RewardIndex.value = index;
+	animationData.value = {};
+	luckyStatus.value = 1;
+
+	// 轮盘归零
+	let animation = null;
+	animation = uni.createAnimation({
+		duration: 0,
+		timingFunction: 'ease'
+	});
+	animation.rotateZ(averageRotate.value / 2).step();
+	animationData.value = animation.export();
+
+	// 计算奖品角度
+	let rewardRadiu = 360 / props.rewardNames.length;
+	let rewardRadiuNeed = 360 * 6 + rewardRadiu * RewardIndex.value;
+	setTimeout(() => {
+		animation = uni.createAnimation({
+			duration: 5000,
+			timingFunction: 'ease'
+		});
+		animation.rotateZ(rewardRadiuNeed).step();
+		animationData.value = animation.export();
+	}, 100);
+	setTimeout(() => {
+		// 停止动画
+		luckyStatus.value = 0;
+		proxy.$emit('end', index);
+		RewardIndex.value = -1;
+	}, 5000);
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .zx-turntable {
 	position: relative;
 	transform-origin: center;

@@ -2,7 +2,7 @@
 	<view>
 		<view v-for="(tree, index) in treesIN" :key="index">
 			<view
-				class="gui-flex gui-row gui-nowrap gui-align-items-center gui-tree"
+				class="zx-flex zx-row zx-nowrap zx-align-items-center zx-tree"
 				:data-havsons="tree.children"
 				:data-treeindexs="indexesIn"
 				:data-index="index"
@@ -12,21 +12,21 @@
 				:style="{ paddingLeft: indent * level + 'rpx' }"
 				@tap.stop="taped"
 			>
-				<view class="gui-tree-icons gui-color-gray" :data-id="tree.id" @tap.stop="fold" v-if="type == 'text' && isIcon">
-					<text class="gui-tree-icons-text gui-icons" v-if="tree.children">&#xe62d;</text>
+				<view class="zx-tree-icons zx-color-gray" :data-id="tree.id" @tap.stop="fold" v-if="type == 'text' && isIcon">
+					<text class="zx-tree-icons-text zx-icons" v-if="tree.children">&#xe62d;</text>
 				</view>
-				<view class="gui-tree-icons" v-if="type == 'radio' && (allCanCheck || !tree.children)">
-					<text :class="checkedClass" class="gui-tree-icons-text gui-icons gui-fade-in" v-if="tree.id == checkedId">&#xe7f8;</text>
-					<text class="gui-tree-icons-text gui-icons" v-else>&#xe762;</text>
+				<view class="zx-tree-icons" v-if="type == 'radio' && (allCanCheck || !tree.children)">
+					<text :class="checkedClass" class="zx-tree-icons-text zx-icons zx-fade-in" v-if="tree.id == checkedId">&#xe7f8;</text>
+					<text class="zx-tree-icons-text zx-icons" v-else>&#xe762;</text>
 				</view>
-				<view class="gui-tree-icons" v-if="type == 'checkbox' && (allCanCheck || !tree.children)">
-					<text :class="checkedClass" class="gui-tree-icons-text gui-icons gui-fade-in" v-if="isChecked(tree.id)">&#xe685;</text>
-					<text class="gui-tree-icons-text gui-icons icon-checkbox" v-else>&#xe762;</text>
+				<view class="zx-tree-icons" v-if="type == 'checkbox' && (allCanCheck || !tree.children)">
+					<text :class="checkedClass" class="zx-tree-icons-text zx-icons zx-fade-in" v-if="isChecked(tree.id)">&#xe685;</text>
+					<text class="zx-tree-icons-text zx-icons icon-checkbox" v-else>&#xe762;</text>
 				</view>
-				<text class="gui-block gui-tree-title gui-flex1">{{ tree.label }}</text>
+				<text class="zx-block zx-tree-title zx-flex1">{{ tree.label }}</text>
 			</view>
 			<view>
-				<gui-tree
+				<zx-tree
 					v-if="arrayIndexOf(notids, tree.id) == -1"
 					:trees="tree.children"
 					:indent="indent"
@@ -39,125 +39,135 @@
 					:indexes="[indexesIn, index]"
 					:checkedClass="checkedClass"
 					@taped="tapbase"
-				></gui-tree>
+				></zx-tree>
 			</view>
 		</view>
 	</view>
 </template>
-<script>
-export default {
-	name: 'zx-tree',
-	props: {
-		trees: {
-			type: Array,
-			default: function() {
-				return [];
-			}
-		},
-		indent: { type: Number, default: 28 },
-		level: { type: Number, default: 0 },
-		type: { type: String, default: 'text' },
-		isIcon: { type: Boolean, default: true },
-		indexes: {
-			type: Array,
-			default: function() {
-				return ['', 0];
-			}
-		},
-		checkedId: { type: [String, Number], default: '-1' },
-		checkedIds: {
-			type: Array,
-			default: function() {
-				return [];
-			}
-		},
-		allCanCheck: { type: Boolean, default: true },
-		isFold: { type: Boolean, default: true },
-		checkedClass: {
-			type: Array,
-			default: function() {
-				return ['gui-primary-color'];
-			}
+<script setup>
+import { ref, getCurrentInstance, onMounted } from 'vue';
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	trees: {
+		type: Array,
+		default: () => {
+			return [];
 		}
 	},
-	data() {
-		return {
-			treesIN: [],
-			indexesIn: [],
-			notids: []
-		};
+	indent: {
+		type: Number,
+		default: 28
 	},
-	created: function() {
-		this.treesIN = this.trees;
-		if (this.indexes[0] != '') {
-			var indexes = this.indexes[0].split(',');
+	level: {
+		type: Number,
+		default: 0
+	},
+	type: {
+		type: String,
+		default: 'text'
+	},
+	isIcon: {
+		type: Boolean,
+		default: true
+	},
+	indexes: {
+		type: Array,
+		default: () => {
+			return ['', 0];
+		}
+	},
+	checkedId: {
+		type: [String, Number],
+		default: '-1'
+	},
+	checkedIds: {
+		type: Array,
+		default: () => {
+			return [];
+		}
+	},
+	allCanCheck: {
+		type: Boolean,
+		default: true
+	},
+	isFold: {
+		type: Boolean,
+		default: true
+	},
+	checkedClass: {
+		type: Array,
+		default: () => {
+			return ['zx-primary-color'];
+		}
+	}
+});
+
+const treesIN = ref([]);
+const indexesIn = ref([]);
+const notids = ref([]);
+
+onMounted(() => {
+	treesIN.value = props.trees;
+	let indexes = [];
+	if (props.indexes[0] != '') {
+		indexes = props.indexes[0].split(',');
+	}
+	indexes.push(props.indexes[1]);
+	indexesIn.value = indexes.join(',');
+});
+
+const fold = (e) => {
+	let id = e.currentTarget.dataset.id;
+	if (props.isFold) {
+		let res = arrayIndexOf(notids.value, id);
+		if (res == -1) {
+			notids.value.push(id);
 		} else {
-			var indexes = [];
+			notids.value.splice(res, 1);
 		}
-		indexes.push(this.indexes[1]);
-		this.indexesIn = indexes.join(',');
-	},
-	watch: {
-		type: function() {
-			this.notids = [];
+	}
+	e.stopPropagation();
+	return;
+};
+const taped = (e) => {
+	let treeindexs = e.currentTarget.dataset.treeindexs;
+	treeindexs = treeindexs.split(',');
+	let index = e.currentTarget.dataset.index;
+	treeindexs.push(index);
+	treeindexs.shift();
+	if (props.type == 'text') {
+		tapbase(treeindexs);
+	} else {
+		let cancheck = e.currentTarget.dataset.cancheck;
+		if (cancheck) {
+			tapbase(treeindexs);
 		}
-	},
-	methods: {
-		fold: function(e) {
-			var id = e.currentTarget.dataset.id;
-			if (this.isFold) {
-				var res = this.arrayIndexOf(this.notids, id);
-				if (res == -1) {
-					this.notids.push(id);
-				} else {
-					this.notids.splice(res, 1);
-				}
-			}
-			e.stopPropagation();
-			return;
-		},
-		taped: function(e) {
-			var treeindexs = e.currentTarget.dataset.treeindexs;
-			treeindexs = treeindexs.split(',');
-			var index = e.currentTarget.dataset.index;
-			treeindexs.push(index);
-			treeindexs.shift();
-			if (this.type == 'text') {
-				this.tapbase(treeindexs);
-			} else {
-				var cancheck = e.currentTarget.dataset.cancheck;
-				if (cancheck) {
-					this.tapbase(treeindexs);
-				}
-			}
-			e.stopPropagation();
-		},
-		tapbase: function(e) {
-			this.$emit('taped', e);
-		},
-		setTrees: function(trees) {
-			this.treesIN = trees;
-		},
-		isChecked: function(checkedId) {
-			for (let i = 0; i < this.checkedIds.length; i++) {
-				if (this.checkedIds[i] == checkedId) {
-					return true;
-				}
-			}
-			return false;
-		},
-		arrayIndexOf: function(arr, needFind) {
-			var index = -1;
-			for (let i = 0; i < arr.length; i++) {
-				if (arr[i] == needFind) {
-					index = i;
-					return i;
-				}
-			}
-			return index;
+	}
+	e.stopPropagation();
+};
+const tapbase = (e) => {
+	proxy.$emit('taped', e);
+};
+const setTrees = (trees) => {
+	treesIN.value = trees;
+};
+const isChecked = (checkedId) => {
+	for (let i = 0; i < props.checkedIds.length; i++) {
+		if (props.checkedIds[i] == checkedId) {
+			return true;
 		}
-	},
-	emits: ['taped']
+	}
+	return false;
+};
+const arrayIndexOf = (arr, needFind) => {
+	let index = -1;
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i] == needFind) {
+			index = i;
+			return i;
+		}
+	}
+	return index;
 };
 </script>
 <style scoped></style>

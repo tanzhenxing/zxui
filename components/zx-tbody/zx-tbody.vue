@@ -9,20 +9,9 @@
 	<!-- #endif -->
 </template>
 
-<script>
-export default {
-	name: 'zx-body',
-	options: {
-		virtualHost: true
-	},
-	data() {
-		return {
-			
-		}
-	},
-	created() {},
-	methods: {}
-}
+<script setup>
+import {ref} from 'vue'
+
 </script>
 
 <style>

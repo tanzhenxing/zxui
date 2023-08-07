@@ -2,7 +2,9 @@
 	<view v-if="show">
 		<zx-navbar :bgColor="bgColor" :border="border" :autoBack="autoBack">
 			<template v-slot:center>
-				<view :style="{ width: 750 - 2 * space + 'rpx' }"><zx-text :text="title" :size="size" :bold="bold" :lines="lines" :align="align" :color="color"></zx-text></view>
+				<view :style="{ width: 750 - 2 * space + 'rpx' }">
+					<zx-text :text="title" :size="size" :bold="bold" :lines="lines" :align="align" :color="color"></zx-text>
+				</view>
 			</template>
 			<template v-slot:right>
 				<view :style="{ width: space + 'rpx' }"></view>
@@ -53,7 +55,7 @@ const props = defineProps({
 	},
 	align: {
 		type: String,
-		default: 'center'
+		default: 'left'
 	},
 	space: {
 		type: Number,

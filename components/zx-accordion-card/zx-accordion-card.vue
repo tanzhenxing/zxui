@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="zx-accordion" :style="{backgroundColor:bgColor}">
+		<view class="zx-accordion" :style="{ backgroundColor: bgColor }">
 			<view hover-class="zx-tap" @tap="toggle">
 				<slot name="title">
 					<view class="zx-title">
@@ -8,15 +8,15 @@
 							<zx-text lines="1" :text="title" :size="titleSize" :color="titleColor"></zx-text>
 						</view>
 						<view class="zx-icon">
-							<zx-icon :name="icon" :color="showStatus?iconColorActive:iconColor" size="50rpx"></zx-icon>
+							<zx-icon :name="icon" :color="showStatus ? iconColorActive : iconColor" size="50rpx"></zx-icon>
 						</view>
 					</view>
 				</slot>
 			</view>
-			<view class="zx-fade-in zx-accordion-card-body" v-if="showStatus">
+			<view v-show="showStatus" class="zx-fade-in zx-accordion-card-body">
 				<slot name="body">
-					<view class="zx-item" v-for="(item,index) in items" :key="index" @click="goLink(item)">
-						<zx-text :text="title" :color="itemColor" :size="itemSize" :lineHeight="itemLineHeight" lines="1"></zx-text>
+					<view class="zx-item" v-for="(item, index) in items" :key="index" @click="onClick(item,index)">
+						<zx-text :text="item.title" :color="itemColor" :size="itemSize" :lineHeight="itemLineHeight" lines="1"></zx-text>
 						<zx-icon name="arrow-right" :color="iconColor" size="28rpx"></zx-icon>
 					</view>
 				</slot>
@@ -24,7 +24,7 @@
 		</view>
 	</view>
 </template>
-<script>
+<script setup>
 /**
  * 手风琴
  * @description 手风琴的功能
@@ -44,111 +44,97 @@
  * @event    {Function}        albumWidth       某些特殊的情况下，需要让文字与相册的宽度相等，这里事件的形式对外发送  （回调参数 width ）
  * @example <zx-accordion-card :items="items"></zx-accordion-card>
  */
-export default {
-	name: 'zx-accordion-card',
-	props: {
-		show: {
-			type: Boolean,
-			default: true
-		},
-		// 是否为展开状态
-		status: {
-			type: Boolean,
-			default: false
-		},
-		title: {
-			type: String,
-			default: ''
-		},
-		titleSize: {
-			type: String,
-			default: '34rpx'
-		},
-		titleColor: {
-			type: String,
-			default: '#303133'
-		},
-		icon: {
-			type: String,
-			default: 'list'
-		},
-		iconColor: {
-			type: String,
-			default: '#435862'
-		},
-		iconColorActive: {
-			type: String,
-			default: '#3c9cff'
-		},
-		bgColor: {
-			type: String,
-			default: '#ffffff'
-		},
-		itemSize: {
-			type: String,
-			default: '28rpx'
-		},
-		itemColor: {
-			type: String,
-			default: '#303133'
-		},
-		itemLineHeight: {
-			type: String,
-			default: '100rpx'
-		},
-		items: {
-			type: Array,
-			default: function(){
-				return [];
-			}
+import { ref, getCurrentInstance } from 'vue';
+const { proxy } = getCurrentInstance();
+
+const props = defineProps({
+	show: {
+		type: Boolean,
+		default: true
+	},
+	// 是否为展开状态
+	status: {
+		type: Boolean,
+		default: false
+	},
+	title: {
+		type: String,
+		default: ''
+	},
+	titleSize: {
+		type: String,
+		default: '34rpx'
+	},
+	titleColor: {
+		type: String,
+		default: '#303133'
+	},
+	icon: {
+		type: String,
+		default: 'list'
+	},
+	iconColor: {
+		type: String,
+		default: '#435862'
+	},
+	iconColorActive: {
+		type: String,
+		default: '#3c9cff'
+	},
+	bgColor: {
+		type: String,
+		default: '#ffffff'
+	},
+	itemSize: {
+		type: String,
+		default: '28rpx'
+	},
+	itemColor: {
+		type: String,
+		default: '#303133'
+	},
+	itemLineHeight: {
+		type: String,
+		default: '100rpx'
+	},
+	items: {
+		type: Array,
+		default: () => {
+			return [];
 		}
-	},
-	data() {
-		return {
-			showStatus: false
-		};
-	},
-	mounted: function() {
-		this.showStatus = this.status;
-	},
-	watch: {
-		status: function(val) {
-			this.showStatus = val;
-		}
-	},
-	methods: {
-		toggle: function() {
-			if (this.showStatus) {
-				this.close();
-			} else {
-				this.open();
-			}
-		},
-		open: function() {
-			this.showStatus = true;
-			this.$emit('open');
-		},
-		close: function() {
-			this.showStatus = false;
-			this.$emit('close');
-		},
-		goLink: function(item){
-			uni.navigateTo({
-				url: item.url
-			});
-		}
-	},
-	emits: ['open', 'close']
+	}
+});
+
+const showStatus = ref(false);
+showStatus.value = props.status;
+
+const toggle = () => {
+	if (showStatus.value) {
+		close();
+	} else {
+		open();
+	}
+};
+const open = () => {
+	showStatus.value = true;
+	proxy.$emit('open');
+};
+const close = () => {
+	showStatus.value = false;
+	proxy.$emit('close');
+};
+const onClick = (item) => {
+	proxy.$emit('onClick')
 };
 </script>
 <style scoped lang="scss">
-	.content {
-		padding: 20rpx;
-	}
-	.zx-accordion {
-		padding: 20rpx;
-		border-radius: 15rpx;
-	}
+.content {
+	padding: 20rpx;
+}
+.zx-accordion {
+	padding: 20rpx;
+	border-radius: 15rpx;
+}
 .zx-tap {
 	opacity: 0.88;
 }
@@ -166,7 +152,7 @@ export default {
 	flex-wrap: nowrap;
 	justify-content: space-between;
 	align-items: center;
-	border-bottom: 1rpx solid #F2F2F2 !important;
+	border-bottom: 1rpx solid #f2f2f2 !important;
 }
 .zx-flex1 {
 	flex: 1;

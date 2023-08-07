@@ -1,87 +1,79 @@
 <template>
 	<!-- #ifdef H5 -->
-	<thead class="uni-table-thead">
-		<tr class="uni-table-tr">
+	<thead class="zx-table-thead">
+		<tr class="zx-table-tr">
 			<th :rowspan="rowspan" colspan="1" class="checkbox" :class="{ 'tr-table--border': border }">
-				<table-checkbox :indeterminate="indeterminate" :checked="checked" @checkboxSelected="checkboxSelected"></table-checkbox>
+				<zx-table-checkbox :indeterminate="indeterminate" :checked="checked" @checkboxSelected="checkboxSelected"></zx-table-checkbox>
 			</th>
 		</tr>
 		<slot></slot>
 	</thead>
 	<!-- #endif -->
 	<!-- #ifndef H5 -->
-	<view class="uni-table-thead"><slot></slot></view>
+	<view class="zx-table-thead"><slot></slot></view>
 	<!-- #endif -->
 </template>
 
-<script>
-import tableCheckbox from '../uni-tr/table-checkbox.vue'
-export default {
-	name: 'zx-thead',
-	components: {
-		tableCheckbox
-	},
-	options: {
-		virtualHost: true
-	},
-	data() {
-		return {
-			border: false,
-			selection: false,
-			rowspan: 1,
-			indeterminate: false,
-			checked: false
-		}
-	},
-	created() {
-		this.root = this.getTable()
-		// #ifdef H5
-		this.root.theadChildren = this
-		// #endif
-		this.border = this.root.border
-		this.selection = this.root.type
-	},
-	methods: {
-		init(self) {
-			this.rowspan++
-		},
-		checkboxSelected(e) {
-			this.indeterminate = false
-			const backIndexData = this.root.backIndexData
-			const data = this.root.trChildren.filter(v => !v.disabled && v.keyValue)
-			if (backIndexData.length === data.length) {
-				this.checked = false
-				this.root.clearSelection()
-			} else {
-				this.checked = true
-				this.root.selectionAll()
-			}
-		},
-		/**
-		 * 获取父元素实例
-		 */
-		getTable(name = 'uniTable') {
-			let parent = this.$parent
-			let parentName = parent.$options.name
-			while (parentName !== name) {
-				parent = parent.$parent
-				if (!parent) return false
-				parentName = parent.$options.name
-			}
-			return parent
-		}
+<script setup>
+import { ref, getCurrentInstance, onMounted } from 'vue';
+const { proxy } = getCurrentInstance();
+const instance = getCurrentInstance();
+const props = defineProps({});
+
+const border = ref(false);
+const selection = ref(false);
+const rowspan = ref(1);
+const indeterminate = ref(false);
+const checked = ref(false);
+const root = ref({});
+
+onMounted(() => {
+	root.value = getTable();
+	// #ifdef H5
+	root.value.theadChildren = instance;
+	// #endif
+	border.value = root.value.border;
+	selection.value = root.value.type;
+});
+
+const init = (self) => {
+	rowspan.value++;
+};
+const checkboxSelected = (e) => {
+	indeterminate.value = false;
+	const backIndexData = root.value.backIndexData;
+	const data = root.value.trChildren.filter((v) => !v.disabled && v.keyValue);
+	if (backIndexData.length === data.length) {
+		checked.value = false;
+		root.value.clearSelection();
+	} else {
+		checked.value = true;
+		root.value.selectionAll();
 	}
-}
+};
+/**
+ * 获取父元素实例
+ */
+const getTable = (name = 'zx-table') => {
+	let parent = proxy.$parent;
+	let parentName = parent.$options.name;
+	while (parentName !== name) {
+		parent = parent.$parent;
+		if (!parent) return false;
+		parentName = parent.$options.name;
+	}
+	return parent;
+};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $border-color: #ebeef5;
 
-.uni-table-thead {
+.zx-table-thead {
 	display: table-header-group;
 }
 
-.uni-table-tr {
+.zx-table-tr {
 	/* #ifndef APP-NVUE */
 	display: table-row;
 	transition: all 0.3s;
@@ -111,14 +103,14 @@ $border-color: #ebeef5;
 }
 
 /* #ifndef APP-NVUE */
-.uni-table-tr {
-	::v-deep .uni-table-th {
+.zx-table-tr {
+	::v-deep .zx-table-th {
 		&.table--border:last-child {
 			// border-right: none;
 		}
 	}
 
-	::v-deep .uni-table-td {
+	::v-deep .zx-table-td {
 		&.table--border:last-child {
 			// border-right: none;
 		}

@@ -4,35 +4,28 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		name:"zx-time-axis",
-		data() {
-			return {
-
-			};
-		}
-	}
+<script setup>
+import { ref } from 'vue';
 </script>
 
 <style scoped>
-	.zx-time-axis {
-		padding-left: 20px;
-		box-sizing: border-box;
-		position: relative;
-	}
+.zx-time-axis {
+	padding-left: 20px;
+	box-sizing: border-box;
+	position: relative;
+}
 
-	.zx-time-axis::before {
-		content: " ";
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 1px;
-		bottom: 0;
-		border-left: 1px solid #ddd;
-		-webkit-transform-origin: 0 0;
-		transform-origin: 0 0;
-		-webkit-transform: scaleX(0.5);
-		transform: scaleX(0.5);
-	}
+.zx-time-axis::before {
+	content: ' ';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 1px;
+	bottom: 0;
+	border-left: 1px solid #ddd;
+	-webkit-transform-origin: 0 0;
+	transform-origin: 0 0;
+	-webkit-transform: scaleX(0.5);
+	transform: scaleX(0.5);
+}
 </style>

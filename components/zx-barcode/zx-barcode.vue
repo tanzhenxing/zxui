@@ -1,88 +1,81 @@
 <template>
-	<view style="position: absolute;left: 2000rpx;">
-		<canvas :canvas-id="canvasId" :id="canvasId" :style="{width:width+'rpx', height:height+'rpx'}" @longpress="saveQrcode"></canvas>
+	<view class="zx-barcode">
+		<canvas :canvas-id="canvasId" :id="canvasId" :style="{ width: width + 'rpx', height: height + 'rpx' }" @longpress="saveQrcode"></canvas>
 	</view>
 </template>
 
-<script>
+<script setup>
+import { ref, getCurrentInstance, onMounted, computed } from 'vue';
 import barcode from './barcode.js';
 
-export default {
-	name: 'zx-barcode',
-	data() {
-		return {
-			// 条形码绘制对象
-			barcode: null	
-		};
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	canvasId: {
+		type: String,
+		default: 'barcodeId'
 	},
-	created() {
-		uni.showLoading({
-			mask: true,
-			title: 'loading ...'
-		});
-		setTimeout(() => {
-			barcode.code128(uni.createCanvasContext(this.canvasId), this.content, uni.upx2px(this.width), uni.upx2px(this.height));
-			uni.hideLoading();
-			
-			uni.canvasToTempFilePath({
-				x: 0,
-				y: 0,
-				width: uni.upx2px(this.width),
-				height: uni.upx2px(this.height),
-				destWidth: this.width,
-				destHeight: this.height,
-				canvasId: this.canvasId,
-				success: res => {
-					this.$emit('getImg',res.tempFilePath)
-				}
-			});
-		}, 1000);
+	width: {
+		type: Number,
+		default: 690
 	},
-	props: {
-		canvasId: {
-			type: String,
-			default: 'canvasId'
-		},
-		width: {
-			type: Number,
-			default: 690
-		},
-		height: {
-			type: Number,
-			default: 180
-		},
-		content: {
-			type: String,
-			default: '1221339122586765388'
+	height: {
+		type: Number,
+		default: 180
+	},
+	text: {
+		type: String,
+		default: '1221339122586765388'
+	}
+});
+
+onMounted(() => {
+	barcode.code128(uni.createCanvasContext(props.canvasId), props.text, uni.upx2px(props.width), uni.upx2px(props.height));
+
+	uni.canvasToTempFilePath({
+		x: 0,
+		y: 0,
+		width: props.size,
+		height: props.size,
+		destWidth: props.size,
+		destHeight: props.size,
+		canvasId: props.canvasId,
+		success: (res) => {
+			proxy.$emit('getImg', res.tempFilePath);
 		}
-	},
-	methods: {
-		saveQrcode: function() {
-			uni.canvasToTempFilePath({
-				x: 0,
-				y: 0,
-				width: uni.upx2px(this.width),
-				height: uni.upx2px(this.height),
-				destWidth: this.width,
-				destHeight: this.height,
-				canvasId: this.canvasId,
-				success: res => {
-					uni.saveImageToPhotosAlbum({
-						filePath: res.tempFilePath,
-						fail: function(e) {
-							console.log(e);
-						},
-						success: () => {
-							uni.showToast({
-								title: '图片已经保存到您的相册~'
-							});
-						}
+	});
+});
+
+const saveQrcode = () => {
+	uni.canvasToTempFilePath({
+		x: 0,
+		y: 0,
+		width: uni.upx2px(props.size),
+		height: uni.upx2px(props.size),
+		destWidth: uni.upx2px(props.size),
+		destHeight: uni.upx2px(props.size),
+		canvasId: props.canvasId,
+		success: (res) => {
+			uni.saveImageToPhotosAlbum({
+				filePath: res.tempFilePath,
+				fail: (e) => {
+					console.log(e);
+				},
+				success: () => {
+					uni.showToast({
+						title: '图片已经保存到您的相册~'
 					});
 				}
 			});
 		}
-	}
+	});
 };
+
+defineExpose({ saveQrcode });
 </script>
 
-<style></style>
+<style>
+.zx-barcode {
+	position: absolute;
+	left: 2000rpx;
+}
+</style>

@@ -39,7 +39,7 @@ const props = defineProps({
 		type: Boolean,
 		default: true
 	},
-	// 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
+	// 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px" < 上 右 下  左 >
 	margin: {
 		type: [String, Number],
 		default: 0
@@ -51,7 +51,7 @@ const props = defineProps({
 	},
 	customStyle: {
 		type: Object,
-		default: function() {
+		default: function () {
 			return {};
 		}
 	}

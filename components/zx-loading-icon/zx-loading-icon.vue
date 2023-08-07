@@ -1,7 +1,6 @@
 <template>
 	<view v-if="show" class="zx-loading-icon" :style="customStyle" :class="[vertical && 'zx-loading-icon--vertical']">
-		<view
-			v-if="!webviewHide"
+		<view v-if="!webviewHide"
 			class="zx-loading-icon__spinner"
 			:class="[`zx-loading-icon__spinner--${mode}`]"
 			ref="ani"
@@ -15,8 +14,7 @@
 				borderRightColor: otherBorderColor,
 				'animation-duration': `${duration}ms`,
 				'animation-timing-function': mode === 'semicircle' || mode === 'circle' ? timingFunction : ''
-			}"
-		>
+			}">
 			<block v-if="mode === 'spinner'">
 				<!-- #ifndef APP-NVUE -->
 				<view v-for="(item, index) in array12" :key="index" class="zx-loading-icon__dot"></view>
@@ -56,7 +54,7 @@ const animation = weex.requireModule('animation');
  * @property {String | Number}	duration		动画执行周期时间（默认 1200）
  * @property {String}			inactiveColor	mode=circle时的暗边颜色
  * @property {Object}			customStyle		定义需要用到的外部样式
- * @example <zx-loading mode="circle"></zx-loading>
+ * @example <zx-loading-icon mode="circle"></zx-loading-icon>
  */
 export default {
 	name: 'zx-loading-icon',
@@ -69,7 +67,7 @@ export default {
 		// 颜色
 		color: {
 			type: String,
-			default: '#909193'
+			default: '#ffffff'
 		},
 		// 提示文字颜色
 		textColor: {
@@ -89,7 +87,7 @@ export default {
 		// 图标大小，单位默认px
 		size: {
 			type: [String, Number],
-			default: '48rpx'
+			default: '60rpx'
 		},
 		// 文字大小
 		textSize: {
@@ -239,7 +237,7 @@ export default {
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	color: #c8c9cc;
+	color: #ffffff;
 
 	&__text {
 		margin-left: 10rpx;

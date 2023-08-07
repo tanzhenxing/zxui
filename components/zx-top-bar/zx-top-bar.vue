@@ -11,7 +11,13 @@
 			</template>
 		</zx-notice-bar>
 		<!-- 关注我们弹窗 -->
-		<zx-popup-image :show="qrCodeShow" :src="qrCode" :closeOnClickOverlay="false" text="扫一扫, 加我为好友" padding="20rpx" margin="50rpx" @close="close"></zx-popup-image>
+		<zx-popup-image :show="qrCodeShow" :src="qrCode" :closeOnClickOverlay="false" text="扫一扫, 加我为好友" padding="20rpx" margin="50rpx" @close="close">
+			<!-- #ifdef MP-WEIXIN -->
+			<view style="padding-top: 20rpx;">
+				<button type="warn" size="mini" style="border-radius: 50rpx" @click="shareImage">保存图片</button>
+			</view>
+			<!-- #endif -->
+		</zx-popup-image>
 	</view>
 </template>
 
@@ -82,6 +88,18 @@ const open = () => {
 };
 const close = () => {
 	qrCodeShow.value = false;
+};
+const shareImage = () => {
+	uni.downloadFile({
+		url: proxy.$store.getters.schoolInfo.qr_code, 
+		success: (res) => {
+			if (res.statusCode === 200) {
+				wx.showShareImageMenu({
+				    path: res.tempFilePath
+				})
+			}
+		}
+	});
 };
 </script>
 

@@ -5,20 +5,19 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		name: "zx-loading",
-		props: {
-			show: {
-				type: Boolean,
-				default: false
-			},
-			text: {
-				type: String,
-				default: "正在加载..."
-			}
+<script setup>
+	import {ref,getCurrentInstance} from 'vue'
+	const {proxy} = getCurrentInstance();
+	const props = defineProps({
+		show: {
+			type: Boolean,
+			default: false
+		},
+		text: {
+			type: String,
+			default: "正在加载..."
 		}
-	}
+	})
 </script>
 
 <style scoped>

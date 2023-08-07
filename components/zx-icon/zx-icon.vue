@@ -1,5 +1,5 @@
 <template>
-	<view @tap="clickHandler">
+	<view @tap="onClick">
 		<image v-if="isImg" :src="name" :mode="imgMode" :style="[imgStyle, customStyle]"></image>
 		<text v-else :style="[iconStyle, customStyle]" :class="iconClass"></text>
 	</view>
@@ -20,10 +20,10 @@
  * @property {String | Number}	width			显示图片小图标时的宽度
  * @property {String | Number}	height			显示图片小图标时的高度
  * @property {String | Number}	top				图标在垂直方向上的定位 用于解决某些情况下，让图标垂直居中的用途
- * @property {Boolean}			stop			是否阻止事件传播
  * @property {Object}			customStyle		icon的样式，对象形式
- * @event {Function}            click           点击图标时触发
- * @example <zx-icon name="eye"></zx-icon>  
+ * @event {Function}            onClick         点击图标时触发
+ * @example 
+ * <zx-icon name="eye"></zx-icon>
  * <zx-icon name="zhongbo-m" customPrefix="jxgy-iconfont"></zx-icon>
  */
 import { ref, getCurrentInstance, computed } from 'vue';
@@ -79,11 +79,6 @@ const props = defineProps({
 		type: String,
 		default: ''
 	},
-	// 是否阻止事件传播
-	stop: {
-		type: Boolean,
-		default: false
-	},
 	customStyle: {
 		type: Object,
 		default: function() {
@@ -122,10 +117,8 @@ const imgStyle = computed(() => {
 	return style;
 });
 
-const clickHandler = e => {
-	proxy.$emit('click', props.index);
-	// 是否阻止事件冒泡
-	props.stop && this.preventEvent(e);
+const onClick = e => {
+	proxy.$emit('onClick', props.index);
 };
 </script>
 

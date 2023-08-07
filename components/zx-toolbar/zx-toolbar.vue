@@ -1,8 +1,8 @@
 <template>
-	<view class="u-toolbar" v-if="show">
-		<view class="u-toolbar__cancel__wrapper" hover-class="u-hover-class">
+	<view class="zx-toolbar" v-if="show">
+		<view class="zx-toolbar__cancel__wrapper" hover-class="zx-hover-class">
 			<text
-				class="u-toolbar__wrapper__cancel"
+				class="zx-toolbar__wrapper__cancel"
 				@tap="cancel"
 				:style="{
 					color: cancelColor
@@ -11,10 +11,10 @@
 				{{ cancelText }}
 			</text>
 		</view>
-		<text class="u-toolbar__title u-line-1" v-if="title">{{ title }}</text>
-		<view class="u-toolbar__confirm__wrapper" hover-class="u-hover-class">
+		<text class="zx-toolbar__title zx-line-1" v-if="title">{{ title }}</text>
+		<view class="zx-toolbar__confirm__wrapper" hover-class="zx-hover-class">
 			<text
-				class="u-toolbar__wrapper__confirm"
+				class="zx-toolbar__wrapper__confirm"
 				@tap="confirm"
 				:style="{
 					color: confirmColor
@@ -26,8 +26,7 @@
 	</view>
 </template>
 
-<script>
-import props from './props.js';
+<script setup>
 /**
  * Toolbar 工具条
  * @description
@@ -41,41 +40,72 @@ import props from './props.js';
  * @event {Function}
  * @example
  */
-export default {
-	name: 'zx-toolbar',
-	mixins: [uni.$u.mpMixin, uni.$u.mixin, props],
-	methods: {
-		// 点击取消按钮
-		cancel() {
-			this.$emit('cancel');
-		},
-		// 点击确定按钮
-		confirm() {
-			this.$emit('confirm');
-		}
+import { ref, getCurrentInstance } from 'vue';
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	// 是否展示工具条
+	show: {
+		type: Boolean,
+		default: true
+	},
+	// 取消按钮的文字
+	cancelText: {
+		type: String,
+		default: '取消'
+	},
+	// 确认按钮的文字
+	confirmText: {
+		type: String,
+		default: '确认'
+	},
+	// 取消按钮的颜色
+	cancelColor: {
+		type: String,
+		default: '#2b85e4'
+	},
+	// 确认按钮的颜色
+	confirmColor: {
+		type: String,
+		default: '#2b85e4'
+	},
+	// 标题文字
+	title: {
+		type: String,
+		default: ''
 	}
+});
+
+// 点击取消按钮
+const cancel = () => {
+	proxy.$emit('cancel');
+};
+// 点击确定按钮
+const confirm = () => {
+	proxy.$emit('confirm');
 };
 </script>
 
 <style lang="scss" scoped>
-@import '../../libs/css/components.scss';
+$zx-tips-color: #2979ff;
+$zx-main-color: #303133;
+$zx-primary: #2979ff;
 
-.u-toolbar {
+.zx-toolbar {
 	height: 42px;
-	@include flex;
+	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
 	&__wrapper {
 		&__cancel {
-			color: $u-tips-color;
+			color: $zx-tips-color;
 			font-size: 15px;
 			padding: 0 15px;
 		}
 	}
 
 	&__title {
-		color: $u-main-color;
+		color: $zx-main-color;
 		padding: 0 60rpx;
 		font-size: 16px;
 		flex: 1;
@@ -84,7 +114,7 @@ export default {
 
 	&__wrapper {
 		&__confirm {
-			color: $u-primary;
+			color: $zx-primary;
 			font-size: 15px;
 			padding: 0 15px;
 		}

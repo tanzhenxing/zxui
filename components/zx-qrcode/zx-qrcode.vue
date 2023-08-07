@@ -1,99 +1,94 @@
 <template>
-	<view style="position: absolute;left: 2000rpx;">
-		<canvas :canvas-id="qrcodeId" :id="qrcodeId" @longpress="saveQrcode"></canvas>
+	<view class="zx-qrcode">
+		<canvas :canvas-id="canvasId" :id="canvasId" :style="{width:size+'rpx', height:size+'rpx'}" @longpress="saveQrcode"></canvas>
 	</view>
 </template>
 
-<script>
+<script setup>
+import { ref, getCurrentInstance, onMounted, computed } from 'vue';
 import QRCode from './qrcode.js';
-	
-export default {
-	name: 'zx-qrcode',
-	data() {
-		return {
-			// 二维码绘制对象
-			qrcode: null
-		};
+
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	canvasId: {
+		type: String,
+		default: 'qrcodeId'
 	},
-	created() {
-		uni.showLoading({
-			mask: true,
-			title: 'loading ...'
-		});
-		setTimeout(() => {
-			this.qrcode = new QRCode(this.qrcodeId, {
-				text: this.url,
-				width: this.size,
-				height: this.size,
-				colorDark: this.color,
-				colorLight: this.bgColor
-			});
-			uni.hideLoading();
-			
-			uni.canvasToTempFilePath({
-				x: 0,
-				y: 0,
-				width: this.size,
-				height: this.size,
-				destWidth: this.size,
-				destHeight: this.size,
-				canvasId: this.qrcodeId,
-				success: res => {
-					this.$emit('getImg', res.tempFilePath);
-				}
-			});
-			
-		}, 1000);
+	size: {
+		type: Number,
+		default: 150
 	},
-	props: {
-		qrcodeId: {
-			type: String,
-			default: 'qrcodeId'
-		},
-		size: {
-			type: Number,
-			default: 150
-		},
-		url: {
-			type: String,
-			default: 'https://zxui.org/'
-		},
-		bgColor: {
-			type: String,
-			default: '#FFFFFF'
-		},
-		color: {
-			type: String,
-			default: '#000000'
+	text: {
+		type: String,
+		default: 'https://zxui.org/'
+	},
+	bgColor: {
+		type: String,
+		default: '#FFFFFF'
+	},
+	color: {
+		type: String,
+		default: '#000000'
+	}
+});
+
+const canvasObj = ref(null);
+
+
+onMounted(() => {
+	canvasObj.value = new QRCode(props.canvasId, {
+		text: props.text,
+		width: props.size,
+		height: props.size,
+		colorDark: props.color,
+		colorLight: props.bgColor
+	});
+
+	uni.canvasToTempFilePath({
+		x: 0,
+		y: 0,
+		width: props.size,
+		height: props.size,
+		destWidth: props.size,
+		destHeight: props.size,
+		canvasId: props.canvasId,
+		success: (res) => {
+			proxy.$emit('getImg', res.tempFilePath);
 		}
-	},
-	methods: {
-		saveQrcode() {
-			uni.canvasToTempFilePath({
-				x: 0,
-				y: 0,
-				width: uni.upx2px(this.size),
-				height: uni.upx2px(this.size),
-				destWidth: uni.upx2px(this.size),
-				destHeight: uni.upx2px(this.size),
-				canvasId: this.qrcodeId,
-				success: res => {
-					uni.saveImageToPhotosAlbum({
-						filePath: res.tempFilePath,
-						fail: function(e) {
-							console.log(e);
-						},
-						success: () => {
-							uni.showToast({
-								title: '图片已经保存到您的相册~'
-							});
-						}
+	});
+});
+
+const saveQrcode = () => {
+	uni.canvasToTempFilePath({
+		x: 0,
+		y: 0,
+		width: uni.upx2px(props.size),
+		height: uni.upx2px(props.size),
+		destWidth: uni.upx2px(props.size),
+		destHeight: uni.upx2px(props.size),
+		canvasId: props.canvasId,
+		success: (res) => {
+			uni.saveImageToPhotosAlbum({
+				filePath: res.tempFilePath,
+				fail: (e) => {
+					console.log(e);
+				},
+				success: () => {
+					uni.showToast({
+						title: '图片已经保存到您的相册~'
 					});
 				}
 			});
 		}
-	}
+	});
 };
+
+defineExpose({ saveQrcode });
 </script>
 
-<style></style>
+<style>
+.zx-qrcode {
+	position: absolute;
+	left: 2000rpx;
+}
+</style>

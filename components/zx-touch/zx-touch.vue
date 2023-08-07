@@ -3,142 +3,119 @@
 		<slot></slot>
 	</view>
 </template>
-<script>
+<script setup>
 import 'default-passive-events';
-export default {
-	name: 'zx-touch',
-	props: {
-		datas: {
-			type: Array,
-			default: function() {
-				return [];
-			}
+import { ref, getCurrentInstance } from 'vue';
+const { proxy } = getCurrentInstance();
+
+const props = defineProps({
+	show:{
+		type: Boolean,
+		default: true
+	}
+});
+
+const toucheTimer = ref(0);
+const fingerRes = ref([]);
+const distance = ref(0);
+const taptimer = ref(100);
+const isTap = ref(false);
+
+defineEmits(['start', 'move', 'scale', 'tapme', 'end', 'swipe']);
+
+const touchstart = (e) => {
+	console.log(JSON.stringify(e))
+	toucheTimer.value = new Date().getTime();
+	fingerRes.value = e.touches[0] || e.changedTouches[0];
+	proxy.$emit('start', fingerRes.value);
+};
+const touchmove = (e) => {
+	if (toucheTimer.value < 50) {
+		return;
+	}
+	let timer = new Date().getTime() - toucheTimer.value;
+	if (timer < taptimer.value) {
+		return;
+	}
+	let touches = e.touches[0] || e.changedTouches[0];
+	if (touches.length > 2) {
+		return;
+	}
+	if (touches.length == 1) {
+		let i = 0,
+			moves = [];
+		touches.forEach((finger) => {
+			let xTouch = finger.pageX - fingerRes.value[i].pageX;
+			let yTouch = finger.pageY - fingerRes.value[i].pageY;
+			moves.push([xTouch, yTouch]);
+			i++;
+		});
+		proxy.$emit('move', touches);
+	} else if (touches.length == 2) {
+		if (distance.value == 0) {
+			distance.value = parseInt(getDistance(touches[0].pageX, touches[0].pageY, touches[1].pageX, touches[1].pageY));
+		} else {
+			let distance1 = parseInt(getDistance(touches[0].pageX, touches[0].pageY, touches[1].pageX, touches[1].pageY));
+			let scale = distance1 / distance.value;
+			scale = Math.floor(scale * 100) / 100;
+			proxy.$emit('scale', scale);
 		}
-	},
-	data() {
-		return {
-			toucheTimer: 0,
-			fingerRes: [],
-			distance: 0,
-			taptimer: 100
-		};
-	},
-	methods: {
-		toInt: function(arr) {
-			var res = [];
-			arr.forEach(item => {
-				item.pageX = parseInt(item.pageX);
-				item.pageY = parseInt(item.pageY);
-				res.push(item);
-			});
-			return res;
-		},
-		touchstart: function(e) {
-			this.toucheTimer = new Date().getTime();
-			this.fingerRes = this.toInt(e.changedTouches);
-			if (this.fingerRes.length > 2) {
-				return;
-			}
-			var moves = [],
-				i = 0;
-			this.fingerRes.forEach(finger => {
-				var xTouch = finger.pageX;
-				var yTouch = finger.pageY;
-				moves.push([xTouch, yTouch]);
-				i++;
-			});
-			this.$emit('thStart', moves, this.datas);
-		},
-		touchmove: function(e) {
-			if (this.toucheTimer < 50) {
-				return;
-			}
-			var timer = new Date().getTime() - this.toucheTimer;
-			if (timer < this.taptimer) {
-				return;
-			}
-			var touches = this.toInt(e.changedTouches);
-			if (touches.length > 2) {
-				return;
-			}
-			if (touches.length == 1) {
-				var i = 0,
-					moves = [];
-				touches.forEach(finger => {
-					var xTouch = finger.pageX - this.fingerRes[i].pageX;
-					var yTouch = finger.pageY - this.fingerRes[i].pageY;
-					moves.push([xTouch, yTouch]);
-					i++;
-				});
-				this.$emit('thMove', moves, this.datas);
-			} else if (touches.length == 2) {
-				if (this.distance == 0) {
-					this.distance = parseInt(this.getDistance(touches[0].pageX, touches[0].pageY, touches[1].pageX, touches[1].pageY));
-				} else {
-					var distance1 = parseInt(this.getDistance(touches[0].pageX, touches[0].pageY, touches[1].pageX, touches[1].pageY));
-					var scale = distance1 / this.distance;
-					scale = Math.floor(scale * 100) / 100;
-					this.$emit('scale', scale, this.datas);
-				}
-			}
-		},
-		touchend: function(e) {
-			var timer = new Date().getTime() - this.toucheTimer;
-			if (timer < this.taptimer) {
-				this.$emit('tapme');
-				return;
-			}
-			var touches = this.toInt(e.changedTouches);
-			this.distance = 0;
-			if (touches.length == 1) {
-				var i = 0,
-					moves = [];
-				touches.forEach(finger => {
-					var xTouch = finger.pageX - this.fingerRes[i].pageX;
-					var yTouch = finger.pageY - this.fingerRes[i].pageY;
-					moves.push([xTouch, yTouch]);
-					i++;
-				});
-				moves.push(timer);
-				this.$emit('thEnd', moves, this.datas);
-				// 根据时间及距离决定滑动时间
-				if (timer < 300) {
-					var mx = Math.abs(moves[0][0]);
-					var my = Math.abs(moves[0][1]);
-					if (mx > my) {
-						if (mx >= 50) {
-							if (moves[0][0] > 0) {
-								this.$emit('swipe', 'right', this.datas);
-							} else {
-								this.$emit('swipe', 'left', this.datas);
-							}
-						}
+	}
+};
+const touchend = (e) => {
+	let timer = new Date().getTime() - toucheTimer.value;
+	if (timer < taptimer.value) {
+		proxy.$emit('tapme');
+		return;
+	}
+	let touches = getTouches(e.changedTouches);
+	distance.value = 0;
+	if (touches.length == 1) {
+		let i = 0,
+			moves = [];
+		touches.forEach((finger) => {
+			let xTouch = finger.pageX - fingerRes.value[i].pageX;
+			let yTouch = finger.pageY - fingerRes.value[i].pageY;
+			moves.push([xTouch, yTouch]);
+			i++;
+		});
+		moves.push(timer);
+		proxy.$emit('end', moves);
+		// 根据时间及距离决定滑动时间
+		if (timer < 300) {
+			let mx = Math.abs(moves[0][0]);
+			let my = Math.abs(moves[0][1]);
+			if (mx > my) {
+				if (mx >= 50) {
+					if (moves[0][0] > 0) {
+						proxy.$emit('swipe', 'right');
 					} else {
-						if (my >= 50) {
-							if (moves[0][1] > 0) {
-								this.$emit('swipe', 'down', this.datas);
-							} else {
-								this.$emit('swipe', 'up', this.datas);
-							}
-						}
+						proxy.$emit('swipe', 'left');
+					}
+				}
+			} else {
+				if (my >= 50) {
+					if (moves[0][1] > 0) {
+						proxy.$emit('swipe', 'down');
+					} else {
+						proxy.$emit('swipe', 'up');
 					}
 				}
 			}
-		},
-		getDistance: function(lat1, lng1, lat2, lng2) {
-			var radLat1 = (lat1 * Math.PI) / 180.0;
-			var radLat2 = (lat2 * Math.PI) / 180.0;
-			var a = radLat1 - radLat2;
-			var b = (lng1 * Math.PI) / 180.0 - (lng2 * Math.PI) / 180.0;
-			var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
-			s = s * 6378.137;
-			return Math.round(s * 10000) / 10000;
-		},
-		tapme: function() {
-			this.isTap = true;
 		}
-	},
-	emits: ['thStart', 'thMove', 'scale', 'tapme', 'thEnd', 'swipe']
+	}
+};
+const getDistance = (lat1, lng1, lat2, lng2) => {
+	let radLat1 = (lat1 * Math.PI) / 180.0;
+	let radLat2 = (lat2 * Math.PI) / 180.0;
+	let a = radLat1 - radLat2;
+	let b = (lng1 * Math.PI) / 180.0 - (lng2 * Math.PI) / 180.0;
+	let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+	s = s * 6378.137;
+	return Math.round(s * 10000) / 10000;
+};
+const tapme = () => {
+	isTap.value = true;
 };
 </script>
 <style scoped></style>

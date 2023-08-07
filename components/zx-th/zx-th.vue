@@ -1,31 +1,33 @@
 <template>
 	<!-- #ifdef H5 -->
-	<th :rowspan="rowspan" :colspan="colspan" class="uni-table-th" :class="{ 'table--border': border }" :style="{ width: customWidth + 'px', 'text-align': align }">
-		<view class="uni-table-th-row">
-			<view class="uni-table-th-content" :style="{ 'justify-content': contentAlign }" @click="sort">
+	<th :rowspan="rowspan" :colspan="colspan" class="zx-table-th" :class="{ 'table--border': border }" :style="{ width: customWidth + 'px', 'text-align': align }">
+		<view class="zx-table-th-row">
+			<view class="zx-table-th-content" :style="{ 'justify-content': contentAlign }" @click="sort">
 				<slot></slot>
 				<view v-if="sortable" class="arrow-box">
 					<text class="arrow up" :class="{ active: ascending }" @click.stop="ascendingFn"></text>
 					<text class="arrow down" :class="{ active: descending }" @click.stop="descendingFn"></text>
 				</view>
 			</view>
-			<dropdown v-if="filterType || filterData.length" :filterDefaultValue="filterDefaultValue" :filterData="filterData" :filterType="filterType" @change="ondropdown"></dropdown>
+			<zx-filter-dropdown
+				v-if="filterType || filterData.length"
+				:filterDefaultValue="filterDefaultValue"
+				:filterData="filterData"
+				:filterType="filterType"
+				@change="ondropdown"
+			></zx-filter-dropdown>
 		</view>
 	</th>
 	<!-- #endif -->
 	<!-- #ifndef H5 -->
-	<view class="uni-table-th" :class="{ 'table--border': border }" :style="{ width: customWidth + 'px', 'text-align': align }"><slot></slot></view>
+	<view class="zx-table-th" :class="{ 'table--border': border }" :style="{ width: customWidth + 'px', 'text-align': align }"><slot></slot></view>
 	<!-- #endif -->
 </template>
 
-<script>
-	// #ifdef H5
-	import dropdown from './filter-dropdown.vue'
-	// #endif
+<script setup>
 /**
  * Th 表头
  * @description 表格内的表头单元格组件
- * @tutorial https://ext.dcloud.net.cn/plugin?id=3270
  * @property {Number | String} 	width 	单元格宽度（支持纯数字、携带单位px或rpx）
  * @property {Boolean} 	sortable 					是否启用排序
  * @property {Number} 	align = [left|center|right]	单元格对齐方式
@@ -38,177 +40,171 @@
  * @value select	条件选择
  * @event {Function} sort-change 排序触发事件
  */
-export default {
-	name: 'zx-th',
-	options: {
-		virtualHost: true
+import { ref, getCurrentInstance, onMounted, computed } from 'vue';
+const { proxy } = getCurrentInstance();
+const instance = getCurrentInstance();
+const props = defineProps({
+	width: {
+		type: [String, Number],
+		default: ''
 	},
-	components: {
-		// #ifdef H5
-		dropdown
-		// #endif
+	align: {
+		type: String,
+		default: 'left'
 	},
-	emits:['sort-change','filter-change'],
-	props: {
-		width: {
-			type: [String, Number],
-			default: ''
-		},
-		align: {
-			type: String,
-			default: 'left'
-		},
-		rowspan: {
-			type: [Number, String],
-			default: 1
-		},
-		colspan: {
-			type: [Number, String],
-			default: 1
-		},
-		sortable: {
-			type: Boolean,
-			default: false
-		},
-		filterType: {
-			type: String,
-			default: ""
-		},
-		filterData: {
-			type: Array,
-			default () {
-				return []
-			}
-		},
-		filterDefaultValue: {
-			type: [Array,String],
-			default () {
-				return ""
-			}
+	rowspan: {
+		type: [Number, String],
+		default: 1
+	},
+	colspan: {
+		type: [Number, String],
+		default: 1
+	},
+	sortable: {
+		type: Boolean,
+		default: false
+	},
+	filterType: {
+		type: String,
+		default: ''
+	},
+	filterData: {
+		type: Array,
+		default: () => {
+			return [];
 		}
 	},
-	data() {
-		return {
-			border: false,
-			ascending: false,
-			descending: false
-		}
-	},
-	computed: {
-		// 根据props中的width属性 自动匹配当前th的宽度(px)
-		customWidth(){
-			if(typeof this.width === 'number'){
-				return this.width
-			} else if(typeof this.width === 'string') {
-				let regexHaveUnitPx = new RegExp(/^[1-9][0-9]*px$/g)
-				let regexHaveUnitRpx = new RegExp(/^[1-9][0-9]*rpx$/g)
-				let regexHaveNotUnit = new RegExp(/^[1-9][0-9]*$/g)
-				if (this.width.match(regexHaveUnitPx) !== null) { // 携带了 px
-					return this.width.replace('px', '')
-				} else if (this.width.match(regexHaveUnitRpx) !== null) { // 携带了 rpx
-					let numberRpx = Number(this.width.replace('rpx', ''))
-					let widthCoe = uni.getSystemInfoSync().screenWidth / 750
-					return Math.round(numberRpx * widthCoe)
-				} else if (this.width.match(regexHaveNotUnit) !== null) { // 未携带 rpx或px 的纯数字 String
-					return this.width
-				} else { // 不符合格式
-					return ''
-				}
-			} else {
-				return ''
-			}
-		},
-		contentAlign() {
-			let align = 'left'
-			switch (this.align) {
-				case 'left':
-					align = 'flex-start'
-					break
-				case 'center':
-					align = 'center'
-					break
-				case 'right':
-					align = 'flex-end'
-					break
-			}
-			return align
-		}
-	},
-	created() {
-		this.root = this.getTable('uniTable')
-		this.rootTr = this.getTable('uniTr')
-		this.rootTr.minWidthUpdate(this.customWidth ? this.customWidth : 140)
-		this.border = this.root.border
-		this.root.thChildren.push(this)
-	},
-	methods: {
-		sort() {
-			if (!this.sortable) return
-			this.clearOther()
-			if (!this.ascending && !this.descending) {
-				this.ascending = true
-				this.$emit('sort-change', { order: 'ascending' })
-				return
-			}
-			if (this.ascending && !this.descending) {
-				this.ascending = false
-				this.descending = true
-				this.$emit('sort-change', { order: 'descending' })
-				return
-			}
-
-			if (!this.ascending && this.descending) {
-				this.ascending = false
-				this.descending = false
-				this.$emit('sort-change', { order: null })
-			}
-		},
-		ascendingFn() {
-			this.clearOther()
-			this.ascending = !this.ascending
-			this.descending = false
-			this.$emit('sort-change', { order: this.ascending ? 'ascending' : null })
-		},
-		descendingFn() {
-			this.clearOther()
-			this.descending = !this.descending
-			this.ascending = false
-			this.$emit('sort-change', { order: this.descending ? 'descending' : null })
-		},
-		clearOther() {
-			this.root.thChildren.map(item => {
-				if (item !== this) {
-					item.ascending = false
-					item.descending = false
-				}
-				return item
-			})
-		},
-		ondropdown(e) {
-			this.$emit("filter-change", e)
-		},
-		/**
-		 * 获取父元素实例
-		 */
-		getTable(name) {
-			let parent = this.$parent
-			let parentName = parent.$options.name
-			while (parentName !== name) {
-				parent = parent.$parent
-				if (!parent) return false
-				parentName = parent.$options.name
-			}
-			return parent
+	filterDefaultValue: {
+		type: [Array, String],
+		default: () => {
+			return '';
 		}
 	}
-}
+});
+
+const border = ref(false);
+const ascending = ref(false);
+const descending = ref(false);
+const root = ref(null);
+const rootTr = ref(null);
+onMounted(() => {
+	root.value = getTable('uniTable');
+	rootTr.value = getTable('uniTr');
+	rootTr.value.minWidthUpdate(customWidth.value ? customWidth.value : 140);
+	border.value = root.value.border;
+	root.value.thChildren.push(instance);
+});
+
+// 根据props中的width属性 自动匹配当前th的宽度(px)
+const customWidth = computed(() => {
+	if (typeof props.width === 'number') {
+		return props.width;
+	} else if (typeof props.width === 'string') {
+		let regexHaveUnitPx = new RegExp(/^[1-9][0-9]*px$/g);
+		let regexHaveUnitRpx = new RegExp(/^[1-9][0-9]*rpx$/g);
+		let regexHaveNotUnit = new RegExp(/^[1-9][0-9]*$/g);
+		if (props.width.match(regexHaveUnitPx) !== null) {
+			// 携带了 px
+			return props.width.replace('px', '');
+		} else if (props.width.match(regexHaveUnitRpx) !== null) {
+			// 携带了 rpx
+			let numberRpx = Number(props.width.replace('rpx', ''));
+			let widthCoe = uni.getSystemInfoSync().screenWidth / 750;
+			return Math.round(numberRpx * widthCoe);
+		} else if (props.width.match(regexHaveNotUnit) !== null) {
+			// 未携带 rpx或px 的纯数字 String
+			return props.width;
+		} else {
+			// 不符合格式
+			return '';
+		}
+	} else {
+		return '';
+	}
+});
+const contentAlign = computed(() => {
+	let align = 'left';
+	switch (props.align) {
+		case 'left':
+			align = 'flex-start';
+			break;
+		case 'center':
+			align = 'center';
+			break;
+		case 'right':
+			align = 'flex-end';
+			break;
+	}
+	return align;
+});
+
+const sort = () => {
+	if (!props.sortable){
+		return;
+	}
+	clearOther();
+	if (!ascending.value && !descending.value) {
+		ascending.value = true;
+		proxy.$emit('sort-change', { order: 'ascending' });
+		return;
+	}
+	if (ascending.value && !descending.value) {
+		ascending.value = false;
+		descending.value = true;
+		proxy.$emit('sort-change', { order: 'descending' });
+		return;
+	}
+
+	if (!ascending.value && descending.value) {
+		ascending.value = false;
+		descending.value = false;
+		proxy.$emit('sort-change', { order: null });
+	}
+};
+const ascendingFn = () => {
+	.clearOther();
+	ascending.value = !ascending.value;
+	descending.value = false;
+	proxy.$emit('sort-change', { order: ascending.value ? 'ascending' : null });
+};
+const descendingFn = () => {
+	clearOther();
+	descending.value = !descending.value;
+	ascending.value = false;
+	proxy.$emit('sort-change', { order: descending.value ? 'descending' : null });
+};
+const clearOther = () => {
+	root.value.thChildren.map((item) => {
+		if (item !== instance) {
+			item.ascending = false;
+			item.descending = false;
+		}
+		return item;
+	});
+};
+const ondropdown = (e) => {
+	proxy.$emit('filter-change', e);
+};
+/**
+ * 获取父元素实例
+ */
+const getTable = (name) => {
+	let parent = proxy.$parent;
+	let parentName = parent.$options.name;
+	while (parentName !== name) {
+		parent = parent.$parent;
+		if (!parent) return false;
+		parentName = parent.$options.name;
+	}
+	return parent;
+};
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $border-color: #ebeef5;
-$uni-primary: #007aff !default;
+$zx-primary: #007aff !default;
 
-.uni-table-th {
+.zx-table-th {
 	padding: 12px 10px;
 	/* #ifndef APP-NVUE */
 	display: table-cell;
@@ -220,7 +216,7 @@ $uni-primary: #007aff !default;
 	border-bottom: 1px $border-color solid;
 }
 
-.uni-table-th-row {
+.zx-table-th-row {
 	/* #ifndef APP-NVUE */
 	display: flex;
 	/* #endif */
@@ -230,7 +226,7 @@ $uni-primary: #007aff !default;
 .table--border {
 	border-right: 1px $border-color solid;
 }
-.uni-table-th-content {
+.zx-table-th-content {
 	display: flex;
 	align-items: center;
 	flex: 1;
@@ -261,7 +257,7 @@ $uni-primary: #007aff !default;
 	}
 	&.active {
 		::after {
-			background-color: $uni-primary;
+			background-color: $zx-primary;
 		}
 	}
 }
@@ -278,7 +274,7 @@ $uni-primary: #007aff !default;
 	}
 	&.active {
 		::after {
-			background-color: $uni-primary;
+			background-color: $zx-primary;
 		}
 	}
 }

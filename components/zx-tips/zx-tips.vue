@@ -1,61 +1,57 @@
 <template>
 	<block v-if="position == 'top'">
-		<view class="zx-tips-class zx-toptips" :style="{backgroundColor:backgroundColor,color:color,fontSize:size+'rpx'}" :class="[show ? 'zx-top-show' : '']">{{ msg }}</view>
+		<view class="zx-tips-class zx-toptips" :style="{ backgroundColor: backgroundColor, color: color, fontSize: size + 'rpx' }" :class="[show ? 'zx-top-show' : '']">
+			{{ msg }}
+		</view>
 	</block>
 	<block v-else>
 		<view class="zx-tips-class zx-toast" :class="[position == 'center' ? 'zx-centertips' : 'zx-bottomtips', show ? 'zx-toast-show' : '']">
-			<view class="zx-tips-content" :style="{backgroundColor:backgroundColor,color:color,fontSize:size+'rpx'}">{{ msg }}</view>
+			<view class="zx-tips-content" :style="{ backgroundColor: backgroundColor, color: color, fontSize: size + 'rpx' }">{{ msg }}</view>
 		</view>
 	</block>
 </template>
 
-<script>
-export default {
-	name: 'zx-tips',
-	props: {
-		//top bottom center
-		position: {
-			type: String,
-			default: 'top'
-		},
-		backgroundColor: {
-			type: String,
-			default: 'rgba(0, 0, 0, 0.7)'
-		},
-		color: {
-			type: String,
-			default: '#fff'
-		},
-		size: {
-			type: Number,
-			default: 30
-		}
+<script setup>
+import { ref, getCurrentInstance } from 'vue';
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	//top bottom center
+	position: {
+		type: String,
+		default: 'top'
 	},
-	data() {
-		return {
-			timer: null,
-			show: false,
-			msg: '无法连接到服务器~'
-		};
+	backgroundColor: {
+		type: String,
+		default: 'rgba(0, 0, 0, 0.7)'
 	},
-	methods: {
-		showTips: function(options) {
-			const {duration = 2000 } = options;
-			clearTimeout(this.timer);
-			this.show = true;
-			// this.duration = duration < 2000 ? 2000 : duration;
-			this.msg = options.msg;
-			this.timer = setTimeout(() => {
-				this.show = false;
-				clearTimeout(this.timer);
-				this.timer = null;
-			}, duration);
-		}
+	color: {
+		type: String,
+		default: '#fff'
+	},
+	size: {
+		type: Number,
+		default: 30
 	}
+});
+
+const timer = ref(null);
+const show = ref(false);
+const msg = ref('无法连接到服务器~');
+
+const showTips = (options) => {
+	const { duration = 2000 } = options;
+	clearTimeout(timer.value);
+	show.value = true;
+	msg.value = options.msg;
+	timer.value = setTimeout(() => {
+		show.value = false;
+		clearTimeout(timer.value);
+		timer.value = null;
+	}, duration);
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 /*顶部消息提醒 start*/
 .zx-toptips {
 	width: 100%;

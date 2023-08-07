@@ -1,7 +1,7 @@
 <template>
 	<view
-		class="gui-totop gui-fade-in gui-bg-white gui-dark-bg-level-3"
-		hover-class="gui-tap"
+		class="zx-totop zx-fade-in zx-bg-white zx-dark-bg-level-3"
+		hover-class="zx-tap"
 		v-if="show"
 		@tap="totop"
 		:style="{
@@ -9,68 +9,82 @@
 			right: right,
 			zIndex: zIndex,
 			borderRadius: borderRadius
-		}">
+		}"
+	>
 		<zx-icon name="arrow-up" :size="fontSize"></zx-icon>
 	</view>
 </template>
-<script>
-export default {
-	name: 'zx-totop',
-	props: {
-		top: { type: Number, default: 0 },
-		bottom: { type: String, default: '80rpx' },
-		right: { type: String, default: '30rpx' },
-		borderRadius: { type: String, default: '6rpx' },
-		zIndex: { type: Number, default: 9 },
-		fontSize: { type: String, default: '44rpx' }
+<script setup>
+import { ref, getCurrentInstance, watch } from 'vue';
+const { proxy } = getCurrentInstance();
+const props = defineProps({
+	top: {
+		type: Number,
+		default: 0
 	},
-	data() {
-		return {
-			show: false,
-			timer: null
-		};
+	bottom: {
+		type: String,
+		default: '80rpx'
 	},
-	watch: {
-		top: function(topVal) {
-			if (this.timer != null) {
-				clearTimeout(this.timer);
-			}
-			this.timer = setTimeout(() => {
-				this.show = topVal > 100 ? true : false;
-			}, 80);
-		}
+	right: {
+		type: String,
+		default: '30rpx'
 	},
-	methods: {
-		totop: function() {
-			// #ifndef APP-NVUE
-			uni.pageScrollTo({
-				scrollTop: 0,
-				duration: 100
-			});
-			// #endif
-			this.$emit('totop');
-		}
+	borderRadius: {
+		type: String,
+		default: '6rpx'
 	},
-	// #ifdef APP-NVUE
-	emits: ['totop']
+	zIndex: {
+		type: Number,
+		default: 9
+	},
+	fontSize: {
+		type: String,
+		default: '44rpx'
+	}
+});
+
+const show = ref(false);
+const timer = ref(null);
+
+const totop = () => {
+	// #ifndef APP-NVUE
+	uni.pageScrollTo({
+		scrollTop: 0,
+		duration: 100
+	});
 	// #endif
+	proxy.$emit('totop');
 };
 </script>
-<style scoped>
-.gui-totop {
+<style lang="scss" scoped>
+.zx-totop {
 	width: 80rpx;
 	height: 80rpx;
 	position: fixed;
 }
-.gui-totop-text {
+.zx-totop-text {
 	width: 80rpx;
 	height: 80rpx;
 	line-height: 80rpx;
 	font-size: 38rpx;
 	text-align: center;
 }
-.gui-tap{opacity:0.88;}
-@keyframes gui-fade-in{0%{opacity:0;} 100%{opacity:1;}}
-.gui-fade-in{animation:gui-fade-in 200ms ease-in forwards;}
-.gui-bg-white{background-color:#FFFFFF !important;}
+.zx-tap {
+	opacity: 0.88;
+}
+@keyframes zx-fade-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+.zx-fade-in {
+	animation: zx-fade-in 200ms ease-in forwards;
+}
+.zx-bg-white {
+	background-color: #ffffff !important;
+}
 </style>

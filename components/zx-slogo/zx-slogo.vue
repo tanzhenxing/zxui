@@ -14,23 +14,17 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		name:"zx-slogo",
-		data() {
-			return {
-				
-			};
-		},
-		props: {
-			items: {
-				type: Array,
-				default() {
-					return [];
-				}
+<script setup>
+	import {ref,getCurrentInstance} from 'vue'
+	const {proxy} = getCurrentInstance();
+	const props = defineProps({
+		items: {
+			type: Array,
+			default:()=> {
+				return [];
 			}
-		},
-	}
+		}
+	})
 </script>
 
 <style lang="scss" scoped>

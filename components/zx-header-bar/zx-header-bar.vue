@@ -6,8 +6,8 @@
 			<view style="flex: 1;">
 				<slot name="left">
 					<view class="flex-row">
-						<view v-if="showBack" @click="navigateBack()">
-							<zx-icon :name="iconName" :color="iconColor" :size="iconSize"></zx-icon>
+						<view v-if="showBack">
+							<zx-icon :name="iconName" :color="iconColor" :size="iconSize" @onClick="goBack"></zx-icon>
 						</view>
 						<view style="padding-left: 10rpx;">
 							<zx-text :text="title" :lineHeight="titleHeight" :size="titleSize" :color="titleColor" lines="1"></zx-text>
@@ -17,13 +17,13 @@
 			</view>
 			<view class="flex-row" style="justify-content: flex-end;" :style="{width:rightWidth}">
 				<slot name="right"></slot>
-				<view v-if="showHomeLink" class="flex-row flex-center" @click="$util.navigate('/pages/index/index','switchTab')">
+				<view v-if="showHomeLink" class="flex-row flex-center" style="padding-right: 10rpx;" @click="goHome">
 					<zx-icon name="home" :color="homeLinkColor" size="38rpx" align="center" lineHeight="40rpx"></zx-icon>
 					<zx-text text="首页" :color="homeLinkColor" size="28rpx" lineHeight="40rpx"></zx-text>
 				</view>
 			</view>
 			<!-- 小程序胶囊按钮占位 -->
-			<view :style="{ width: spacingWidth + 'px',height:height }"></view>
+			<view :style="{ width: spacingWidth + 'px',height:'30px' }"></view>
 		</view>
 		<zx-line v-if="line" :color="lineColor"></zx-line>
 	</view>
@@ -52,7 +52,7 @@ const props = defineProps({
 	},
 	height: {
 		type: String,
-		default: '60rpx'
+		default: '30px'
 	},
 	padding: {
 		type: String,
@@ -97,6 +97,14 @@ const props = defineProps({
 	showBack: {
 		type: Boolean,
 		default: true
+	},
+	isBack: {
+		type: Boolean,
+		default: false
+	},
+	isHome: {
+		type: Boolean,
+		default: false
 	}
 });
 
@@ -107,10 +115,28 @@ let menuButtonInfo = uni.getMenuButtonBoundingClientRect();
 spacingWidth.value = menuButtonInfo.width + (system.windowWidth - menuButtonInfo.right);
 // #endif
 
-const navigateBack = ()=>{
+const goBack = ()=>{
+	console.log(props.isBack)
+	if(props.isBack){
+		proxy.$emit('goBack');
+		return;
+	}
+	
+	console.log('goBack')
 	uni.navigateBack({
 		delta: 1
 	});
+}
+
+const goHome = () => {
+	if(props.isHome){
+		proxy.$emit('goHome');
+		return;
+	}
+	
+	uni.switchTab({
+		url: '/pages/index/index'
+	})
 }
 
 </script>

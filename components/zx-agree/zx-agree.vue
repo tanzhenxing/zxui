@@ -4,7 +4,7 @@
 			<view :style="{ width: width, backgroundColor: bgColor, border: border ? '1px solid #cccccc' : '', borderRadius: radius }">
 				<view class="title"><zx-text :text="title" lineHeight="100rpx" size="34rpx" lines="1"></zx-text></view>
 				<zx-line></zx-line>
-				<scroll-view scroll-y slot="content" :style="{ height: contentHeight + 'px' }">
+				<scroll-view scroll-y slot="content" :enable-flex="true" :style="{ height: contentHeight + 'px' }">
 					<view class="content"><rich-text :nodes="content"></rich-text></view>
 				</scroll-view>
 				<zx-line></zx-line>

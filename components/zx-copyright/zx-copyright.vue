@@ -1,5 +1,7 @@
 <template>
-	<view :style="{ backgroundColor: bgColor, padding: padding }"><zx-text :text="text" :align="align" :color="color" :size="size" :lineHeight="lineHeight"></zx-text></view>
+	<view :style="{ backgroundColor: bgColor, padding: padding }">
+		<zx-text :text="text" :align="align" :color="color" :size="size" :lineHeight="lineHeight"></zx-text>
+	</view>
 </template>
 
 <script setup>
