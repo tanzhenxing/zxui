@@ -23,18 +23,13 @@
 				</view>
 			</view>
 		</block>
-		<view
-			v-if="imgLists.length < maxFileNumber"
-			class="zx-add-list-items flex-column-center zx-bg-gray zx-dark-bg-level-6"
-			:style="{ borderRadius: borderRadius }"
-			@tap="addImg"
-		>
+		<view v-if="imgLists.length < maxFileNumber" class="zx-add-list-items flex-column-center zx-bg-gray zx-dark-bg-level-6" :style="{ borderRadius: borderRadius }" @tap="addImg">
 			<text class="zx-add-list-btn-icon zx-block-text zx-color-gray">+</text>
 			<text class="zx-add-list-btn-text zx-block-text zx-primary-text">{{ btnName }}</text>
 		</view>
 	</view>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, getCurrentInstance, onMounted, watch } from 'vue';
 
 const { proxy } = getCurrentInstance();
@@ -49,7 +44,7 @@ const props = defineProps({
 	},
 	items: {
 		type: Array,
-		default: function () {
+		default: () => {
 			return [];
 		}
 	},
@@ -59,7 +54,7 @@ const props = defineProps({
 	},
 	sourceType: {
 		type: Array,
-		default: function () {
+		default: () => {
 			return ['album', 'camera'];
 		}
 	},
@@ -89,7 +84,7 @@ const props = defineProps({
 	},
 	formData: {
 		type: Object,
-		default: function () {
+		default: () => {
 			return {};
 		}
 	},
@@ -99,7 +94,7 @@ const props = defineProps({
 	},
 	header: {
 		type: Object,
-		default: function () {
+		default: () => {
 			return {};
 		}
 	},
@@ -122,7 +117,7 @@ onMounted(() => {
 
 watch(
 	() => props.items,
-	(newVal, oldVal) => {
+	() => {
 		initImgs();
 	}
 );
@@ -136,7 +131,7 @@ const initImgs = () => {
 };
 // 添加图片
 const addImg = () => {
-	var num = props.maxFileNumber - imgLists.value.length;
+	let num = props.maxFileNumber - imgLists.value.length;
 	if (num < 1) {
 		return false;
 	}
@@ -144,8 +139,8 @@ const addImg = () => {
 	// #ifdef MP-WEIXIN
 	uni.chooseMedia({
 		count: num,
-		sizeType: ['compressed'],
-		sourceType: props.sourceType,
+		sizeType: ['original', 'compressed'],
+		sourceType: ['album', 'camera'],
 		mediaType: ['image'],
 		success: (res) => {
 			if (imgLists.value.length >= props.maxFileNumber) {
@@ -177,7 +172,7 @@ const addImg = () => {
 	uni.chooseImage({
 		count: num,
 		sizeType: ['compressed'],
-		sourceType: props.sourceType,
+		sourceType: ['album', 'camera'],
 		success: (res) => {
 			if (imgLists.value.length >= props.maxFileNumber) {
 				return;
@@ -205,14 +200,14 @@ const addImg = () => {
 	// #endif
 };
 // 删除图片
-const removeImg = (e) => {
+const removeImg = (e:any) => {
 	let index = e.currentTarget.id.replace('zx-items-img-', '');
 	let removeImg = imgLists.value.splice(index, 1);
 	proxy.$emit('removeImg', removeImg[0]);
 	proxy.$emit('change', imgLists.value);
 };
 // 显示图片列表
-const showImgs = (e) => {
+const showImgs = (e:any) => {
 	let currentImg = e.currentTarget.dataset.imgurl;
 	let imgs = [];
 	for (let i = 0; i < imgLists.value.length; i++) {
@@ -220,7 +215,7 @@ const showImgs = (e) => {
 	}
 	uni.previewImage({ urls: imgs, current: currentImg });
 };
-const setItems = (items) => {
+const setItems = (items:any) => {
 	imgLists.value = [];
 	for (let i = 0; i < items.length; i++) {
 		imgLists.value.push({ url: items[i], progress: 100 });
@@ -232,12 +227,12 @@ const clearAllImgs = () => {
 	imgLists.value = [];
 };
 // 重新上传
-const retry = (e) => {
+const retry = (e:any) => {
 	let index = e.currentTarget.dataset.index;
 	upload(index);
 };
 // 图片上传
-const upload = (index) => {
+const upload = (index:number) => {
 	if (updatting.value) {
 		return;
 	}
@@ -253,7 +248,7 @@ const upload = (index) => {
 	}
 };
 // 普通上传
-const uploadBase = (index) => {
+const uploadBase = (index:number) => {
 	// 全部上传完成
 	if (index > imgLists.value.length - 1) {
 		uni.hideLoading();
@@ -279,7 +274,7 @@ const uploadBase = (index) => {
 		name: props.fileName,
 		formData: props.formData,
 		header: props.header,
-		success: (uploadRes) => {
+		success: (uploadRes:any) => {
 			try {
 				uploadRes = JSON.parse(uploadRes.data);
 				if (uploadRes.status != 'ok') {
@@ -296,7 +291,7 @@ const uploadBase = (index) => {
 				error(index);
 			}
 		},
-		fail: (e) => {
+		fail: () => {
 			uni.showToast({ title: '上传失败，请点击图片重试', icon: 'none' });
 			error(index);
 		}
@@ -309,7 +304,7 @@ const uploadBase = (index) => {
 	});
 };
 // 上传错误
-const error = (index) => {
+const error = (index:number) => {
 	uni.hideLoading();
 	updatting.value = false;
 	setTimeout(() => {
@@ -320,7 +315,7 @@ const error = (index) => {
 	}, 500);
 };
 // 上传到 uniCloud
-const upload2cloud = (index) => {
+const upload2cloud = (index:number) => {
 	// 全部上传完成
 	if (index > imgLists.value.length - 1) {
 		uni.hideLoading();
@@ -338,7 +333,7 @@ const upload2cloud = (index) => {
 	// 创建上传对象
 	uniCloud.uploadFile({
 		filePath: imgLists.value[index].url,
-		cloudPath: uuid() + '.png',
+		cloudPath: uuid(16) + '.png',
 		onUploadProgress: (progressEvent) => {
 			var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
 			imgLists.value[index].progress = percentCompleted;
@@ -360,16 +355,16 @@ const upload2cloud = (index) => {
 	// #endif
 };
 // 生成uuid
-const uuid = (len) => {
+const uuid = (len:number) => {
 	let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 	let uuid = [];
-	let i;
+	let i:number;
 	if (len) {
 		for (i = 0; i < len; i++) {
 			uuid[i] = chars[0 | (Math.random() * chars.length)];
 		}
 	} else {
-		let r;
+		let r:number;
 		uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
 		uuid[14] = '4';
 		for (i = 0; i < 36; i++) {
@@ -381,6 +376,8 @@ const uuid = (len) => {
 	}
 	return uuid.join('');
 };
+
+defineExpose({setItems,clearAllImgs})
 </script>
 
 <style scoped>
@@ -431,11 +428,11 @@ const uuid = (len) => {
 	position: relative;
 }
 .zx-add-list-remove {
-	width: 60rpx;
-	height: 60rpx;
-	line-height: 60rpx;
+	width: 50rpx;
+	height: 50rpx;
+	line-height: 50rpx;
 	text-align: center;
-	font-size: 44rpx;
+	font-size: 40rpx;
 	position: absolute;
 	z-index: 5;
 	right: 0;
